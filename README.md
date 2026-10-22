@@ -108,8 +108,8 @@ Contas de demonstração (senha `bento123`): `admin@bento.local`, `gerente@bento
 ### Sem Docker (Node.js 22+)
 
 ```bash
-git clone https://github.com/ravelroot/SaaS-Admin-Dashboard.git
-cd SaaS-Admin-Dashboard
+git clone https://github.com/ravelroot/Data-Driven-Admin-Panel.git
+cd Data-Driven-Admin-Panel
 npm install
 npm run build
 npm start                         # http://localhost:8080
