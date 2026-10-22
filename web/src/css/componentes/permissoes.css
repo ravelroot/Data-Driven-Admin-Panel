@@ -1,0 +1,103 @@
+@layer components {
+  .matriz-permissoes {
+    @apply flex flex-col gap-4;
+  }
+
+  .permissao-modulo {
+    @apply overflow-hidden rounded-controle border border-neutra-200 dark:border-neutra-800;
+  }
+
+  .permissao-modulo-titulo {
+    @apply flex items-center justify-between gap-2 bg-neutra-100 px-4 py-2.5 text-xs font-semibold text-neutra-700 dark:bg-neutra-950/50 dark:text-neutra-300;
+  }
+
+  .permissao-item {
+    @apply flex items-center gap-3 border-t border-neutra-200 px-4 py-3 dark:border-neutra-800;
+  }
+
+  .permissao-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .permissao-nome {
+    @apply text-sm font-medium text-neutra-900 dark:text-neutra-100;
+  }
+
+  .permissao-codigo {
+    @apply font-mono text-[0.6875rem] text-neutra-500;
+  }
+
+  .permissao-estado {
+    @apply inline-flex shrink-0 items-center rounded-[0.55rem] bg-neutra-200/80 p-0.5 dark:bg-neutra-800;
+  }
+
+  .permissao-estado button {
+    @apply grid h-7 w-8 place-items-center rounded-[0.45rem] text-neutra-500 transition-colors hover:text-neutra-900 dark:hover:text-neutra-100;
+  }
+
+  .permissao-estado button svg {
+    @apply size-3.5;
+    stroke-width: 2.25;
+  }
+
+  .permissao-estado button[aria-pressed="true"][data-valor="papel"] {
+    @apply bg-white text-neutra-900 shadow-cartao dark:bg-neutra-700 dark:text-neutra-50;
+  }
+
+  .permissao-estado button[aria-pressed="true"][data-valor="concedida"] {
+    @apply bg-oliva-600 text-creme dark:bg-oliva-400 dark:text-tinta;
+  }
+
+  .permissao-estado button[aria-pressed="true"][data-valor="negada"] {
+    @apply bg-brasa-600 text-creme dark:bg-brasa-400 dark:text-tinta;
+  }
+
+  .permissao-efetiva {
+    @apply inline-flex size-5 shrink-0 items-center justify-center rounded-full;
+  }
+
+  .permissao-efetiva svg {
+    @apply size-3;
+    stroke-width: 3;
+  }
+
+  .permissao-efetiva[data-ativa="true"] {
+    @apply bg-oliva-100 text-oliva-700 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .permissao-efetiva[data-ativa="false"] {
+    @apply bg-neutra-200 text-neutra-400 dark:bg-neutra-800 dark:text-neutra-600;
+  }
+
+  .permissao-legenda {
+    @apply flex flex-wrap items-center gap-4 text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .permissao-legenda span {
+    @apply inline-flex items-center gap-1.5;
+  }
+
+  .papel-opcao {
+    @apply cartao-base cursor-pointer gap-1 p-3.5 transition-colors has-checked:border-primaria-700 has-checked:bg-primaria-50 dark:has-checked:border-destaque-400 dark:has-checked:bg-destaque-400/10;
+  }
+
+  .papel-opcao input {
+    @apply sr-only;
+  }
+
+  .papel-opcao:has(:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .papel-opcao-nome {
+    @apply text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .papel-opcao-descricao {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+}
+
+@utility cartao-base {
+  @apply relative flex min-w-0 flex-col rounded-cartao border border-neutra-200/80 bg-neutra-50 dark:border-neutra-800 dark:bg-neutra-900;
+}

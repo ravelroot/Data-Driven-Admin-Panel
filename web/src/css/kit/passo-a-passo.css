@@ -1,0 +1,272 @@
+@layer components {
+  .checklist {
+    @apply flex flex-col overflow-hidden rounded-cartao border border-neutra-200 bg-neutra-50 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .checklist-cabecalho {
+    @apply flex flex-col gap-3 border-b border-neutra-200 p-5 dark:border-neutra-800;
+  }
+
+  .checklist-titulo {
+    @apply font-titulo text-lg font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .checklist-texto {
+    @apply text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .checklist-progresso {
+    @apply flex items-center gap-3;
+  }
+
+  .checklist-progresso-trilho {
+    @apply h-2 flex-1 overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .checklist-progresso-trilho > span {
+    @apply block h-full rounded-full bg-oliva-600 transition-[width] duration-700 ease-(--ease-saida) dark:bg-oliva-400;
+    width: var(--valor, 0%);
+  }
+
+  .checklist-progresso-texto {
+    @apply text-xs font-semibold text-neutra-700 tabular-nums dark:text-neutra-300;
+  }
+
+  .checklist-lista {
+    @apply flex flex-col;
+  }
+
+  .checklist-tarefa {
+    @apply relative flex items-start gap-3 border-b border-neutra-200 px-5 py-4 last:border-b-0 dark:border-neutra-800;
+  }
+
+  .checklist-tarefa[data-atual="true"] {
+    @apply bg-destaque-50/60 dark:bg-destaque-400/5;
+  }
+
+  .checklist-tarefa[data-atual="true"]::before {
+    @apply absolute inset-y-3 left-0 w-1 rounded-r-full bg-destaque-500;
+    content: "";
+  }
+
+  .checklist-marcador {
+    @apply mt-0.5 grid size-6 shrink-0 place-items-center rounded-full border-2 border-neutra-300 text-transparent transition-colors dark:border-neutra-600;
+  }
+
+  .checklist-marcador svg {
+    @apply size-3.5;
+    stroke-width: 3;
+  }
+
+  .checklist-tarefa[data-feita="true"] .checklist-marcador {
+    @apply border-oliva-600 bg-oliva-600 text-creme dark:border-oliva-400 dark:bg-oliva-400 dark:text-tinta;
+  }
+
+  .checklist-tarefa[data-atual="true"] .checklist-marcador {
+    @apply border-destaque-500;
+  }
+
+  .checklist-textos {
+    @apply flex min-w-0 flex-1 flex-col gap-1;
+  }
+
+  .checklist-tarefa-titulo {
+    @apply text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .checklist-tarefa[data-feita="true"] .checklist-tarefa-titulo {
+    @apply text-neutra-500 line-through decoration-neutra-400;
+  }
+
+  .checklist-tarefa-texto {
+    @apply text-xs leading-relaxed text-neutra-600 dark:text-neutra-400;
+  }
+
+  .checklist-tarefa-acao {
+    @apply mt-2 inline-flex h-8 items-center gap-1.5 self-start rounded-lg bg-primaria-800 px-3 text-xs font-semibold text-creme hover:bg-primaria-900 dark:bg-destaque-400 dark:text-tinta dark:hover:bg-destaque-300;
+  }
+
+  .checklist-tarefa[data-feita="true"] .checklist-tarefa-acao {
+    @apply hidden;
+  }
+
+  .checklist-tempo {
+    @apply shrink-0 text-xs text-neutra-500 tabular-nums;
+  }
+
+  .checklist-rodape {
+    @apply flex items-center justify-between gap-3 bg-neutra-100/70 px-5 py-3 text-xs text-neutra-600 dark:bg-neutra-950/40 dark:text-neutra-400;
+  }
+
+  .checklist-concluido {
+    @apply flex flex-col items-center gap-2 p-8 text-center;
+  }
+
+  .checklist-concluido-icone {
+    @apply grid size-14 place-items-center rounded-full bg-oliva-100 text-oliva-700 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .checklist-concluido-icone svg {
+    @apply size-7;
+  }
+
+  .assistente {
+    @apply flex flex-col overflow-hidden rounded-painel border border-neutra-200 bg-neutra-50 shadow-elevado dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .assistente-etapas {
+    @apply flex items-center gap-2 overflow-x-auto border-b border-neutra-200 px-5 py-4 dark:border-neutra-800;
+    scrollbar-width: none;
+  }
+
+  .assistente-etapa {
+    @apply flex shrink-0 items-center gap-2 text-xs font-semibold text-neutra-500;
+  }
+
+  .assistente-etapa-numero {
+    @apply grid size-7 place-items-center rounded-full border border-neutra-300 bg-neutra-50 text-xs tabular-nums dark:border-neutra-700 dark:bg-neutra-900;
+  }
+
+  .assistente-etapa-numero svg {
+    @apply size-3.5;
+    stroke-width: 3;
+  }
+
+  .assistente-etapa[aria-current="step"] {
+    @apply text-neutra-950 dark:text-neutra-50;
+  }
+
+  .assistente-etapa[aria-current="step"] .assistente-etapa-numero {
+    @apply border-primaria-800 bg-primaria-800 text-creme shadow-anel dark:border-destaque-400 dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .assistente-etapa[data-estado="feita"] {
+    @apply text-neutra-700 dark:text-neutra-300;
+  }
+
+  .assistente-etapa[data-estado="feita"] .assistente-etapa-numero {
+    @apply border-oliva-600 bg-oliva-100 text-oliva-800 dark:border-oliva-400 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .assistente-etapa[data-estado="erro"] .assistente-etapa-numero {
+    @apply border-brasa-600 bg-brasa-100 text-brasa-700 dark:border-brasa-400 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .assistente-conector {
+    @apply h-px w-8 shrink-0 bg-neutra-300 dark:bg-neutra-700;
+  }
+
+  .assistente-etapa[data-estado="feita"] + .assistente-conector {
+    @apply bg-oliva-500 dark:bg-oliva-400;
+  }
+
+  .assistente-corpo {
+    @apply flex flex-col gap-5 p-6;
+  }
+
+  .assistente-cabecalho {
+    @apply flex flex-col gap-1;
+  }
+
+  .assistente-passo-rotulo {
+    @apply text-xs font-semibold text-neutra-500 tabular-nums;
+  }
+
+  .assistente-titulo {
+    @apply font-titulo text-2xl font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .assistente-texto {
+    @apply max-w-[60ch] text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .assistente-opcoes {
+    @apply grid gap-3 sm:grid-cols-2;
+  }
+
+  .assistente-opcao {
+    @apply flex cursor-pointer items-start gap-3 rounded-cartao border border-neutra-200 bg-neutra-50 p-4 transition-colors hover:border-neutra-300 dark:border-neutra-800 dark:bg-neutra-900 dark:hover:border-neutra-700;
+  }
+
+  .assistente-opcao:has(input:checked) {
+    @apply border-primaria-700 bg-primaria-50 ring-1 ring-primaria-700 dark:border-destaque-400 dark:bg-destaque-400/10 dark:ring-destaque-400;
+  }
+
+  .assistente-opcao:has(:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .assistente-opcao input {
+    @apply sr-only;
+  }
+
+  .assistente-opcao-icone {
+    @apply grid size-10 shrink-0 place-items-center rounded-controle bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .assistente-opcao:has(input:checked) .assistente-opcao-icone {
+    @apply bg-primaria-800 text-creme dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .assistente-opcao-icone svg {
+    @apply size-5;
+  }
+
+  .assistente-opcao-textos {
+    @apply flex flex-col gap-0.5;
+  }
+
+  .assistente-opcao-titulo {
+    @apply text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .assistente-opcao-texto {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .assistente-rodape {
+    @apply flex items-center justify-between gap-3 border-t border-neutra-200 bg-neutra-100/70 px-6 py-4 dark:border-neutra-800 dark:bg-neutra-950/40;
+  }
+
+  .assistente-pular {
+    @apply text-xs font-semibold text-neutra-600 hover:text-neutra-950 dark:text-neutra-400 dark:hover:text-neutra-50;
+  }
+
+  .assistente-vertical {
+    @apply grid md:grid-cols-[15rem_minmax(0,1fr)];
+  }
+
+  .assistente-vertical .assistente-etapas {
+    @apply flex-col items-stretch gap-1 border-r border-b-0 md:py-5 dark:border-neutra-800;
+  }
+
+  .assistente-vertical .assistente-conector {
+    @apply ml-3.5 h-4 w-px;
+  }
+
+  .assistente-vertical .assistente-etapa {
+    @apply rounded-lg px-2 py-1.5;
+  }
+
+  .assistente-vertical .assistente-etapa[aria-current="step"] {
+    @apply bg-neutra-200/70 dark:bg-neutra-800;
+  }
+
+  .assistente-pontos {
+    @apply flex items-center justify-center gap-1.5;
+  }
+
+  .assistente-pontos > span {
+    @apply h-1.5 w-1.5 rounded-full bg-neutra-300 transition-[width,background-color] duration-300 dark:bg-neutra-700;
+  }
+
+  .assistente-pontos > span[aria-current="step"] {
+    @apply w-5 bg-primaria-800 dark:bg-destaque-400;
+  }
+}
+
+@utility checklist-riscado {
+  text-decoration-line: line-through;
+  text-decoration-thickness: 1px;
+  color: var(--color-neutra-500);
+}

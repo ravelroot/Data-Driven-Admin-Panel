@@ -1,0 +1,91 @@
+@layer components {
+  .receita-destaque {
+    @apply gap-5;
+  }
+
+  .receita-topo {
+    @apply flex flex-wrap items-start justify-between gap-4;
+  }
+
+  .receita-rotulo {
+    @apply flex items-center gap-2 text-sm font-medium text-primaria-100;
+  }
+
+  .receita-rotulo svg {
+    @apply size-4 text-destaque-400;
+  }
+
+  .receita-valor {
+    @apply mt-2 font-titulo text-numero-grande text-creme tabular-nums sm:text-6xl;
+    font-variation-settings: "opsz" 96, "wdth" 84;
+    letter-spacing: -0.045em;
+  }
+
+  .receita-valor small {
+    @apply mr-1 align-[0.55em] font-sans text-xl font-semibold tracking-normal text-primaria-200;
+  }
+
+  .receita-comparacao {
+    @apply mt-3 flex flex-wrap items-center gap-2 text-sm text-primaria-200;
+  }
+
+  .receita-grafico {
+    @apply -mx-3 h-64 min-h-52 flex-1 xl:h-auto;
+  }
+
+  .receita-rodape {
+    @apply grid grid-cols-2 gap-4 border-t border-creme/12 pt-5 sm:grid-cols-4;
+  }
+
+  .receita-rodape > div + div {
+    @apply sm:border-l sm:border-creme/12 sm:pl-4;
+  }
+
+  .meta-mes {
+    @apply justify-between;
+  }
+
+  .meta-mes-valor {
+    @apply font-titulo text-3xl font-semibold tabular-nums;
+  }
+
+  .meta-mes-legenda {
+    @apply flex justify-between text-xs font-semibold tabular-nums opacity-80;
+  }
+
+  .meta-mes .barra-progresso {
+    @apply h-2.5 bg-tinta/15;
+  }
+
+  .meta-mes .barra-progresso-valor {
+    @apply bg-tinta;
+  }
+
+  .planos-conteudo {
+    @apply grid flex-1 items-center gap-5 sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)];
+  }
+
+  .kpi-pilha {
+    @apply overflow-hidden;
+  }
+
+  .kpi-pilha .kpi-meio {
+    @apply flex-1 items-center;
+  }
+
+  .planos-rosca {
+    @apply relative mx-auto aspect-square w-full max-w-44;
+  }
+
+  .canais-lista {
+    @apply mt-1;
+  }
+
+  .ao-vivo-rotulo {
+    @apply inline-flex items-center gap-2 text-xs font-medium text-neutra-600 dark:text-neutra-400;
+  }
+
+  .saudacao {
+    @apply text-sm text-neutra-600 dark:text-neutra-400;
+  }
+}

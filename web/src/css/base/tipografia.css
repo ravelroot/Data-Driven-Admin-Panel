@@ -1,0 +1,139 @@
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-titulo text-pretty text-neutra-950 dark:text-neutra-50;
+    font-weight: var(--font-weight-titulo);
+    letter-spacing: var(--tracking-titulo);
+    font-variation-settings: "opsz" 48, "wdth" 92;
+  }
+
+  h1 {
+    @apply text-3xl leading-compacto sm:text-4xl;
+  }
+
+  h2 {
+    @apply text-xl leading-compacto;
+  }
+
+  h3 {
+    @apply text-lg leading-compacto;
+  }
+
+  h4 {
+    @apply text-base leading-compacto;
+  }
+
+  p {
+    @apply text-pretty;
+  }
+
+  a {
+    @apply text-inherit no-underline;
+  }
+
+  strong,
+  b {
+    @apply font-semibold;
+  }
+
+  small {
+    @apply text-xs;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    @apply font-mono;
+    font-size: 0.86em;
+  }
+
+  code {
+    @apply rounded-md bg-neutra-200/70 px-1.5 py-0.5 text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  abbr[title] {
+    @apply cursor-help no-underline decoration-dotted underline-offset-4 hover:underline;
+  }
+
+  time {
+    @apply tabular-nums;
+  }
+}
+
+@layer components {
+  .tecla {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded-[0.3125rem] border border-b-2 border-neutra-300 bg-neutra-50 px-1 font-sans text-micro font-semibold text-neutra-600 dark:border-neutra-700 dark:bg-neutra-900 dark:text-neutra-400;
+  }
+
+  .link {
+    @apply font-semibold text-primaria-700 underline decoration-primaria-300 decoration-2 underline-offset-[3px] transition-colors hover:text-primaria-900 hover:decoration-primaria-600 dark:text-destaque-300 dark:decoration-destaque-700 dark:hover:text-destaque-200 dark:hover:decoration-destaque-400;
+  }
+
+  .texto-suave {
+    @apply text-neutra-600 dark:text-neutra-400;
+  }
+
+  .texto-fraco {
+    @apply text-neutra-500 dark:text-neutra-500;
+  }
+
+  .titulo-numero {
+    @apply font-titulo tabular-nums;
+    font-variation-settings: "opsz" 96, "wdth" 88;
+  }
+
+  .prosa {
+    @apply max-w-[68ch] text-base leading-leitura text-neutra-800 dark:text-neutra-200;
+  }
+
+  .prosa > * + * {
+    @apply mt-4;
+  }
+
+  .prosa h2 {
+    @apply mt-10 mb-3 text-2xl;
+  }
+
+  .prosa h3 {
+    @apply mt-8 mb-2 text-xl;
+  }
+
+  .prosa ul {
+    @apply list-disc space-y-1.5 pl-5 marker:text-destaque-500;
+  }
+
+  .prosa ol {
+    @apply list-decimal space-y-1.5 pl-5 marker:font-semibold marker:text-neutra-500;
+  }
+
+  .prosa a {
+    @apply font-semibold text-primaria-700 underline decoration-primaria-300 decoration-2 underline-offset-[3px] hover:text-primaria-900 dark:text-destaque-300 dark:decoration-destaque-700;
+  }
+
+  .prosa blockquote {
+    @apply border-l-0 rounded-controle bg-neutra-200/50 px-5 py-4 text-neutra-700 dark:bg-neutra-900 dark:text-neutra-300;
+  }
+
+  .prosa pre {
+    @apply overflow-x-auto rounded-cartao bg-neutra-950 p-4 text-sm text-neutra-100 dark:bg-black/40;
+  }
+
+  .prosa pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+
+  .prosa table {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .prosa th {
+    @apply border-b border-neutra-300 py-2 pr-4 text-left font-semibold dark:border-neutra-700;
+  }
+
+  .prosa td {
+    @apply border-b border-neutra-200 py-2 pr-4 dark:border-neutra-800;
+  }
+}

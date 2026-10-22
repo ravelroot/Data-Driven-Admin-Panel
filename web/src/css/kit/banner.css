@@ -1,0 +1,262 @@
+@layer components {
+  .banner {
+    @apply relative flex w-full flex-wrap items-center gap-x-4 gap-y-2 px-4 py-2.5 text-sm sm:px-6 lg:px-8;
+  }
+
+  .banner-centro {
+    @apply justify-center text-center;
+  }
+
+  .banner-icone {
+    @apply grid size-7 shrink-0 place-items-center rounded-full;
+  }
+
+  .banner-icone svg {
+    @apply size-4;
+  }
+
+  .banner-textos {
+    @apply flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-0.5;
+  }
+
+  .banner-centro .banner-textos {
+    @apply flex-none justify-center;
+  }
+
+  .banner-titulo {
+    @apply font-semibold;
+  }
+
+  .banner-texto {
+    @apply opacity-90;
+  }
+
+  .banner-link {
+    @apply inline-flex items-center gap-1 font-bold underline decoration-2 underline-offset-[3px] hover:no-underline;
+  }
+
+  .banner-link svg {
+    @apply size-3.5;
+  }
+
+  .banner-acoes {
+    @apply flex shrink-0 flex-wrap items-center gap-2;
+  }
+
+  .banner-botao {
+    @apply inline-flex h-8 items-center gap-1.5 rounded-[0.55rem] px-3 text-xs font-bold transition-colors;
+  }
+
+  .banner-fechar {
+    @apply grid size-8 shrink-0 place-items-center rounded-[0.55rem] opacity-75 transition-opacity hover:opacity-100;
+  }
+
+  .banner-fechar svg {
+    @apply size-4;
+  }
+
+  .banner[data-tom="anuncio"] {
+    @apply bg-primaria-800 text-creme dark:bg-primaria-900;
+  }
+
+  .banner[data-tom="anuncio"] .banner-icone {
+    @apply bg-creme/12 text-destaque-300;
+  }
+
+  .banner[data-tom="anuncio"] .banner-botao {
+    @apply bg-creme text-primaria-900 hover:bg-white;
+  }
+
+  .banner[data-tom="anuncio"] .banner-fechar {
+    @apply hover:bg-creme/10;
+  }
+
+  .banner[data-tom="destaque"] {
+    @apply bg-destaque-500 text-tinta;
+  }
+
+  .banner[data-tom="destaque"] .banner-icone {
+    @apply bg-tinta/10;
+  }
+
+  .banner[data-tom="destaque"] .banner-botao {
+    @apply bg-tinta text-creme hover:bg-tinta/85;
+  }
+
+  .banner[data-tom="destaque"] .banner-fechar {
+    @apply hover:bg-tinta/10;
+  }
+
+  .banner[data-tom="info"] {
+    @apply border-b border-anil-200 bg-anil-50 text-anil-900 dark:border-anil-500/30 dark:bg-anil-500/10 dark:text-anil-100;
+  }
+
+  .banner[data-tom="info"] .banner-icone {
+    @apply bg-anil-100 text-anil-700 dark:bg-anil-500/20 dark:text-anil-200;
+  }
+
+  .banner[data-tom="info"] .banner-botao {
+    @apply bg-anil-700 text-creme hover:bg-anil-800 dark:bg-anil-300 dark:text-tinta dark:hover:bg-anil-200;
+  }
+
+  .banner[data-tom="sucesso"] {
+    @apply border-b border-oliva-200 bg-oliva-50 text-oliva-900 dark:border-oliva-500/30 dark:bg-oliva-500/10 dark:text-oliva-100;
+  }
+
+  .banner[data-tom="sucesso"] .banner-icone {
+    @apply bg-oliva-100 text-oliva-700 dark:bg-oliva-500/20 dark:text-oliva-200;
+  }
+
+  .banner[data-tom="sucesso"] .banner-botao {
+    @apply bg-oliva-700 text-creme hover:bg-oliva-800 dark:bg-oliva-300 dark:text-tinta;
+  }
+
+  .banner[data-tom="alerta"] {
+    @apply border-b border-destaque-300 bg-destaque-50 text-destaque-900 dark:border-destaque-500/30 dark:bg-destaque-500/10 dark:text-destaque-100;
+  }
+
+  .banner[data-tom="alerta"] .banner-icone {
+    @apply bg-destaque-200 text-destaque-800 dark:bg-destaque-500/20 dark:text-destaque-200;
+  }
+
+  .banner[data-tom="alerta"] .banner-botao {
+    @apply bg-destaque-700 text-creme hover:bg-destaque-800 dark:bg-destaque-300 dark:text-tinta;
+  }
+
+  .banner[data-tom="erro"] {
+    @apply bg-brasa-600 text-creme dark:bg-brasa-700;
+  }
+
+  .banner[data-tom="erro"] .banner-icone {
+    @apply bg-creme/15;
+  }
+
+  .banner[data-tom="erro"] .banner-botao {
+    @apply bg-creme text-brasa-800 hover:bg-white;
+  }
+
+  .banner[data-tom="erro"] .banner-fechar {
+    @apply hover:bg-creme/10;
+  }
+
+  .banner[data-tom="neutro"] {
+    @apply border-b border-neutra-200 bg-neutra-50 text-neutra-800 dark:border-neutra-800 dark:bg-neutra-900 dark:text-neutra-200;
+  }
+
+  .banner[data-tom="neutro"] .banner-icone {
+    @apply bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .banner[data-tom="neutro"] .banner-botao {
+    @apply bg-neutra-950 text-neutra-50 hover:bg-neutra-800 dark:bg-neutra-50 dark:text-neutra-950 dark:hover:bg-neutra-200;
+  }
+
+  .banner-fixo {
+    @apply sticky top-0 z-30;
+  }
+
+  .banner-flutuante {
+    @apply fixed inset-x-3 bottom-3 z-[65] mx-auto max-w-3xl rounded-cartao shadow-flutuante sm:inset-x-5 sm:bottom-5;
+  }
+
+  .banner-flutuante[data-saindo="true"] {
+    animation: surgimento-descer 220ms var(--ease-entrada) reverse both;
+  }
+
+  .banner-flutuante[data-entrando="true"] {
+    animation: surgimento-descer 320ms var(--ease-mola) both;
+  }
+
+  .banner-compacto {
+    @apply py-1.5 text-xs;
+  }
+
+  .banner-compacto .banner-icone {
+    @apply size-5;
+  }
+
+  .banner-compacto .banner-icone svg {
+    @apply size-3;
+  }
+
+  .banner-cookies {
+    @apply fixed inset-x-3 bottom-3 z-[65] mx-auto flex max-w-xl flex-col gap-4 rounded-painel border border-neutra-200 bg-neutra-50 p-5 text-sm text-neutra-800 shadow-flutuante sm:inset-x-auto sm:right-5 sm:bottom-5 dark:border-neutra-700 dark:bg-neutra-900 dark:text-neutra-200;
+  }
+
+  .banner-cookies-topo {
+    @apply flex items-start gap-3;
+  }
+
+  .banner-cookies-icone {
+    @apply grid size-10 shrink-0 place-items-center rounded-controle bg-destaque-100 text-destaque-800 dark:bg-destaque-500/20 dark:text-destaque-200;
+  }
+
+  .banner-cookies-icone svg {
+    @apply size-5;
+  }
+
+  .banner-cookies-titulo {
+    @apply font-titulo text-base font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .banner-cookies-texto {
+    @apply mt-1 leading-relaxed text-neutra-700 dark:text-neutra-300;
+  }
+
+  .banner-cookies-opcoes {
+    @apply flex flex-col divide-y divide-neutra-200 rounded-controle border border-neutra-200 dark:divide-neutra-800 dark:border-neutra-800;
+  }
+
+  .banner-cookies-opcao {
+    @apply flex items-center justify-between gap-3 px-3.5 py-3;
+  }
+
+  .banner-cookies-opcao-nome {
+    @apply font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .banner-cookies-opcao-detalhe {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .banner-cookies-acoes {
+    @apply flex flex-col-reverse gap-2 sm:flex-row sm:justify-end;
+  }
+
+  .banner-manutencao {
+    @apply flex w-full flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-tinta px-4 py-2 text-xs font-medium text-creme;
+    background-image: repeating-linear-gradient(135deg, transparent 0 14px, rgb(163 160 159 / 0.16) 14px 28px);
+  }
+
+  .dark .banner-manutencao {
+    background-color: color-mix(in oklab, var(--color-neutra-950) 70%, black);
+  }
+
+  .banner-manutencao strong {
+    @apply font-bold text-destaque-300;
+  }
+
+  .banner-manutencao time {
+    @apply rounded-md bg-creme/10 px-1.5 py-0.5 font-semibold tabular-nums;
+  }
+
+  .banner-contagem {
+    @apply inline-flex items-center gap-1 font-mono text-xs font-semibold tabular-nums;
+  }
+
+  .banner-contagem span {
+    @apply rounded bg-black/15 px-1.5 py-0.5 dark:bg-white/10;
+  }
+
+  .banner-progresso {
+    @apply absolute inset-x-0 bottom-0 h-0.5 origin-left bg-current opacity-40;
+  }
+
+  .banner-pilha {
+    @apply flex flex-col;
+  }
+
+  .banner-pilha > .banner + .banner {
+    @apply border-t border-black/5 dark:border-white/5;
+  }
+}

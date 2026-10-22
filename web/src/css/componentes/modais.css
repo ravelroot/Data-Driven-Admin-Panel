@@ -1,0 +1,73 @@
+@layer components {
+  .modal {
+    @apply m-auto w-[calc(100%-2rem)] max-w-md overflow-visible rounded-painel border border-neutra-200 bg-neutra-50 p-0 text-neutra-900 shadow-flutuante dark:border-neutra-800 dark:bg-neutra-900 dark:text-neutra-100;
+  }
+
+  .modal:not([open]) {
+    @apply hidden;
+  }
+
+  .modal[open] {
+    @apply animate-escalar;
+  }
+
+  .modal[open]::backdrop {
+    @apply animate-surgir;
+  }
+
+  .modal-largo {
+    @apply max-w-2xl;
+  }
+
+  .modal-conteudo {
+    @apply flex flex-col gap-4 p-6;
+  }
+
+  .modal-topo {
+    @apply flex items-start gap-4;
+  }
+
+  .modal-icone {
+    @apply grid size-11 shrink-0 place-items-center rounded-full bg-primaria-100 text-primaria-800 dark:bg-primaria-500/20 dark:text-primaria-200;
+  }
+
+  .modal-icone svg {
+    @apply size-5;
+  }
+
+  .modal-icone[data-tipo="perigo"] {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-500/20 dark:text-brasa-300;
+  }
+
+  .modal-icone[data-tipo="alerta"] {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-500/20 dark:text-ouro-300;
+  }
+
+  .modal-icone[data-tipo="sucesso"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .modal-textos {
+    @apply flex min-w-0 flex-col gap-1.5 pt-1;
+  }
+
+  .modal-titulo {
+    @apply font-titulo text-lg font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .modal-texto {
+    @apply text-sm leading-relaxed text-neutra-700 dark:text-neutra-300;
+  }
+
+  .modal-acoes {
+    @apply flex flex-col-reverse gap-2 rounded-b-painel border-t border-neutra-200 bg-neutra-100/70 px-6 py-4 sm:flex-row sm:justify-end dark:border-neutra-800 dark:bg-neutra-950/40;
+  }
+
+  .segredo {
+    @apply flex items-center gap-2 rounded-controle border border-dashed border-destaque-500 bg-destaque-50 p-3 dark:border-destaque-400/60 dark:bg-destaque-400/10;
+  }
+
+  .segredo code {
+    @apply min-w-0 flex-1 truncate bg-transparent p-0 text-sm font-semibold text-neutra-950 select-all dark:text-neutra-50;
+  }
+}

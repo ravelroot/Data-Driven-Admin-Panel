@@ -1,0 +1,119 @@
+@utility numeros-tabulares {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+@utility texto-equilibrado {
+  text-wrap: balance;
+}
+
+@utility sem-rolagem {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility rolagem-fina {
+  scrollbar-width: thin;
+}
+
+@utility truncar-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+@utility truncar-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+@utility grade-pontilhada {
+  background-image: radial-gradient(circle at 1px 1px, color-mix(in oklab, currentColor 18%, transparent) 1px, transparent 0);
+  background-size: 18px 18px;
+}
+
+@utility mascara-baixo {
+  mask-image: linear-gradient(to bottom, black 70%, transparent);
+}
+
+@utility mascara-lados {
+  mask-image: linear-gradient(to right, transparent, black 1.5rem, black calc(100% - 1.5rem), transparent);
+}
+
+@utility superficie {
+  @apply border border-neutra-200/80 bg-neutra-50 dark:border-neutra-800 dark:bg-neutra-900;
+}
+
+@utility superficie-afundada {
+  @apply bg-neutra-100 dark:bg-neutra-950/40;
+}
+
+@utility texto-primario {
+  @apply text-neutra-950 dark:text-neutra-50;
+}
+
+@utility texto-secundario {
+  @apply text-neutra-600 dark:text-neutra-400;
+}
+
+@utility borda-padrao {
+  @apply border-neutra-200 dark:border-neutra-800;
+}
+
+@utility foco-anel {
+  @apply outline-2 outline-offset-2 outline-destaque-500;
+}
+
+@utility largura-leitura {
+  max-width: 68ch;
+}
+
+@utility fonte-titulo-larga {
+  font-variation-settings: "opsz" 96, "wdth" 100;
+}
+
+@utility fonte-titulo-estreita {
+  font-variation-settings: "opsz" 96, "wdth" 80;
+}
+
+@utility cor-sucesso {
+  @apply text-oliva-700 dark:text-oliva-300;
+}
+
+@utility cor-perigo {
+  @apply text-brasa-700 dark:text-brasa-300;
+}
+
+@utility cor-alerta {
+  @apply text-destaque-700 dark:text-destaque-300;
+}
+
+@utility fundo-sucesso {
+  @apply bg-oliva-100 dark:bg-oliva-400/15;
+}
+
+@utility fundo-perigo {
+  @apply bg-brasa-100 dark:bg-brasa-400/15;
+}
+
+@utility atraso-1 {
+  animation-delay: 60ms;
+}
+
+@utility atraso-2 {
+  animation-delay: 120ms;
+}
+
+@utility atraso-3 {
+  animation-delay: 180ms;
+}
+
+@utility atraso-4 {
+  animation-delay: 240ms;
+}

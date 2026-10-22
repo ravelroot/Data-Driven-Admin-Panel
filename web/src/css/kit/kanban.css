@@ -1,0 +1,268 @@
+@layer components {
+  .kanban {
+    @apply flex min-h-[28rem] gap-4 overflow-x-auto overscroll-x-contain pb-3;
+    scroll-snap-type: x proximity;
+  }
+
+  .kanban-coluna {
+    @apply flex w-[19rem] shrink-0 flex-col rounded-cartao bg-neutra-200/50 p-2 dark:bg-neutra-950/50;
+    scroll-snap-align: start;
+  }
+
+  .kanban-coluna-larga {
+    @apply w-[23rem];
+  }
+
+  .kanban-coluna[data-arrastando-sobre="true"] {
+    @apply bg-primaria-50 ring-2 ring-primaria-300 ring-inset dark:bg-primaria-500/10 dark:ring-primaria-700;
+  }
+
+  .kanban-coluna-cabecalho {
+    @apply flex items-center gap-2 px-2 pt-1.5 pb-3;
+  }
+
+  .kanban-coluna-marcador {
+    @apply size-2.5 shrink-0 rounded-full bg-neutra-400;
+  }
+
+  .kanban-coluna[data-tom="oliva"] .kanban-coluna-marcador {
+    @apply bg-oliva-600 dark:bg-oliva-400;
+  }
+
+  .kanban-coluna[data-tom="ouro"] .kanban-coluna-marcador {
+    @apply bg-ouro-500;
+  }
+
+  .kanban-coluna[data-tom="anil"] .kanban-coluna-marcador {
+    @apply bg-anil-600 dark:bg-anil-300;
+  }
+
+  .kanban-coluna[data-tom="brasa"] .kanban-coluna-marcador {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .kanban-coluna[data-tom="salvia"] .kanban-coluna-marcador {
+    @apply bg-salvia-500 dark:bg-salvia-300;
+  }
+
+  .kanban-coluna-titulo {
+    @apply flex-1 truncate text-sm font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .kanban-coluna-contador {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-neutra-50 px-1.5 text-micro font-bold text-neutra-700 tabular-nums dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .kanban-coluna-limite {
+    @apply text-micro font-semibold text-neutra-500 tabular-nums;
+  }
+
+  .kanban-coluna[data-cheia="true"] .kanban-coluna-contador {
+    @apply bg-brasa-600 text-creme dark:bg-brasa-400 dark:text-tinta;
+  }
+
+  .kanban-coluna-acao {
+    @apply grid size-7 place-items-center rounded-md text-neutra-500 hover:bg-neutra-50 hover:text-neutra-900 dark:hover:bg-neutra-800 dark:hover:text-neutra-100;
+  }
+
+  .kanban-coluna-acao svg {
+    @apply size-4;
+  }
+
+  .kanban-lista {
+    @apply flex min-h-24 flex-1 flex-col gap-2 overflow-y-auto px-0.5 pb-1;
+  }
+
+  .kanban-cartao {
+    @apply relative flex cursor-grab flex-col gap-2.5 rounded-controle border border-neutra-200 bg-neutra-50 p-3 text-sm shadow-cartao transition-[box-shadow,border-color,transform] duration-150 hover:border-neutra-300 active:cursor-grabbing dark:border-neutra-800 dark:bg-neutra-900 dark:hover:border-neutra-700 compacta:gap-1.5 compacta:p-2.5;
+  }
+
+  .kanban-cartao:focus-visible {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .kanban-cartao[data-arrastando="true"] {
+    @apply rotate-2 cursor-grabbing border-primaria-400 shadow-flutuante dark:border-primaria-500;
+  }
+
+  .kanban-cartao[data-fantasma="true"] {
+    @apply border-2 border-dashed border-neutra-300 bg-transparent opacity-70 shadow-none dark:border-neutra-700;
+  }
+
+  .kanban-cartao[data-concluido="true"] .kanban-cartao-titulo {
+    @apply text-neutra-500 line-through decoration-neutra-400;
+  }
+
+  .kanban-cartao-capa {
+    @apply -mx-3 -mt-3 mb-0.5 h-20 rounded-t-[calc(var(--radius-controle)-1px)] bg-primaria-200 dark:bg-primaria-800;
+    background-image: radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--color-primaria-900) 22%, transparent) 1px, transparent 0);
+    background-size: 12px 12px;
+  }
+
+  .kanban-cartao-etiquetas {
+    @apply flex flex-wrap gap-1;
+  }
+
+  .kanban-etiqueta {
+    @apply inline-flex h-5 items-center rounded-md px-1.5 text-[0.625rem] font-bold;
+  }
+
+  .kanban-etiqueta[data-tom="oliva"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .kanban-etiqueta[data-tom="ouro"] {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-400/15 dark:text-ouro-300;
+  }
+
+  .kanban-etiqueta[data-tom="brasa"] {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .kanban-etiqueta[data-tom="anil"] {
+    @apply bg-anil-100 text-anil-700 dark:bg-anil-400/15 dark:text-anil-300;
+  }
+
+  .kanban-etiqueta[data-tom="casca"] {
+    @apply bg-casca-100 text-casca-800 dark:bg-casca-400/15 dark:text-casca-300;
+  }
+
+  .kanban-etiqueta[data-tom="neutro"] {
+    @apply bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .kanban-cartao-titulo {
+    @apply font-semibold leading-snug text-neutra-950 dark:text-neutra-50;
+  }
+
+  .kanban-cartao-texto {
+    @apply line-clamp-2 text-xs leading-relaxed text-neutra-600 dark:text-neutra-400;
+  }
+
+  .kanban-cartao-progresso {
+    @apply flex items-center gap-2 text-micro font-semibold text-neutra-500 tabular-nums;
+  }
+
+  .kanban-cartao-progresso-trilho {
+    @apply h-1 flex-1 overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .kanban-cartao-progresso-trilho > span {
+    @apply block h-full rounded-full bg-oliva-600 dark:bg-oliva-400;
+    width: var(--valor, 0%);
+  }
+
+  .kanban-cartao-rodape {
+    @apply flex items-center justify-between gap-2 text-xs text-neutra-500;
+  }
+
+  .kanban-cartao-meta {
+    @apply flex items-center gap-3;
+  }
+
+  .kanban-cartao-meta span {
+    @apply inline-flex items-center gap-1 tabular-nums;
+  }
+
+  .kanban-cartao-meta svg {
+    @apply size-3.5;
+  }
+
+  .kanban-prazo {
+    @apply inline-flex h-5 items-center gap-1 rounded-md bg-neutra-200 px-1.5 text-[0.625rem] font-bold text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .kanban-prazo svg {
+    @apply size-3;
+  }
+
+  .kanban-prazo[data-situacao="proximo"] {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-400/15 dark:text-ouro-300;
+  }
+
+  .kanban-prazo[data-situacao="atrasado"] {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .kanban-prazo[data-situacao="feito"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .kanban-responsaveis {
+    @apply flex items-center -space-x-1.5;
+  }
+
+  .kanban-responsaveis > * {
+    @apply ring-2 ring-neutra-50 dark:ring-neutra-900;
+  }
+
+  .kanban-prioridade {
+    @apply absolute top-3 right-3 size-2 rounded-full;
+  }
+
+  .kanban-prioridade[data-nivel="alta"] {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .kanban-prioridade[data-nivel="media"] {
+    @apply bg-ouro-500;
+  }
+
+  .kanban-prioridade[data-nivel="baixa"] {
+    @apply bg-salvia-500 dark:bg-salvia-300;
+  }
+
+  .kanban-adicionar {
+    @apply mt-1 flex h-9 w-full items-center gap-2 rounded-controle px-2.5 text-sm font-medium text-neutra-600 transition-colors hover:bg-neutra-50 hover:text-neutra-950 dark:text-neutra-400 dark:hover:bg-neutra-900 dark:hover:text-neutra-50;
+  }
+
+  .kanban-adicionar svg {
+    @apply size-4;
+  }
+
+  .kanban-vazio {
+    @apply grid flex-1 place-items-center rounded-controle border-2 border-dashed border-neutra-300 p-6 text-center text-xs text-neutra-500 dark:border-neutra-700;
+  }
+
+  .kanban-nova-coluna {
+    @apply flex w-[19rem] shrink-0 items-start;
+  }
+
+  .kanban-nova-coluna button {
+    @apply flex h-11 w-full items-center justify-center gap-2 rounded-cartao border-2 border-dashed border-neutra-300 text-sm font-semibold text-neutra-600 hover:border-neutra-400 hover:text-neutra-900 dark:border-neutra-700 dark:text-neutra-400 dark:hover:border-neutra-600 dark:hover:text-neutra-100;
+  }
+
+  .kanban-compacto .kanban-coluna {
+    @apply w-64;
+  }
+
+  .kanban-compacto .kanban-cartao {
+    @apply gap-1.5 p-2.5;
+  }
+
+  .kanban-compacto .kanban-cartao-texto {
+    @apply hidden;
+  }
+
+  .kanban-raia {
+    @apply flex flex-col gap-2;
+  }
+
+  .kanban-raia + .kanban-raia {
+    @apply mt-6;
+  }
+
+  .kanban-raia-titulo {
+    @apply flex items-center gap-2 text-xs font-semibold text-neutra-600 dark:text-neutra-400;
+  }
+
+  .kanban-raia-titulo svg {
+    @apply size-3.5;
+  }
+}
+
+@utility kanban-rolagem-suave {
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}

@@ -1,0 +1,119 @@
+@layer components {
+  .cabecalho {
+    @apply sticky top-0 z-20 flex h-(--spacing-cabecalho) shrink-0 items-center gap-3 border-b border-transparent bg-neutra-100/85 px-4 backdrop-blur-md transition-[border-color,background-color] duration-200 sm:px-6 lg:px-8 dark:bg-neutra-950/85;
+  }
+
+  .cabecalho[data-rolado="true"] {
+    @apply border-neutra-200 dark:border-neutra-800;
+  }
+
+  .cabecalho-menu-movel {
+    @apply -ml-1.5 grid size-10 place-items-center rounded-controle text-neutra-700 hover:bg-neutra-200 lg:hidden dark:text-neutra-300 dark:hover:bg-neutra-800;
+  }
+
+  .cabecalho-trilha {
+    @apply hidden min-w-0 md:block;
+  }
+
+  .trilha {
+    @apply flex min-w-0 items-center gap-1.5 text-sm;
+  }
+
+  .trilha-item {
+    @apply truncate text-neutra-600 transition-colors hover:text-neutra-950 dark:text-neutra-400 dark:hover:text-neutra-50;
+  }
+
+  .trilha-item[aria-current="page"] {
+    @apply font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .trilha-separador {
+    @apply size-3.5 shrink-0 text-neutra-400 dark:text-neutra-600;
+  }
+
+  .cabecalho-busca {
+    @apply ml-auto flex h-10 w-full max-w-[24rem] min-w-0 items-center gap-2.5 rounded-controle border border-neutra-200 bg-neutra-50 px-3 text-sm text-neutra-500 transition-colors hover:border-neutra-300 hover:text-neutra-700 md:ml-6 lg:ml-auto dark:border-neutra-800 dark:bg-neutra-900 dark:text-neutra-500 dark:hover:border-neutra-700 dark:hover:text-neutra-300;
+  }
+
+  .cabecalho-busca-icone {
+    @apply size-4 shrink-0;
+  }
+
+  .cabecalho-busca-texto {
+    @apply min-w-0 flex-1 truncate text-left;
+  }
+
+  .cabecalho-busca-atalho {
+    @apply hidden items-center gap-1 sm:flex;
+  }
+
+  .cabecalho-direita {
+    @apply flex shrink-0 items-center gap-1 sm:gap-1.5;
+  }
+
+  .cabecalho-acao {
+    @apply relative grid size-10 place-items-center rounded-controle text-neutra-700 transition-colors hover:bg-neutra-200 hover:text-neutra-950 dark:text-neutra-300 dark:hover:bg-neutra-800 dark:hover:text-neutra-50;
+  }
+
+  .cabecalho-acao[aria-expanded="true"] {
+    @apply bg-neutra-200 text-neutra-950 dark:bg-neutra-800 dark:text-neutra-50;
+  }
+
+  .cabecalho-acao svg {
+    @apply size-[1.15rem];
+  }
+
+  .cabecalho-acao-indicador {
+    @apply absolute top-1.5 right-1.5 flex h-[1.05rem] min-w-[1.05rem] items-center justify-center rounded-full bg-brasa-600 px-1 text-[0.625rem] font-bold text-creme ring-2 ring-neutra-100 tabular-nums dark:bg-brasa-500 dark:ring-neutra-950;
+  }
+
+  .cabecalho-acao-indicador:empty {
+    @apply top-2 right-2 size-2 min-w-0 p-0;
+  }
+
+  .cabecalho-tema .icone-sol {
+    @apply hidden dark:block;
+  }
+
+  .cabecalho-tema .icone-lua {
+    @apply block dark:hidden;
+  }
+
+  .cabecalho-perfil {
+    @apply ml-1 flex items-center gap-2.5 rounded-full p-1 pr-1 transition-colors hover:bg-neutra-200 sm:pr-3 dark:hover:bg-neutra-800;
+  }
+
+  .cabecalho-perfil[aria-expanded="true"] {
+    @apply bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .cabecalho-perfil-nome {
+    @apply hidden max-w-[9rem] truncate text-sm font-semibold text-neutra-900 sm:block dark:text-neutra-100;
+  }
+
+  .cabecalho-ao-vivo {
+    @apply mr-1 hidden items-center gap-2 rounded-full border border-neutra-200 px-3 py-1 text-xs font-medium text-neutra-600 xl:flex dark:border-neutra-800 dark:text-neutra-400;
+  }
+
+  .ponto-vivo {
+    @apply relative inline-block size-2 shrink-0 rounded-full bg-vivo dark:bg-vivo-claro;
+  }
+
+  .barra-lateral .ponto-vivo,
+  .cartao-escuro .ponto-vivo,
+  .cartao-destaque .ponto-vivo {
+    @apply bg-vivo-claro;
+  }
+
+  .ponto-vivo[data-estado="conectado"] {
+    @apply animate-pulso-vivo;
+  }
+
+  .ponto-vivo[data-estado="reconectando"] {
+    @apply bg-ouro-500;
+  }
+
+  .ponto-vivo[data-estado="desconectado"] {
+    @apply bg-neutra-400 dark:bg-neutra-600;
+  }
+}

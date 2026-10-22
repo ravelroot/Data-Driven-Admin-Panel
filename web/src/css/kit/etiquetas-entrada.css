@@ -1,0 +1,248 @@
+@layer components {
+  .etiquetas-entrada {
+    @apply relative flex w-full flex-col gap-1.5;
+  }
+
+  .etiquetas-entrada-caixa {
+    @apply flex min-h-10 w-full flex-wrap items-center gap-1.5 rounded-controle border border-neutra-300 bg-white px-2 py-1.5 text-sm transition-[border-color,box-shadow] duration-150 hover:border-neutra-400 dark:border-neutra-700 dark:bg-neutra-950/60 dark:hover:border-neutra-600;
+  }
+
+  .etiquetas-entrada-caixa:focus-within {
+    @apply border-primaria-700 shadow-anel dark:border-destaque-400;
+  }
+
+  .etiquetas-entrada[data-invalido="true"] .etiquetas-entrada-caixa {
+    @apply border-brasa-600 dark:border-brasa-400;
+  }
+
+  .etiquetas-entrada[data-desativado="true"] .etiquetas-entrada-caixa {
+    @apply pointer-events-none bg-neutra-100 opacity-60 dark:bg-neutra-900;
+  }
+
+  .etiquetas-entrada-icone {
+    @apply ml-1 size-4 shrink-0 text-neutra-500;
+  }
+
+  .etiquetas-chip {
+    @apply inline-flex h-7 max-w-full items-center gap-1 rounded-lg bg-neutra-200 pr-1 pl-2.5 text-xs font-semibold text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  .etiquetas-chip-texto {
+    @apply truncate;
+  }
+
+  .etiquetas-chip-icone {
+    @apply size-3.5 shrink-0 opacity-70;
+  }
+
+  .etiquetas-chip .avatar {
+    @apply -ml-1.5 size-5 text-[0.5rem];
+  }
+
+  .etiquetas-chip-remover {
+    @apply grid size-5 shrink-0 place-items-center rounded-md text-current opacity-60 transition-[opacity,background-color] hover:bg-neutra-950/10 hover:opacity-100 dark:hover:bg-neutra-50/10;
+  }
+
+  .etiquetas-chip-remover svg {
+    @apply size-3;
+    stroke-width: 2.5;
+  }
+
+  .etiquetas-chip[data-tom="oliva"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-200;
+  }
+
+  .etiquetas-chip[data-tom="ouro"] {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-400/15 dark:text-ouro-200;
+  }
+
+  .etiquetas-chip[data-tom="brasa"] {
+    @apply bg-brasa-100 text-brasa-800 dark:bg-brasa-400/15 dark:text-brasa-200;
+  }
+
+  .etiquetas-chip[data-tom="anil"] {
+    @apply bg-anil-100 text-anil-800 dark:bg-anil-400/15 dark:text-anil-200;
+  }
+
+  .etiquetas-chip[data-tom="salvia"] {
+    @apply bg-salvia-100 text-salvia-800 dark:bg-salvia-400/15 dark:text-salvia-200;
+  }
+
+  .etiquetas-chip[data-tom="casca"] {
+    @apply bg-casca-100 text-casca-800 dark:bg-casca-400/15 dark:text-casca-200;
+  }
+
+  .etiquetas-chip[data-tom="primaria"] {
+    @apply bg-primaria-800 text-creme dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .etiquetas-chip[data-selecionado="true"] {
+    @apply ring-2 ring-destaque-500 ring-offset-1 ring-offset-white dark:ring-offset-neutra-950;
+  }
+
+  .etiquetas-chip[data-invalido="true"] {
+    @apply bg-brasa-100 text-brasa-800 line-through decoration-brasa-400 dark:bg-brasa-400/15 dark:text-brasa-200;
+  }
+
+  .etiquetas-chip-contorno {
+    @apply border border-neutra-300 bg-transparent dark:border-neutra-700 dark:bg-transparent;
+  }
+
+  .etiquetas-campo {
+    @apply h-7 min-w-24 flex-1 border-0 bg-transparent px-1 text-sm text-neutra-950 outline-none placeholder:text-neutra-500 dark:text-neutra-50;
+  }
+
+  .etiquetas-limpar {
+    @apply ml-auto grid size-7 shrink-0 place-items-center rounded-md text-neutra-500 hover:bg-neutra-200 hover:text-neutra-900 dark:hover:bg-neutra-800 dark:hover:text-neutra-100;
+  }
+
+  .etiquetas-limpar svg {
+    @apply size-4;
+  }
+
+  .etiquetas-sugestoes {
+    @apply absolute top-[calc(100%+0.375rem)] right-0 left-0 z-30 hidden max-h-64 overflow-y-auto rounded-controle border border-neutra-200 bg-neutra-50 p-1.5 shadow-elevado dark:border-neutra-700 dark:bg-neutra-900;
+  }
+
+  .etiquetas-sugestoes[data-aberto="true"] {
+    @apply block movimento:animate-escalar;
+  }
+
+  .etiquetas-sugestoes-titulo {
+    @apply px-2.5 pt-1.5 pb-1 text-xs font-semibold text-neutra-500;
+  }
+
+  .etiquetas-sugestao {
+    @apply flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-sm text-neutra-800 transition-colors hover:bg-neutra-200/80 dark:text-neutra-200 dark:hover:bg-neutra-800;
+  }
+
+  .etiquetas-sugestao[aria-selected="true"] {
+    @apply bg-neutra-200/80 text-neutra-950 dark:bg-neutra-800 dark:text-neutra-50;
+  }
+
+  .etiquetas-sugestao svg {
+    @apply size-4 shrink-0 text-neutra-500;
+  }
+
+  .etiquetas-sugestao mark {
+    @apply rounded-sm bg-destaque-200 px-0.5 text-inherit dark:bg-destaque-500/30;
+  }
+
+  .etiquetas-sugestao-contagem {
+    @apply ml-auto text-xs text-neutra-500 tabular-nums;
+  }
+
+  .etiquetas-sugestao-criar {
+    @apply mt-1 border-t border-neutra-200 pt-2 font-semibold text-primaria-800 dark:border-neutra-800 dark:text-destaque-300;
+  }
+
+  .etiquetas-sugestao-criar svg {
+    @apply text-current;
+  }
+
+  .etiquetas-sugestoes-vazio {
+    @apply px-3 py-4 text-center text-xs text-neutra-500;
+  }
+
+  .etiquetas-cor {
+    @apply size-2.5 shrink-0 rounded-full;
+    background-color: var(--cor, var(--color-neutra-400));
+  }
+
+  .etiquetas-rodape {
+    @apply flex items-center justify-between gap-3 text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .etiquetas-limite {
+    @apply tabular-nums;
+  }
+
+  .etiquetas-entrada[data-cheio="true"] .etiquetas-limite {
+    @apply font-semibold text-brasa-700 dark:text-brasa-300;
+  }
+
+  .etiquetas-pequena .etiquetas-entrada-caixa {
+    @apply min-h-8 gap-1 px-1.5 py-1;
+  }
+
+  .etiquetas-pequena .etiquetas-chip {
+    @apply h-6 text-micro;
+  }
+
+  .etiquetas-pequena .etiquetas-campo {
+    @apply h-6 text-xs;
+  }
+
+  .etiquetas-grande .etiquetas-entrada-caixa {
+    @apply min-h-12 gap-2 px-3 py-2;
+  }
+
+  .etiquetas-grande .etiquetas-chip {
+    @apply h-8 text-sm;
+  }
+
+  .etiquetas-lista {
+    @apply flex flex-wrap gap-1.5;
+  }
+
+  .etiquetas-nuvem {
+    @apply flex flex-wrap items-baseline gap-x-3 gap-y-1.5;
+  }
+
+  .etiquetas-nuvem a {
+    @apply font-semibold text-neutra-700 transition-colors hover:text-primaria-700 dark:text-neutra-300 dark:hover:text-destaque-300;
+  }
+
+  .etiquetas-nuvem a[data-peso="1"] {
+    @apply text-xs;
+  }
+
+  .etiquetas-nuvem a[data-peso="2"] {
+    @apply text-sm;
+  }
+
+  .etiquetas-nuvem a[data-peso="3"] {
+    @apply text-base;
+  }
+
+  .etiquetas-nuvem a[data-peso="4"] {
+    @apply font-titulo text-lg;
+  }
+
+  .etiquetas-nuvem a[data-peso="5"] {
+    @apply font-titulo text-2xl text-neutra-950 dark:text-neutra-50;
+  }
+
+  .etiquetas-filtro {
+    @apply flex flex-wrap items-center gap-1.5 rounded-controle border border-dashed border-neutra-300 p-2 dark:border-neutra-700;
+  }
+
+  .etiquetas-filtro-rotulo {
+    @apply mr-1 text-xs font-semibold text-neutra-600 dark:text-neutra-400;
+  }
+
+  .etiquetas-adicionar {
+    @apply inline-flex h-7 items-center gap-1 rounded-lg border border-dashed border-neutra-400 px-2 text-xs font-semibold text-neutra-600 hover:border-neutra-600 hover:text-neutra-950 dark:border-neutra-600 dark:text-neutra-400 dark:hover:border-neutra-400 dark:hover:text-neutra-50;
+  }
+
+  .etiquetas-adicionar svg {
+    @apply size-3.5;
+  }
+}
+
+@utility etiquetas-truncar {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@layer components {
+  .etiquetas-grupo-sugestoes + .etiquetas-grupo-sugestoes {
+    @apply mt-1 border-t border-neutra-200 pt-1 dark:border-neutra-800;
+  }
+
+  .etiquetas-atalho {
+    @apply ml-auto inline-flex h-5 items-center rounded border border-neutra-300 px-1 text-[0.625rem] font-semibold text-neutra-500 dark:border-neutra-700;
+  }
+}

@@ -1,0 +1,105 @@
+@layer components {
+  .relatorios-grade {
+    @apply grid gap-4 xl:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] xl:gap-5;
+  }
+
+  .tipos-relatorio {
+    @apply grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-1;
+  }
+
+  .tipo-relatorio {
+    @apply flex cursor-pointer items-center gap-3 rounded-controle border border-neutra-200 bg-neutra-50 p-3 transition-colors hover:border-neutra-300 has-checked:border-primaria-700 has-checked:bg-primaria-50 dark:border-neutra-800 dark:bg-neutra-900 dark:hover:border-neutra-700 dark:has-checked:border-destaque-400 dark:has-checked:bg-destaque-400/10;
+  }
+
+  .tipo-relatorio:has(:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .tipo-relatorio input {
+    @apply sr-only;
+  }
+
+  .tipo-relatorio-icone {
+    @apply grid size-9 shrink-0 place-items-center rounded-[0.6rem] bg-neutra-200 text-neutra-700 transition-colors dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .tipo-relatorio:has(:checked) .tipo-relatorio-icone {
+    @apply bg-primaria-800 text-creme dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .tipo-relatorio-icone svg {
+    @apply size-4;
+  }
+
+  .tipo-relatorio-textos {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .tipo-relatorio-nome {
+    @apply text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .tipo-relatorio-descricao {
+    @apply line-clamp-1 text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .previa-resumo {
+    @apply mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 2xl:grid-cols-5;
+  }
+
+  .previa-resumo > div {
+    @apply flex flex-col gap-0.5 rounded-controle bg-neutra-100 px-3.5 py-3 dark:bg-neutra-950/40;
+  }
+
+  .previa-resumo dt {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .previa-resumo dd {
+    @apply font-titulo text-lg font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .previa-moldura {
+    @apply max-h-[36rem] overflow-auto rounded-controle border border-neutra-200 dark:border-neutra-800;
+  }
+
+  .formato-arquivo {
+    @apply inline-flex h-6 items-center rounded-md px-1.5 font-mono text-micro font-semibold uppercase;
+  }
+
+  .formato-arquivo[data-formato="pdf"] {
+    @apply bg-brasa-100 text-brasa-800 dark:bg-brasa-400/15 dark:text-brasa-200;
+  }
+
+  .formato-arquivo[data-formato="csv"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-200;
+  }
+
+  .agendamento {
+    @apply flex items-center gap-3 py-3;
+  }
+
+  .agendamento + .agendamento {
+    @apply border-t border-neutra-200 dark:border-neutra-800;
+  }
+
+  .agendamento-icone {
+    @apply grid size-9 shrink-0 place-items-center rounded-[0.6rem] bg-destaque-100 text-destaque-800 dark:bg-destaque-400/15 dark:text-destaque-300;
+  }
+
+  .agendamento-icone svg {
+    @apply size-4;
+  }
+
+  .agendamento-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .agendamento-nome {
+    @apply truncate text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .agendamento-detalhe {
+    @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
+  }
+}

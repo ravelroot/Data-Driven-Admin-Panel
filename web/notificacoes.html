@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Alertas em tempo real sobre transações, contas, segurança e relatórios.">
+    <title>Notificações | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/js/paginas/notificacoes.js"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Notificações</h1>
+              <p class="pagina-descricao">Alertas sobre transações, contas, segurança e relatórios, no momento em que acontecem.</p>
+            </div>
+            <div class="pagina-acoes">
+              <button type="button" class="botao botao-secundario" data-acao="ler-pagina"><i data-icone="confirmar"></i>Marcar todas como lidas</button>
+              <button type="button" class="botao botao-primario" data-acao="enviar" data-permissao="notificacoes.enviar"><i data-icone="megafone"></i>Enviar aviso</button>
+            </div>
+          </div>
+
+          <div class="bento-colunas">
+            <section aria-labelledby="titulo-lista-notificacoes">
+              <h2 class="sr-only" id="titulo-lista-notificacoes">Lista de notificações</h2>
+              <div class="notificacoes-topo">
+                <div class="abas-pilula" role="tablist" aria-label="Filtro de leitura" data-filtro-leitura>
+                  <button type="button" class="aba" role="tab" data-filtro="todas" aria-selected="true">Todas</button>
+                  <button type="button" class="aba" role="tab" data-filtro="nao-lidas" aria-selected="false">Não lidas <span class="contador" data-total-nao-lidas>0</span></button>
+                </div>
+                <div class="chips-filtro" role="group" aria-label="Categoria" data-filtro-categoria>
+                  <button type="button" class="chip-filtro" data-categoria="" aria-pressed="true">Tudo</button>
+                  <button type="button" class="chip-filtro" data-categoria="transacao" aria-pressed="false">Transações</button>
+                  <button type="button" class="chip-filtro" data-categoria="usuario" aria-pressed="false">Usuários</button>
+                  <button type="button" class="chip-filtro" data-categoria="seguranca" aria-pressed="false">Segurança</button>
+                  <button type="button" class="chip-filtro" data-categoria="relatorio" aria-pressed="false">Relatórios</button>
+                  <button type="button" class="chip-filtro" data-categoria="sistema" aria-pressed="false">Sistema</button>
+                </div>
+              </div>
+              <div class="notificacoes-lista" data-lista aria-live="polite">
+                <div class="esqueleto-linhas">
+                  <span class="esqueleto esqueleto-bloco"></span>
+                  <span class="esqueleto esqueleto-bloco"></span>
+                  <span class="esqueleto esqueleto-bloco"></span>
+                </div>
+              </div>
+              <div class="carregar-mais" data-mais hidden>
+                <button type="button" class="botao botao-secundario" data-acao="mais"><i data-icone="chevron-baixo"></i>Carregar mais</button>
+              </div>
+            </section>
+
+            <aside class="pilha">
+              <section class="cartao-escuro" aria-labelledby="titulo-conexao">
+                <h2 class="sr-only" id="titulo-conexao">Conexão em tempo real</h2>
+                <div class="conexao-estado">
+                  <span class="ponto-vivo" data-estado="conectando"></span>
+                  <div class="conexao-estado-textos">
+                    <p class="conexao-estado-titulo" data-conexao-titulo>Conectando ao fluxo de eventos…</p>
+                    <p class="conexao-estado-detalhe" data-conexao-detalhe>Novos alertas aparecem no topo da lista sem recarregar a página.</p>
+                  </div>
+                </div>
+              </section>
+
+              <section class="cartao" aria-labelledby="titulo-preferencias">
+                <div class="cartao-cabecalho">
+                  <div class="cartao-titulos">
+                    <h2 class="cartao-titulo" id="titulo-preferencias">Onde receber</h2>
+                    <p class="cartao-subtitulo">Escolha por categoria</p>
+                  </div>
+                </div>
+                <form data-preferencias>
+                  <table class="preferencias">
+                    <thead><tr><th scope="col">Categoria</th><th scope="col">Painel</th><th scope="col">E-mail</th></tr></thead>
+                    <tbody data-preferencias-corpo></tbody>
+                  </table>
+                  <p class="campo-ajuda mt-3">A escolha de e-mail fica salva para quando você ligar um serviço de envio. O Bento não envia e-mails sozinho.</p>
+                </form>
+              </section>
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

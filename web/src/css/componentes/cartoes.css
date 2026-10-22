@@ -1,0 +1,147 @@
+@layer components {
+  .cartao {
+    @apply relative flex min-w-0 flex-col rounded-cartao border border-neutra-200/80 bg-neutra-50 p-5 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900 dark:shadow-interno compacta:p-4;
+  }
+
+  .cartao-sem-espaco {
+    @apply p-0 compacta:p-0;
+  }
+
+  .cartao-sem-espaco > .cartao-cabecalho {
+    @apply px-5 pt-5 compacta:px-4 compacta:pt-4;
+  }
+
+  .cartao-cabecalho {
+    @apply mb-4 flex items-start justify-between gap-3 compacta:mb-3;
+  }
+
+  .cartao-titulos {
+    @apply flex min-w-0 flex-col gap-0.5;
+  }
+
+  .cartao-titulo {
+    @apply font-titulo text-base font-semibold text-neutra-950 dark:text-neutra-50;
+    letter-spacing: -0.01em;
+    font-variation-settings: "opsz" 24, "wdth" 96;
+  }
+
+  .cartao-subtitulo {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .cartao-acoes {
+    @apply -mt-1 -mr-1 flex shrink-0 items-center gap-1;
+  }
+
+  .cartao-corpo {
+    @apply flex min-h-0 flex-1 flex-col;
+  }
+
+  .cartao-rodape {
+    @apply mt-4 flex items-center justify-between gap-3 border-t border-neutra-200 pt-4 text-xs text-neutra-600 dark:border-neutra-800 dark:text-neutra-400;
+  }
+
+  .cartao-rodape a {
+    @apply inline-flex items-center gap-1 font-semibold text-neutra-900 hover:text-primaria-700 dark:text-neutra-100 dark:hover:text-destaque-300;
+  }
+
+  .cartao-rodape a svg {
+    @apply size-3.5;
+  }
+
+  .cartao-destaque {
+    @apply relative flex min-w-0 flex-col overflow-hidden rounded-painel bg-primaria-800 p-6 text-creme shadow-elevado compacta:p-5;
+  }
+
+  .dark .cartao-destaque {
+    @apply bg-primaria-900 ring-1 ring-primaria-700/60;
+  }
+
+  .cartao-destaque .cartao-titulo {
+    @apply text-creme;
+  }
+
+  .cartao-destaque .cartao-subtitulo {
+    @apply text-primaria-200;
+  }
+
+  .cartao-destaque .botao-fantasma {
+    @apply text-primaria-100 hover:bg-creme/10 hover:text-creme;
+  }
+
+  .cartao-ouro {
+    @apply relative flex min-w-0 flex-col overflow-hidden rounded-cartao bg-destaque-500 p-5 text-tinta shadow-cartao compacta:p-4;
+  }
+
+  .dark .cartao-ouro {
+    @apply bg-destaque-400;
+  }
+
+  .cartao-ouro .cartao-titulo,
+  .cartao-ouro .cartao-subtitulo {
+    @apply text-tinta;
+  }
+
+  .cartao-ouro .cartao-subtitulo {
+    @apply opacity-80;
+  }
+
+  .cartao-escuro {
+    @apply relative flex min-w-0 flex-col rounded-cartao bg-tinta p-5 text-creme compacta:p-4;
+  }
+
+  .dark .cartao-escuro {
+    background-color: color-mix(in oklab, var(--color-neutra-950) 65%, black);
+    @apply ring-1 ring-neutra-800;
+  }
+
+  .cartao-escuro .cartao-titulo {
+    @apply text-creme;
+  }
+
+  .cartao-escuro .cartao-subtitulo {
+    @apply text-neutra-400;
+  }
+
+  .cartao-plano {
+    @apply rounded-cartao border border-dashed border-neutra-300 bg-transparent p-5 dark:border-neutra-700;
+  }
+
+  .cartao-interativo {
+    @apply cursor-pointer transition-[border-color,box-shadow] duration-150 hover:border-neutra-300 hover:shadow-elevado dark:hover:border-neutra-700;
+  }
+
+  .cartao-interativo:has(:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .cartao-selecionavel {
+    @apply cursor-pointer transition-colors has-checked:border-primaria-700 has-checked:bg-primaria-50 has-checked:ring-1 has-checked:ring-primaria-700 dark:has-checked:border-destaque-400 dark:has-checked:bg-destaque-400/10 dark:has-checked:ring-destaque-400;
+  }
+
+  .cartao-selecionavel:has(:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .cartao-vivo {
+    @apply animate-destacar;
+  }
+
+  .cartao-secao + .cartao-secao {
+    @apply mt-5 border-t border-neutra-200 pt-5 dark:border-neutra-800;
+  }
+
+  .cartao-numero {
+    @apply font-titulo text-numero tabular-nums;
+    font-variation-settings: "opsz" 96, "wdth" 88;
+  }
+
+  .cartao-numero-grande {
+    @apply font-titulo text-numero-grande tabular-nums;
+    font-variation-settings: "opsz" 96, "wdth" 86;
+  }
+
+  .cartao-rolagem {
+    @apply -mx-5 flex-1 overflow-y-auto px-5 compacta:-mx-4 compacta:px-4;
+  }
+}

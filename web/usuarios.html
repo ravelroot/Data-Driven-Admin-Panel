@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Gerenciamento de usuários: cadastro, edição, busca, bloqueio de contas e permissões.">
+    <title>Usuários | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/js/paginas/usuarios.js"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Usuários</h1>
+              <p class="pagina-descricao">Cadastre e edite contas, bloqueie acessos e controle o que cada pessoa pode fazer no painel.</p>
+            </div>
+            <div class="pagina-acoes">
+              <button type="button" class="botao botao-secundario" data-acao="exportar"><i data-icone="arquivo-planilha"></i>Exportar CSV</button>
+              <button type="button" class="botao botao-primario" data-acao="novo" data-permissao="usuarios.criar"><i data-icone="usuario-novo"></i>Novo usuário</button>
+            </div>
+          </div>
+
+          <div class="usuarios-filtros">
+            <div class="chips-filtro" role="group" aria-label="Filtrar por status" data-status-filtro>
+              <button type="button" class="chip-filtro" data-status="" aria-pressed="true">Todos <span class="contador" data-contagem="todos">0</span></button>
+              <button type="button" class="chip-filtro" data-status="ativo" aria-pressed="false">Ativos <span class="contador" data-contagem="ativo">0</span></button>
+              <button type="button" class="chip-filtro" data-status="pendente" aria-pressed="false">Pendentes <span class="contador" data-contagem="pendente">0</span></button>
+              <button type="button" class="chip-filtro" data-status="bloqueado" aria-pressed="false">Bloqueados <span class="contador" data-contagem="bloqueado">0</span></button>
+              <button type="button" class="chip-filtro" data-status="inativo" aria-pressed="false">Inativos <span class="contador" data-contagem="inativo">0</span></button>
+            </div>
+            <div class="barra-ferramentas">
+              <label class="sr-only" for="filtro-papel">Papel</label>
+              <select class="filtro-selecao" id="filtro-papel" data-filtro="papel">
+                <option value="">Todos os papéis</option>
+              </select>
+              <label class="sr-only" for="filtro-plano">Plano</label>
+              <select class="filtro-selecao" id="filtro-plano" data-filtro="plano">
+                <option value="">Todos os planos</option>
+                <option value="essencial">Essencial</option>
+                <option value="profissional">Profissional</option>
+                <option value="equipe">Equipe</option>
+                <option value="empresa">Empresa</option>
+                <option value="sem-plano">Sem plano</option>
+              </select>
+            </div>
+          </div>
+
+          <section class="tabela-cartao" aria-labelledby="titulo-tabela-usuarios">
+            <div class="tabela-barra">
+              <div class="tabela-barra-titulo">
+                <h2 class="cartao-titulo" id="titulo-tabela-usuarios">Todas as contas</h2>
+                <p class="cartao-subtitulo" data-resumo-tabela>Carregando…</p>
+              </div>
+              <div class="tabela-busca">
+                <i data-icone="buscar" class="tabela-busca-icone"></i>
+                <label class="sr-only" for="busca-usuarios">Buscar usuários</label>
+                <input class="entrada" type="search" id="busca-usuarios" placeholder="Buscar por nome, e-mail ou empresa" autocomplete="off" data-busca>
+              </div>
+            </div>
+            <div data-tabela></div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <button type="button" class="botao botao-flutuante" data-acao="novo" data-permissao="usuarios.criar" aria-label="Novo usuário"><i data-icone="adicionar"></i></button>
+  </body>
+</html>

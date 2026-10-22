@@ -1,0 +1,157 @@
+@layer components {
+  .kpi {
+    @apply relative flex min-w-0 flex-col justify-between gap-4 rounded-cartao border border-neutra-200/80 bg-neutra-50 p-5 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900 dark:shadow-interno compacta:gap-3 compacta:p-4;
+  }
+
+  .kpi-topo {
+    @apply flex items-center justify-between gap-3;
+  }
+
+  .kpi-rotulo {
+    @apply flex items-center gap-2 text-sm font-medium text-neutra-700 dark:text-neutra-300;
+  }
+
+  .kpi-icone {
+    @apply grid size-8 shrink-0 place-items-center rounded-[0.6rem] bg-neutra-200/70 text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  .kpi-icone svg {
+    @apply size-4;
+  }
+
+  .kpi-icone[data-cor="oliva"] {
+    @apply bg-primaria-100 text-primaria-800 dark:bg-primaria-500/20 dark:text-primaria-200;
+  }
+
+  .kpi-icone[data-cor="ouro"] {
+    @apply bg-destaque-100 text-destaque-800 dark:bg-destaque-500/20 dark:text-destaque-300;
+  }
+
+  .kpi-icone[data-cor="salvia"] {
+    @apply bg-salvia-100 text-salvia-800 dark:bg-salvia-400/15 dark:text-salvia-300;
+  }
+
+  .kpi-icone[data-cor="casca"] {
+    @apply bg-casca-100 text-casca-800 dark:bg-casca-500/20 dark:text-casca-300;
+  }
+
+  .kpi-icone[data-cor="brasa"] {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-500/20 dark:text-brasa-300;
+  }
+
+  .kpi-icone[data-cor="anil"] {
+    @apply bg-anil-100 text-anil-700 dark:bg-anil-500/20 dark:text-anil-300;
+  }
+
+  .kpi-meio {
+    @apply flex items-end justify-between gap-3;
+  }
+
+  .kpi-valor {
+    @apply font-titulo text-numero text-neutra-950 tabular-nums dark:text-neutra-50;
+    font-variation-settings: "opsz" 96, "wdth" 88;
+  }
+
+  .kpi-valor-grande {
+    @apply font-titulo text-numero-grande tabular-nums;
+    font-variation-settings: "opsz" 96, "wdth" 86;
+  }
+
+  .kpi-valor small {
+    @apply ml-0.5 font-sans text-base font-semibold tracking-normal text-neutra-500;
+  }
+
+  .kpi-rodape {
+    @apply flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .kpi-grafico {
+    @apply -mr-1 -mb-1 h-12 w-28 shrink-0;
+  }
+
+  .kpi-grafico-largo {
+    @apply -mx-5 -mb-5 h-20 w-auto compacta:-mx-4 compacta:-mb-4;
+  }
+
+  .tendencia {
+    @apply inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-xs font-bold tabular-nums;
+  }
+
+  .tendencia svg {
+    @apply size-3.5;
+    stroke-width: 2.25;
+  }
+
+  .tendencia-alta {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .tendencia-baixa {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .tendencia-neutra {
+    @apply bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .tendencia-invertida.tendencia-alta {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .tendencia-invertida.tendencia-baixa {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .cartao-destaque .tendencia-alta {
+    @apply bg-creme/12 text-oliva-100;
+  }
+
+  .cartao-destaque .tendencia-baixa {
+    @apply bg-brasa-400/20 text-brasa-200;
+  }
+
+  .tendencia-texto {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .kpi-meta {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .kpi-meta-trilho {
+    @apply h-2 overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .kpi-meta-valor {
+    @apply block h-full rounded-full bg-primaria-700 transition-[width] duration-700 ease-(--ease-saida) dark:bg-destaque-400;
+  }
+
+  .kpi-meta-legenda {
+    @apply flex justify-between text-xs text-neutra-600 tabular-nums dark:text-neutra-400;
+  }
+
+  .kpi-mini {
+    @apply flex min-w-0 flex-col gap-1;
+  }
+
+  .kpi-mini-rotulo {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .kpi-mini-valor {
+    @apply font-titulo text-xl font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .cartao-destaque .kpi-mini-rotulo {
+    @apply text-primaria-200;
+  }
+
+  .cartao-destaque .kpi-mini-valor {
+    @apply text-creme;
+  }
+
+  .kpi-carregando .kpi-valor,
+  .kpi-carregando .tendencia {
+    @apply animate-brilho rounded-md bg-linear-to-r from-neutra-200 via-neutra-100 to-neutra-200 bg-[length:200%_100%] text-transparent dark:from-neutra-800 dark:via-neutra-700 dark:to-neutra-800;
+  }
+}

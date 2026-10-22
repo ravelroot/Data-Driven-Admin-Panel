@@ -1,0 +1,103 @@
+@layer components {
+  .avatar {
+    @apply relative inline-grid size-9 shrink-0 place-items-center overflow-hidden rounded-full bg-neutra-300 text-xs font-bold text-neutra-900 select-none dark:bg-neutra-700 dark:text-neutra-100;
+    font-variation-settings: "wdth" 90;
+    letter-spacing: 0.02em;
+  }
+
+  .avatar img {
+    @apply size-full object-cover;
+  }
+
+  .avatar-mini {
+    @apply size-6 text-[0.5625rem];
+  }
+
+  .avatar-pequeno {
+    @apply size-8 text-micro;
+  }
+
+  .avatar-grande {
+    @apply size-12 text-sm;
+  }
+
+  .avatar-gigante {
+    @apply size-20 font-titulo text-2xl;
+  }
+
+  .avatar-quadrado {
+    @apply rounded-[0.7rem];
+  }
+
+  .avatar[data-cor="0"] {
+    @apply bg-primaria-200 text-primaria-800 dark:bg-primaria-700 dark:text-primaria-50;
+  }
+
+  .avatar[data-cor="1"] {
+    @apply bg-destaque-200 text-destaque-900 dark:bg-destaque-800 dark:text-destaque-50;
+  }
+
+  .avatar[data-cor="2"] {
+    @apply bg-neutra-300 text-neutra-900 dark:bg-neutra-700 dark:text-neutra-50;
+  }
+
+  .avatar[data-cor="3"] {
+    @apply bg-primaria-300 text-primaria-900 dark:bg-primaria-600 dark:text-primaria-50;
+  }
+
+  .avatar[data-cor="4"] {
+    @apply bg-destaque-300 text-destaque-950 dark:bg-destaque-700 dark:text-destaque-50;
+  }
+
+  .avatar[data-cor="5"] {
+    @apply bg-neutra-200 text-neutra-800 dark:bg-neutra-800 dark:text-neutra-100;
+  }
+
+  .avatar[data-cor="6"] {
+    @apply bg-primaria-700 text-primaria-50 dark:bg-primaria-200 dark:text-primaria-900;
+  }
+
+  .avatar[data-cor="7"] {
+    @apply bg-destaque-600 text-white dark:bg-destaque-300 dark:text-destaque-950;
+  }
+
+  .avatar-creme {
+    @apply bg-creme text-tinta;
+  }
+
+  .avatar-status {
+    @apply absolute right-0 bottom-0 size-2.5 rounded-full bg-neutra-400 ring-2 ring-neutra-50 dark:ring-neutra-900;
+  }
+
+  .avatar-grande .avatar-status {
+    @apply size-3;
+  }
+
+  .avatar-status[data-status="ativo"] {
+    @apply bg-oliva-600 dark:bg-oliva-400;
+  }
+
+  .avatar-status[data-status="bloqueado"] {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .avatar-status[data-status="pendente"] {
+    @apply bg-ouro-500;
+  }
+
+  .grupo-avatares {
+    @apply flex items-center -space-x-2;
+  }
+
+  .grupo-avatares > .avatar {
+    @apply ring-2 ring-neutra-50 dark:ring-neutra-900;
+  }
+
+  .grupo-avatares-mais {
+    @apply avatar-base bg-neutra-200 text-neutra-700 ring-2 ring-neutra-50 dark:bg-neutra-800 dark:text-neutra-300 dark:ring-neutra-900;
+  }
+}
+
+@utility avatar-base {
+  @apply relative inline-grid size-9 shrink-0 place-items-center overflow-hidden rounded-full text-xs font-bold select-none;
+}

@@ -1,0 +1,313 @@
+@layer components {
+  .relatorio-impresso {
+    @apply mx-auto flex w-full max-w-[210mm] flex-col gap-0 bg-white text-[0.8125rem] leading-relaxed text-neutral-900 shadow-elevado ring-1 ring-neutra-200 dark:ring-neutra-800;
+  }
+
+  .relatorio-impresso-pagina {
+    @apply relative flex min-h-[297mm] flex-col px-[14mm] pt-[16mm] pb-[18mm];
+  }
+
+  .relatorio-impresso-pagina + .relatorio-impresso-pagina {
+    @apply border-t border-dashed border-neutral-300;
+  }
+
+  .relatorio-impresso-capa {
+    @apply relative flex min-h-[297mm] flex-col justify-between overflow-hidden bg-tinta px-[16mm] py-[20mm] text-creme;
+  }
+
+  .relatorio-impresso-capa::after {
+    @apply absolute -right-24 -bottom-24 size-96 rounded-full bg-primaria-700 opacity-60;
+    content: "";
+  }
+
+  .relatorio-impresso-capa-marca {
+    @apply relative z-[1] flex items-center gap-3 font-titulo text-xl font-semibold;
+  }
+
+  .relatorio-impresso-capa-logo {
+    @apply grid size-10 place-items-center rounded-[0.6rem] bg-creme text-tinta;
+  }
+
+  .relatorio-impresso-capa-logo svg {
+    @apply size-6;
+  }
+
+  .relatorio-impresso-capa-titulo {
+    @apply relative z-[1] max-w-[15ch] font-titulo text-5xl leading-[1.05] font-semibold;
+    letter-spacing: -0.035em;
+  }
+
+  .relatorio-impresso-capa-subtitulo {
+    @apply relative z-[1] mt-4 max-w-[48ch] text-base text-neutra-300;
+  }
+
+  .relatorio-impresso-capa-meta {
+    @apply relative z-[1] grid grid-cols-3 gap-4 border-t border-creme/20 pt-5 text-xs;
+  }
+
+  .relatorio-impresso-capa-meta dt {
+    @apply text-neutra-400;
+  }
+
+  .relatorio-impresso-capa-meta dd {
+    @apply mt-0.5 font-semibold text-creme;
+  }
+
+  .relatorio-impresso-cabecalho {
+    @apply mb-6 flex items-center justify-between gap-4 border-b-2 border-tinta pb-3;
+  }
+
+  .relatorio-impresso-cabecalho-marca {
+    @apply flex items-center gap-2 font-titulo text-sm font-semibold text-tinta;
+  }
+
+  .relatorio-impresso-cabecalho-marca svg {
+    @apply size-5;
+  }
+
+  .relatorio-impresso-cabecalho-info {
+    @apply text-right text-[0.6875rem] text-neutral-600;
+  }
+
+  .relatorio-impresso-rodape {
+    @apply absolute inset-x-[14mm] bottom-[8mm] flex items-center justify-between border-t border-neutral-300 pt-2 text-[0.6875rem] text-neutral-500;
+  }
+
+  .relatorio-impresso-titulo {
+    @apply mb-1 font-titulo text-2xl font-semibold text-tinta;
+    letter-spacing: -0.02em;
+  }
+
+  .relatorio-impresso-periodo {
+    @apply mb-6 text-xs text-neutral-600;
+  }
+
+  .relatorio-impresso-secao {
+    @apply mb-7;
+  }
+
+  .relatorio-impresso-secao-titulo {
+    @apply mb-3 flex items-center gap-2 font-titulo text-base font-semibold text-tinta;
+  }
+
+  .relatorio-impresso-secao-titulo::before {
+    @apply h-4 w-1 rounded-full bg-destaque-500;
+    content: "";
+  }
+
+  .relatorio-impresso-resumo {
+    @apply mb-6 grid grid-cols-4 overflow-hidden rounded-lg border border-areia-300;
+  }
+
+  .relatorio-impresso-resumo > div {
+    @apply flex flex-col gap-1 bg-creme px-3.5 py-3;
+  }
+
+  .relatorio-impresso-resumo > div + div {
+    @apply border-l border-areia-300;
+  }
+
+  .relatorio-impresso-resumo dt {
+    @apply text-[0.6875rem] font-medium text-neutral-600;
+  }
+
+  .relatorio-impresso-resumo dd {
+    @apply font-titulo text-lg font-semibold text-tinta tabular-nums;
+  }
+
+  .relatorio-impresso-resumo dd small {
+    @apply ml-1 font-sans text-[0.6875rem] font-semibold text-oliva-700;
+  }
+
+  .relatorio-impresso-resumo dd small[data-negativo="true"] {
+    @apply text-brasa-700;
+  }
+
+  .relatorio-impresso-tabela {
+    @apply w-full border-collapse text-[0.75rem];
+  }
+
+  .relatorio-impresso-tabela thead th {
+    @apply border-b-2 border-tinta bg-oliva-800 px-2.5 py-2 text-left text-[0.6875rem] font-semibold text-creme;
+  }
+
+  .relatorio-impresso-tabela thead th.numero,
+  .relatorio-impresso-tabela td.numero {
+    @apply text-right tabular-nums;
+  }
+
+  .relatorio-impresso-tabela tbody td {
+    @apply border-b border-neutral-200 px-2.5 py-1.5 text-neutral-800;
+  }
+
+  .relatorio-impresso-tabela tbody tr:nth-child(even) td {
+    @apply bg-creme;
+  }
+
+  .relatorio-impresso-tabela tfoot td {
+    @apply border-t-2 border-tinta px-2.5 py-2 font-bold text-tinta;
+  }
+
+  .relatorio-impresso-tabela-compacta tbody td {
+    @apply py-1 text-[0.6875rem];
+  }
+
+  .relatorio-impresso-nota {
+    @apply mt-3 rounded-md border-l-4 border-destaque-500 bg-ouro-50 px-3 py-2 text-[0.75rem] text-neutral-700;
+  }
+
+  .relatorio-impresso-grafico {
+    @apply mb-6 flex h-40 items-end gap-1.5 border-b border-neutral-300 px-1;
+  }
+
+  .relatorio-impresso-grafico span {
+    @apply flex-1 rounded-t-sm bg-oliva-700;
+    height: var(--altura, 10%);
+  }
+
+  .relatorio-impresso-grafico span:nth-child(odd) {
+    @apply bg-oliva-600;
+  }
+
+  .relatorio-impresso-grafico span[data-destaque="true"] {
+    @apply bg-destaque-500;
+  }
+
+  .relatorio-impresso-assinatura {
+    @apply mt-10 grid grid-cols-2 gap-10 text-center text-[0.6875rem] text-neutral-600;
+  }
+
+  .relatorio-impresso-assinatura div {
+    @apply border-t border-neutral-400 pt-2;
+  }
+
+  .relatorio-impresso-quebra {
+    @apply my-6 h-px border-0 bg-transparent;
+  }
+
+  .relatorio-impresso-marca-dagua {
+    @apply pointer-events-none absolute inset-0 grid place-items-center font-titulo text-[7rem] font-semibold text-neutral-900/[0.04] select-none;
+    transform: rotate(-24deg);
+  }
+
+  .relatorio-impresso-indice {
+    @apply mb-8 flex flex-col gap-1.5 text-sm;
+  }
+
+  .relatorio-impresso-indice li {
+    @apply flex items-baseline gap-2 text-neutral-800;
+  }
+
+  .relatorio-impresso-indice li::after {
+    @apply order-2 flex-1 border-b border-dotted border-neutral-400;
+    content: "";
+  }
+
+  .relatorio-impresso-indice li span:last-child {
+    @apply order-3 font-semibold tabular-nums;
+  }
+
+  .relatorio-impresso-destaques {
+    @apply mb-6 grid grid-cols-2 gap-3;
+  }
+
+  .relatorio-impresso-destaque {
+    @apply flex gap-3 rounded-lg border border-neutral-200 p-3;
+  }
+
+  .relatorio-impresso-destaque strong {
+    @apply block text-sm font-semibold text-tinta;
+  }
+
+  .relatorio-impresso-destaque p {
+    @apply text-[0.75rem] text-neutral-600;
+  }
+
+  .relatorio-impresso-destaque-marca {
+    @apply h-auto w-1 shrink-0 rounded-full bg-oliva-700;
+  }
+
+  .relatorio-impresso-destaque[data-tom="alerta"] .relatorio-impresso-destaque-marca {
+    @apply bg-destaque-500;
+  }
+
+  .relatorio-impresso-destaque[data-tom="perigo"] .relatorio-impresso-destaque-marca {
+    @apply bg-brasa-600;
+  }
+
+  .relatorio-impresso-legenda {
+    @apply mb-6 flex flex-wrap gap-4 text-[0.6875rem] text-neutral-600;
+  }
+
+  .relatorio-impresso-legenda span {
+    @apply inline-flex items-center gap-1.5;
+  }
+
+  .relatorio-impresso-legenda span::before {
+    @apply size-2.5 rounded-sm;
+    content: "";
+    background-color: var(--cor, var(--color-oliva-700));
+  }
+
+  .relatorio-impresso-previa {
+    @apply mx-auto origin-top scale-[0.62] sm:scale-75 lg:scale-100;
+  }
+}
+
+@media print {
+  .relatorio-impresso {
+    @apply max-w-none shadow-none ring-0;
+  }
+
+  .relatorio-impresso-pagina {
+    @apply min-h-0 px-0 pt-0 pb-[12mm];
+    break-after: page;
+  }
+
+  .relatorio-impresso-pagina:last-child {
+    break-after: auto;
+  }
+
+  .relatorio-impresso-pagina + .relatorio-impresso-pagina {
+    @apply border-t-0;
+  }
+
+  .relatorio-impresso-capa {
+    @apply min-h-[267mm];
+    break-after: page;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .relatorio-impresso-tabela thead {
+    display: table-header-group;
+  }
+
+  .relatorio-impresso-tabela tfoot {
+    display: table-footer-group;
+  }
+
+  .relatorio-impresso-tabela tr,
+  .relatorio-impresso-resumo,
+  .relatorio-impresso-grafico,
+  .relatorio-impresso-nota {
+    break-inside: avoid;
+  }
+
+  .relatorio-impresso-tabela thead th,
+  .relatorio-impresso-tabela tbody tr:nth-child(even) td,
+  .relatorio-impresso-resumo > div,
+  .relatorio-impresso-grafico span {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .relatorio-impresso-quebra {
+    break-after: page;
+    @apply m-0;
+  }
+
+  .relatorio-impresso-rodape {
+    @apply fixed inset-x-0 bottom-0;
+  }
+}

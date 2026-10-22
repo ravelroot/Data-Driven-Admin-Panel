@@ -1,0 +1,113 @@
+@layer components {
+  .entrar-marca {
+    @apply flex items-center gap-3;
+  }
+
+  .entrar-marca-logo {
+    @apply grid size-11 place-items-center rounded-[0.7rem] bg-creme text-tinta;
+  }
+
+  .entrar-marca-logo svg {
+    @apply size-7;
+  }
+
+  .entrar-marca-nome {
+    @apply font-titulo text-2xl font-semibold tracking-tight text-creme;
+  }
+
+  .entrar-mosaico {
+    @apply my-12 grid max-w-xl grid-cols-6 gap-3;
+    grid-auto-rows: 4.75rem;
+  }
+
+  .entrar-peca {
+    @apply flex flex-col justify-between rounded-cartao p-4;
+    background-color: color-mix(in oklab, var(--color-creme) 7%, transparent);
+  }
+
+  .entrar-peca:nth-child(1) {
+    @apply col-span-4 row-span-2 bg-neutra-800;
+  }
+
+  .entrar-peca:nth-child(2) {
+    @apply col-span-2 row-span-1 bg-destaque-500 text-tinta;
+  }
+
+  .entrar-peca:nth-child(3) {
+    @apply col-span-2 row-span-1;
+  }
+
+  .entrar-peca:nth-child(4) {
+    @apply col-span-2 row-span-1;
+  }
+
+  .entrar-peca:nth-child(5) {
+    @apply col-span-4 row-span-1;
+  }
+
+  .entrar-peca-rotulo {
+    @apply text-xs font-medium opacity-75;
+  }
+
+  .entrar-peca-valor {
+    @apply font-titulo text-2xl font-semibold tabular-nums;
+  }
+
+  .entrar-peca:nth-child(1) .entrar-peca-valor {
+    @apply text-5xl;
+    letter-spacing: -0.04em;
+  }
+
+  .entrar-peca-barras {
+    @apply flex h-10 items-end gap-1;
+  }
+
+  .entrar-peca-barras > span {
+    @apply flex-1 rounded-t-[3px] bg-creme/25;
+  }
+
+  .entrar-peca-barras > span:last-child {
+    @apply bg-destaque-400;
+  }
+
+  .entrar-titulo-lado {
+    @apply max-w-md font-titulo text-4xl leading-tight font-semibold text-creme;
+    letter-spacing: -0.03em;
+  }
+
+  .entrar-texto-lado {
+    @apply mt-4 max-w-md text-base text-neutra-400;
+  }
+
+  .entrar-rodape-lado {
+    @apply text-xs text-neutra-500;
+  }
+
+  .contas-demo {
+    @apply mt-8 rounded-cartao border border-dashed border-neutra-300 p-4 dark:border-neutra-700;
+  }
+
+  .contas-demo-titulo {
+    @apply mb-3 flex items-center gap-2 text-sm font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .contas-demo-titulo svg {
+    @apply size-4 text-destaque-600 dark:text-destaque-400;
+  }
+
+  .contas-demo-lista {
+    @apply grid grid-cols-2 gap-2;
+  }
+
+  .conta-demo {
+    @apply flex flex-col items-start rounded-controle bg-neutra-200/60 px-3 py-2 text-left transition-colors hover:bg-neutra-200 dark:bg-neutra-900 dark:hover:bg-neutra-800;
+  }
+
+  .conta-demo strong {
+    @apply text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .conta-demo span {
+    @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
+  }
+}

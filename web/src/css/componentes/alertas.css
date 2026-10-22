@@ -1,0 +1,72 @@
+@layer components {
+  .alerta {
+    @apply flex items-start gap-3 rounded-controle border border-neutra-200 bg-neutra-100 p-4 text-sm text-neutra-800 dark:border-neutra-800 dark:bg-neutra-900 dark:text-neutra-200;
+  }
+
+  .alerta > svg {
+    @apply mt-0.5 size-[1.125rem] shrink-0;
+  }
+
+  .alerta-textos {
+    @apply flex min-w-0 flex-1 flex-col gap-1;
+  }
+
+  .alerta-titulo {
+    @apply font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .alerta-texto {
+    @apply leading-relaxed;
+  }
+
+  .alerta-acoes {
+    @apply mt-2 flex flex-wrap gap-2;
+  }
+
+  .alerta-info {
+    @apply border-anil-200 bg-anil-50 text-anil-900 dark:border-anil-500/30 dark:bg-anil-500/10 dark:text-anil-100;
+  }
+
+  .alerta-info > svg {
+    @apply text-anil-600 dark:text-anil-300;
+  }
+
+  .alerta-sucesso {
+    @apply border-oliva-200 bg-oliva-50 text-oliva-900 dark:border-oliva-500/30 dark:bg-oliva-500/10 dark:text-oliva-100;
+  }
+
+  .alerta-sucesso > svg {
+    @apply text-oliva-600 dark:text-oliva-300;
+  }
+
+  .alerta-aviso {
+    @apply border-ouro-300 bg-ouro-50 text-ouro-900 dark:border-ouro-500/30 dark:bg-ouro-500/10 dark:text-ouro-100;
+  }
+
+  .alerta-aviso > svg {
+    @apply text-ouro-600 dark:text-ouro-300;
+  }
+
+  .alerta-erro {
+    @apply border-brasa-200 bg-brasa-50 text-brasa-900 dark:border-brasa-500/30 dark:bg-brasa-500/10 dark:text-brasa-100;
+  }
+
+  .alerta-erro > svg {
+    @apply text-brasa-600 dark:text-brasa-300;
+  }
+
+  .alerta-info .alerta-titulo,
+  .alerta-sucesso .alerta-titulo,
+  .alerta-aviso .alerta-titulo,
+  .alerta-erro .alerta-titulo {
+    @apply text-inherit;
+  }
+
+  .alerta-compacto {
+    @apply items-center p-3 text-xs;
+  }
+
+  .alerta-compacto > svg {
+    @apply mt-0 size-4;
+  }
+}

@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Biblioteca de componentes do Bento em Tailwind CSS: tudo o que o painel usa, pronto para copiar e adaptar.">
+    <title>Componentes | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/js/paginas/componentes.js"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Componentes</h1>
+              <p class="pagina-descricao">Todas as peças do painel em Tailwind CSS. Troque o tema e a paleta para ver cada uma se adaptar, e copie a marcação direto do código desta página.</p>
+            </div>
+            <div class="pagina-acoes">
+              <a class="botao botao-secundario" href="/configuracoes?secao=aparencia"><i data-icone="paleta"></i>Trocar paleta</a>
+            </div>
+          </div>
+
+          <div class="vitrine-layout">
+            <nav class="vitrine-nav" aria-label="Componentes" data-vitrine-nav></nav>
+            <div class="vitrine-conteudo" data-vitrine>
+              <div class="vitrine-busca">
+                <label class="sr-only" for="busca-componentes">Filtrar componentes</label>
+                <span class="entrada-caixa">
+                  <i data-icone="buscar" class="entrada-caixa-icone"></i>
+                  <input class="entrada" type="search" id="busca-componentes" placeholder="Filtrar componentes pelo nome" data-busca-vitrine>
+                </span>
+              </div>
+
+              <h2 class="vitrine-grupo-titulo" data-grupo="Base">Base</h2>
+
+              <section class="vitrine-secao" id="cores" aria-labelledby="t-cores">
+                <h2 class="vitrine-titulo" id="t-cores">Cores</h2>
+                <p class="vitrine-descricao">As escalas principal, de destaque e neutra mudam junto com a paleta escolhida em Configurações › Aparência.</p>
+                <div class="vitrine-exemplo">
+                  <div>
+                    <p class="vitrine-cores-nome">Principal</p>
+                    <div class="vitrine-cores">
+                      <span class="vitrine-cor bg-primaria-50">50</span><span class="vitrine-cor bg-primaria-100">100</span><span class="vitrine-cor bg-primaria-200">200</span><span class="vitrine-cor bg-primaria-300">300</span><span class="vitrine-cor bg-primaria-400">400</span><span class="vitrine-cor bg-primaria-500">500</span><span class="vitrine-cor bg-primaria-600">600</span><span class="vitrine-cor bg-primaria-700">700</span><span class="vitrine-cor bg-primaria-800">800</span><span class="vitrine-cor bg-primaria-900">900</span><span class="vitrine-cor bg-primaria-950">950</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="vitrine-cores-nome">Destaque</p>
+                    <div class="vitrine-cores">
+                      <span class="vitrine-cor bg-destaque-50">50</span><span class="vitrine-cor bg-destaque-100">100</span><span class="vitrine-cor bg-destaque-200">200</span><span class="vitrine-cor bg-destaque-300">300</span><span class="vitrine-cor bg-destaque-400">400</span><span class="vitrine-cor bg-destaque-500">500</span><span class="vitrine-cor bg-destaque-600">600</span><span class="vitrine-cor bg-destaque-700">700</span><span class="vitrine-cor bg-destaque-800">800</span><span class="vitrine-cor bg-destaque-900">900</span><span class="vitrine-cor bg-destaque-950">950</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p class="vitrine-cores-nome">Neutra</p>
+                    <div class="vitrine-cores">
+                      <span class="vitrine-cor bg-neutra-50">50</span><span class="vitrine-cor bg-neutra-100">100</span><span class="vitrine-cor bg-neutra-200">200</span><span class="vitrine-cor bg-neutra-300">300</span><span class="vitrine-cor bg-neutra-400">400</span><span class="vitrine-cor bg-neutra-500">500</span><span class="vitrine-cor bg-neutra-600">600</span><span class="vitrine-cor bg-neutra-700">700</span><span class="vitrine-cor bg-neutra-800">800</span><span class="vitrine-cor bg-neutra-900">900</span><span class="vitrine-cor bg-neutra-950">950</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="botoes" aria-labelledby="t-botoes">
+                <h2 class="vitrine-titulo" id="t-botoes">Botões</h2>
+                <p class="vitrine-descricao">Ações principais, secundárias e destrutivas, em três tamanhos, com ícone e estado de carregamento.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-linha">
+                    <button type="button" class="botao botao-primario"><i data-icone="adicionar"></i>Novo usuário</button>
+                    <button type="button" class="botao botao-secundario"><i data-icone="baixar"></i>Exportar</button>
+                    <button type="button" class="botao botao-contorno">Ver detalhes</button>
+                    <button type="button" class="botao botao-fantasma">Cancelar</button>
+                    <button type="button" class="botao botao-destaque"><i data-icone="brilho"></i>Fazer upgrade</button>
+                    <button type="button" class="botao botao-perigo"><i data-icone="lixeira"></i>Excluir</button>
+                    <button type="button" class="botao botao-perigo-suave">Bloquear</button>
+                    <button type="button" class="botao botao-link">Saiba mais</button>
+                  </div>
+                  <div class="vitrine-linha">
+                    <button type="button" class="botao botao-primario botao-pequeno">Pequeno</button>
+                    <button type="button" class="botao botao-primario">Médio</button>
+                    <button type="button" class="botao botao-primario botao-grande">Grande</button>
+                    <button type="button" class="botao botao-secundario botao-icone" aria-label="Configurações"><i data-icone="configuracoes"></i></button>
+                    <button type="button" class="botao botao-primario" data-carregando="true"><span>Salvando</span></button>
+                    <button type="button" class="botao botao-secundario" disabled>Desativado</button>
+                  </div>
+                  <div class="vitrine-linha">
+                    <div class="grupo-botoes" role="group" aria-label="Visualização">
+                      <button type="button" class="botao" aria-pressed="true">Dia</button>
+                      <button type="button" class="botao" aria-pressed="false">Semana</button>
+                      <button type="button" class="botao" aria-pressed="false">Mês</button>
+                    </div>
+                    <div class="seletor-periodo" role="group" aria-label="Período">
+                      <button type="button" aria-pressed="false">7 dias</button>
+                      <button type="button" aria-pressed="true">30 dias</button>
+                      <button type="button" aria-pressed="false">90 dias</button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="emblemas" aria-labelledby="t-emblemas">
+                <h2 class="vitrine-titulo" id="t-emblemas">Emblemas e etiquetas</h2>
+                <p class="vitrine-descricao">Status, papéis e contadores. Use <code>data-status</code> ou <code>data-papel</code> para a cor certa.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-linha">
+                    <span class="emblema" data-status="ativo">Ativo</span>
+                    <span class="emblema" data-status="pendente">Pendente</span>
+                    <span class="emblema" data-status="bloqueado">Bloqueado</span>
+                    <span class="emblema" data-status="inativo">Inativo</span>
+                    <span class="emblema" data-status="paga">Paga</span>
+                    <span class="emblema" data-status="falhou">Falhou</span>
+                    <span class="emblema" data-status="reembolsada">Reembolsada</span>
+                  </div>
+                  <div class="vitrine-linha">
+                    <span class="emblema" data-papel="admin">Administrador</span>
+                    <span class="emblema" data-papel="gerente">Gerente</span>
+                    <span class="emblema" data-papel="analista">Analista</span>
+                    <span class="emblema" data-papel="suporte">Suporte</span>
+                    <span class="emblema" data-papel="cliente">Cliente</span>
+                    <span class="emblema emblema-solido">Novo</span>
+                    <span class="emblema emblema-contorno">Beta</span>
+                    <span class="contador">12</span>
+                    <span class="contador contador-destaque">3</span>
+                    <span class="etiqueta">Pix<button type="button" class="etiqueta-remover" aria-label="Remover Pix"><i data-icone="fechar"></i></button></span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="formularios" aria-labelledby="t-formularios">
+                <h2 class="vitrine-titulo" id="t-formularios">Formulários</h2>
+                <p class="vitrine-descricao">Campos com rótulo, ajuda, erro, ícone, seleção, caixas de marcação, rádios, interruptores e controle segmentado.</p>
+                <div class="vitrine-exemplo">
+                  <div class="grade-campos">
+                    <label class="campo">
+                      <span class="campo-rotulo campo-obrigatorio">Nome</span>
+                      <input class="entrada" value="Ana Martins">
+                      <span class="campo-ajuda">Aparece nos registros de atividade.</span>
+                    </label>
+                    <label class="campo" data-invalido="true">
+                      <span class="campo-rotulo">E-mail</span>
+                      <input class="entrada" value="ana@" aria-invalid="true">
+                      <span class="campo-erro"><i data-icone="alerta"></i>Digite um e-mail válido.</span>
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Buscar</span>
+                      <span class="entrada-caixa"><i data-icone="buscar" class="entrada-caixa-icone"></i><input class="entrada" placeholder="Nome ou e-mail"></span>
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Plano</span>
+                      <select class="selecao"><option>Profissional</option><option>Equipe</option></select>
+                    </label>
+                    <label class="campo campo-inteiro">
+                      <span class="campo-rotulo">Observações</span>
+                      <textarea class="area-texto" rows="3">Cliente pediu migração para o plano anual.</textarea>
+                    </label>
+                  </div>
+                  <div class="vitrine-grade-2">
+                    <div class="pilha-pequena">
+                      <label class="opcao"><input type="checkbox" class="caixa-marcacao" checked><span class="opcao-texto"><span class="opcao-titulo">Receber resumo semanal</span><span class="opcao-descricao">Toda segunda de manhã.</span></span></label>
+                      <label class="opcao"><input type="radio" class="radio" name="vitrine-radio" checked><span class="opcao-texto"><span class="opcao-titulo">Mensal</span></span></label>
+                      <label class="opcao"><input type="radio" class="radio" name="vitrine-radio"><span class="opcao-texto"><span class="opcao-titulo">Anual</span></span></label>
+                    </div>
+                    <div class="pilha-pequena">
+                      <div class="linha-interruptor"><span class="text-sm font-medium">Alertas de segurança</span><label class="interruptor"><input type="checkbox" checked aria-label="Alertas de segurança"><span class="interruptor-trilho"></span></label></div>
+                      <div class="linha-interruptor"><span class="text-sm font-medium">Modo compacto</span><label class="interruptor"><input type="checkbox" aria-label="Modo compacto"><span class="interruptor-trilho"></span></label></div>
+                      <div class="segmentado">
+                        <label><input type="radio" name="vitrine-seg" value="pdf" checked><span>PDF</span></label>
+                        <label><input type="radio" name="vitrine-seg" value="csv"><span>CSV</span></label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="cartoes" aria-labelledby="t-cartoes">
+                <h2 class="vitrine-titulo" id="t-cartoes">Cartões</h2>
+                <p class="vitrine-descricao">O tijolo do bento grid: neutro, em destaque, dourado e escuro.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-grade">
+                    <article class="cartao">
+                      <div class="cartao-cabecalho"><div class="cartao-titulos"><h3 class="cartao-titulo">Cartão neutro</h3><p class="cartao-subtitulo">Para a maioria dos blocos</p></div></div>
+                      <p class="text-sm texto-suave">Use um título curto que diga o que o bloco mostra.</p>
+                      <div class="cartao-rodape"><span>Atualizado agora</span><a href="#cartoes">Abrir<i data-icone="chevron-direita"></i></a></div>
+                    </article>
+                    <article class="cartao-destaque">
+                      <div class="cartao-cabecalho"><div class="cartao-titulos"><h3 class="cartao-titulo">Em destaque</h3><p class="cartao-subtitulo">Um por tela</p></div></div>
+                      <p class="cartao-numero-grande">R$ 48,2 mil</p>
+                    </article>
+                    <article class="cartao-ouro">
+                      <div class="cartao-cabecalho"><div class="cartao-titulos"><h3 class="cartao-titulo">Dourado</h3><p class="cartao-subtitulo">Metas e chamadas</p></div></div>
+                      <div class="barra-progresso"><span class="barra-progresso-valor" style="--valor: 64%"></span></div>
+                    </article>
+                    <article class="cartao-escuro">
+                      <div class="cartao-cabecalho"><div class="cartao-titulos"><h3 class="cartao-titulo">Escuro</h3><p class="cartao-subtitulo">Status e conexões</p></div></div>
+                      <p class="flex items-center gap-2 text-sm"><span class="ponto-vivo" data-estado="conectado" data-fixo></span>Ao vivo</p>
+                    </article>
+                    <label class="cartao cartao-selecionavel"><input type="radio" name="vitrine-cartao" class="sr-only" checked><span class="cartao-titulo">Selecionável</span><span class="text-sm texto-suave">Clique para marcar</span></label>
+                    <article class="cartao-plano"><p class="text-sm texto-suave">Cartão tracejado para áreas vazias ou de soltar arquivos.</p></article>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="indicadores" aria-labelledby="t-indicadores">
+                <h2 class="vitrine-titulo" id="t-indicadores">Indicadores</h2>
+                <p class="vitrine-descricao">KPIs com tendência em verde ou vermelho e mini gráficos. Para métricas em que subir é ruim, use <code>tendencia-invertida</code>.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-grade">
+                    <article class="kpi">
+                      <div class="kpi-topo"><h3 class="kpi-rotulo"><span class="kpi-icone" data-cor="salvia"><i data-icone="usuarios"></i></span>Usuários ativos</h3><span class="tendencia tendencia-alta"><i data-icone="seta-cima-direita"></i>8,4%</span></div>
+                      <div class="kpi-meio"><p class="kpi-valor">2.184</p><div class="kpi-grafico" data-faisca="12,14,13,17,16,19,22"></div></div>
+                      <p class="kpi-rodape">vs. 30 dias antes: 2.015</p>
+                    </article>
+                    <article class="kpi">
+                      <div class="kpi-topo"><h3 class="kpi-rotulo"><span class="kpi-icone" data-cor="brasa"><i data-icone="usuario-x"></i></span>Cancelamentos</h3><span class="tendencia tendencia-alta tendencia-invertida"><i data-icone="seta-cima-direita"></i>0,6%</span></div>
+                      <div class="kpi-meio"><p class="kpi-valor">3,1<small>%</small></p><div class="kpi-grafico" data-faisca="2.4,2.6,2.5,2.9,2.8,3.1" data-faisca-tendencia="baixa"></div></div>
+                      <p class="kpi-rodape">vs. 30 dias antes: 2,5%</p>
+                    </article>
+                    <article class="kpi">
+                      <div class="kpi-topo"><h3 class="kpi-rotulo"><span class="kpi-icone" data-cor="casca"><i data-icone="dinheiro"></i></span>MRR</h3><span class="tendencia tendencia-neutra"><i data-icone="menos"></i>0,0%</span></div>
+                      <div class="kpi-meio"><p class="kpi-valor">R$ 96 mil</p><div class="kpi-grafico"><div class="barras-mini" aria-hidden="true"><span style="height:40%"></span><span style="height:52%"></span><span style="height:48%"></span><span style="height:66%"></span><span style="height:71%"></span><span style="height:80%"></span></div></div></div>
+                      <p class="kpi-rodape">Receita recorrente mensal</p>
+                    </article>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="alertas" aria-labelledby="t-alertas">
+                <h2 class="vitrine-titulo" id="t-alertas">Alertas e avisos</h2>
+                <p class="vitrine-descricao">Alertas ficam na página; avisos aparecem no canto e somem sozinhos.</p>
+                <div class="vitrine-exemplo">
+                  <div class="alerta alerta-info"><i data-icone="info"></i><div class="alerta-textos"><p class="alerta-titulo">Nova versão disponível</p><p class="alerta-texto">Atualize para receber os gráficos de coorte.</p></div></div>
+                  <div class="alerta alerta-sucesso"><i data-icone="sucesso"></i><div class="alerta-textos"><p class="alerta-titulo">Integração conectada</p><p class="alerta-texto">Os eventos começam a chegar no Slack agora.</p></div></div>
+                  <div class="alerta alerta-aviso"><i data-icone="alerta"></i><div class="alerta-textos"><p class="alerta-titulo">Meta em risco</p><p class="alerta-texto">Faltam 9 dias e 41% da meta do mês.</p></div></div>
+                  <div class="alerta alerta-erro"><i data-icone="erro"></i><div class="alerta-textos"><p class="alerta-titulo">Pagamento recusado</p><p class="alerta-texto">O cartão do cliente expirou. Peça um novo método.</p></div></div>
+                  <div class="vitrine-linha">
+                    <button type="button" class="botao botao-secundario" data-demo-aviso="sucesso">Aviso de sucesso</button>
+                    <button type="button" class="botao botao-secundario" data-demo-aviso="erro">Aviso de erro</button>
+                    <button type="button" class="botao botao-secundario" data-demo-aviso="alerta">Aviso de atenção</button>
+                    <button type="button" class="botao botao-secundario" data-demo-aviso="info">Aviso informativo</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="sobreposicoes-base" aria-labelledby="t-sobreposicoes-base">
+                <h2 class="vitrine-titulo" id="t-sobreposicoes-base">Gavetas e diálogos</h2>
+                <p class="vitrine-descricao">Gavetas laterais para detalhes e formulários; diálogos para confirmar ações. Ambos usam o elemento nativo <code>&lt;dialog&gt;</code>, com foco preso e Esc para fechar.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-linha">
+                    <button type="button" class="botao botao-primario" data-demo="gaveta"><i data-icone="expandir-barra"></i>Abrir gaveta</button>
+                    <button type="button" class="botao botao-secundario" data-demo="gaveta-larga">Gaveta larga</button>
+                    <button type="button" class="botao botao-perigo-suave" data-demo="confirmar">Confirmar exclusão</button>
+                    <button type="button" class="botao botao-secundario" data-demo="busca"><i data-icone="buscar"></i>Busca global</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="abas" aria-labelledby="t-abas">
+                <h2 class="vitrine-titulo" id="t-abas">Abas</h2>
+                <p class="vitrine-descricao">Sublinhadas, em pílula e verticais. Navegue com as setas do teclado.</p>
+                <div class="vitrine-exemplo">
+                  <div class="abas abas-linha" role="tablist" aria-label="Exemplo de abas" data-demo-abas>
+                    <button type="button" class="aba" role="tab" id="demo-aba-1" aria-controls="demo-painel-1" aria-selected="true"><i data-icone="usuario"></i>Resumo</button>
+                    <button type="button" class="aba" role="tab" id="demo-aba-2" aria-controls="demo-painel-2" aria-selected="false"><i data-icone="editar"></i>Editar</button>
+                    <button type="button" class="aba" role="tab" id="demo-aba-3" aria-controls="demo-painel-3" aria-selected="false"><i data-icone="escudo"></i>Permissões <span class="contador">16</span></button>
+                  </div>
+                  <div class="painel-aba text-sm" id="demo-painel-1" role="tabpanel" aria-labelledby="demo-aba-1">Conteúdo do resumo.</div>
+                  <div class="painel-aba text-sm" id="demo-painel-2" role="tabpanel" aria-labelledby="demo-aba-2" hidden>Formulário de edição.</div>
+                  <div class="painel-aba text-sm" id="demo-painel-3" role="tabpanel" aria-labelledby="demo-aba-3" hidden>Matriz de permissões.</div>
+                  <div class="abas-pilula" role="tablist" aria-label="Filtro">
+                    <button type="button" class="aba" role="tab" aria-selected="true">Todas</button>
+                    <button type="button" class="aba" role="tab" aria-selected="false">Não lidas</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="progresso" aria-labelledby="t-progresso">
+                <h2 class="vitrine-titulo" id="t-progresso">Progresso e medidores</h2>
+                <p class="vitrine-descricao">Barras com <code>--valor</code>, medidor circular e etapas.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-grade-2">
+                    <div class="pilha">
+                      <div class="barra-progresso"><span class="barra-progresso-valor" style="--valor: 72%"></span></div>
+                      <div class="barra-progresso barra-progresso-grossa"><span class="barra-progresso-valor" data-cor="ouro" style="--valor: 45%"></span></div>
+                      <div class="barra-progresso barra-progresso-fina"><span class="barra-progresso-valor" data-cor="brasa" style="--valor: 91%"></span></div>
+                      <div class="passos">
+                        <span class="passo" data-estado="feito"><span class="passo-numero">1</span>Dados</span><span class="passo-linha"></span>
+                        <span class="passo" data-estado="atual"><span class="passo-numero">2</span>Período</span><span class="passo-linha"></span>
+                        <span class="passo"><span class="passo-numero">3</span>Formato</span>
+                      </div>
+                    </div>
+                    <div class="vitrine-linha justify-center" data-demo-medidor></div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="avatares" aria-labelledby="t-avatares">
+                <h2 class="vitrine-titulo" id="t-avatares">Avatares</h2>
+                <p class="vitrine-descricao">Iniciais com oito tons, status e grupos.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-linha">
+                    <span class="avatar avatar-mini" data-cor="0">AM</span>
+                    <span class="avatar avatar-pequeno" data-cor="1">BC</span>
+                    <span class="avatar" data-cor="2">CD<span class="avatar-status" data-status="ativo"></span></span>
+                    <span class="avatar avatar-grande" data-cor="3">DR<span class="avatar-status" data-status="bloqueado"></span></span>
+                    <span class="avatar avatar-gigante" data-cor="4">EL</span>
+                    <span class="grupo-avatares"><span class="avatar avatar-pequeno" data-cor="5">FG</span><span class="avatar avatar-pequeno" data-cor="6">HI</span><span class="avatar avatar-pequeno" data-cor="7">JK</span><span class="grupo-avatares-mais size-8">+9</span></span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="listas" aria-labelledby="t-listas">
+                <h2 class="vitrine-titulo" id="t-listas">Listas, linha do tempo e funil</h2>
+                <p class="vitrine-descricao">Rankings com barra, pares de dados, atividades em ordem e etapas de conversão.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-grade">
+                    <ul class="lista-ranking" role="list">
+                      <li class="lista-ranking-item"><div class="lista-ranking-topo"><span class="lista-ranking-nome">Orgânico</span><span class="lista-ranking-valor">18,2 mil<small>3,4% conv.</small></span></div><div class="lista-ranking-barra"><span style="--valor: 100%"></span></div></li>
+                      <li class="lista-ranking-item"><div class="lista-ranking-topo"><span class="lista-ranking-nome">Pago</span><span class="lista-ranking-valor">9,6 mil<small>4,1% conv.</small></span></div><div class="lista-ranking-barra"><span style="--valor: 53%"></span></div></li>
+                      <li class="lista-ranking-item"><div class="lista-ranking-topo"><span class="lista-ranking-nome">Indicação</span><span class="lista-ranking-valor">3,1 mil<small>6,8% conv.</small></span></div><div class="lista-ranking-barra"><span style="--valor: 17%"></span></div></li>
+                    </ul>
+                    <ol class="linha-tempo linha-tempo-compacta">
+                      <li class="linha-tempo-item"><span class="linha-tempo-marcador" data-tom="oliva"><i data-icone="usuario-novo"></i></span><div class="linha-tempo-conteudo"><p class="linha-tempo-texto"><strong>Ana</strong> cadastrou um usuário</p><span class="linha-tempo-tempo">há 5 minutos</span></div></li>
+                      <li class="linha-tempo-item"><span class="linha-tempo-marcador" data-tom="brasa"><i data-icone="cadeado"></i></span><div class="linha-tempo-conteudo"><p class="linha-tempo-texto"><strong>Bruno</strong> bloqueou uma conta</p><span class="linha-tempo-tempo">há 1 hora</span></div></li>
+                      <li class="linha-tempo-item"><span class="linha-tempo-marcador" data-tom="ouro"><i data-icone="arquivo"></i></span><div class="linha-tempo-conteudo"><p class="linha-tempo-texto"><strong>Carla</strong> gerou um relatório</p><span class="linha-tempo-tempo">ontem</span></div></li>
+                    </ol>
+                    <div class="funil">
+                      <div class="funil-etapa"><span class="funil-nome">Visitantes</span><div class="funil-trilho"><span class="funil-barra" style="--valor: 100%">32 mil</span></div><span class="funil-taxa">100%</span></div>
+                      <div class="funil-etapa"><span class="funil-nome">Cadastros</span><div class="funil-trilho"><span class="funil-barra" style="--valor: 46%">2,4 mil</span></div><span class="funil-taxa">7,5%</span></div>
+                      <div class="funil-etapa"><span class="funil-nome">Em teste</span><div class="funil-trilho"><span class="funil-barra" style="--valor: 28%">980</span></div><span class="funil-taxa">40,8%</span></div>
+                      <div class="funil-etapa"><span class="funil-nome">Assinantes</span><div class="funil-trilho"><span class="funil-barra" style="--valor: 16%">412</span></div><span class="funil-taxa">42%</span></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="vitrine-secao" id="estados" aria-labelledby="t-estados">
+                <h2 class="vitrine-titulo" id="t-estados">Carregamento e vazio</h2>
+                <p class="vitrine-descricao">Esqueletos enquanto os dados chegam e estados vazios que dizem o próximo passo.</p>
+                <div class="vitrine-exemplo">
+                  <div class="vitrine-grade-2">
+                    <div class="cartao pilha">
+                      <span class="esqueleto-titulo"></span>
+                      <span class="esqueleto-numero"></span>
+                      <div class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span></div>
+                    </div>
+                    <div class="cartao">
+                      <div class="vazio vazio-compacto">
+                        <div class="vazio-ilustracao" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+                        <p class="vazio-titulo">Nenhum relatório ainda</p>
+                        <p class="vazio-texto">Gere o primeiro em Relatórios. Ele fica guardado aqui.</p>
+                        <div class="vazio-acoes"><a class="botao botao-primario botao-pequeno" href="/relatorios">Gerar relatório</a></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <h2 class="vitrine-grupo-titulo" data-grupo="Kit">Kit de interface</h2>
+<section class="vitrine-secao" id="acordeao" aria-labelledby="t-acordeao">
+  <h2 class="vitrine-titulo" id="t-acordeao">Acordeão</h2>
+  <p class="vitrine-descricao">Agrupa conteúdo longo em seções que abrem e fecham, como perguntas frequentes e filtros.</p>
+  <div class="vitrine-exemplo">
+    <div class="acordeao acordeao-faq">
+      <details class="acordeao-item" open>
+        <summary class="acordeao-gatilho">
+          <span class="acordeao-icone"><i data-icone="cartao"></i></span>
+          <span class="acordeao-titulos"><span class="acordeao-titulo">Como troco a forma de pagamento?</span><span class="acordeao-resumo">Cartão, Pix ou boleto</span></span>
+          <i data-icone="chevron-baixo" class="acordeao-seta"></i>
+        </summary>
+        <div class="acordeao-conteudo acordeao-conteudo-recuado">
+          <p>Abra Configurações, escolha Faturamento e clique em Alterar. A nova forma vale a partir da próxima cobrança.</p>
+          <div class="acordeao-acoes"><a class="botao botao-secundario botao-pequeno" href="#acordeao">Abrir faturamento</a></div>
+        </div>
+      </details>
+      <details class="acordeao-item" data-tom="ouro">
+        <summary class="acordeao-gatilho">
+          <span class="acordeao-icone"><i data-icone="usuarios"></i></span>
+          <span class="acordeao-titulos"><span class="acordeao-titulo">Quantas pessoas cabem no plano Equipe?</span></span>
+          <span class="acordeao-lado"><span class="acordeao-contador">3</span></span>
+          <i data-icone="chevron-baixo" class="acordeao-seta"></i>
+        </summary>
+        <div class="acordeao-conteudo acordeao-conteudo-recuado"><p>Até 15 contas ativas. Contas bloqueadas não entram na conta.</p></div>
+      </details>
+      <details class="acordeao-item" data-tom="brasa">
+        <summary class="acordeao-gatilho">
+          <span class="acordeao-icone"><i data-icone="alerta"></i></span>
+          <span class="acordeao-titulos"><span class="acordeao-titulo">O que acontece se o pagamento falhar?</span></span>
+          <i data-icone="chevron-baixo" class="acordeao-seta"></i>
+        </summary>
+        <div class="acordeao-conteudo acordeao-conteudo-recuado"><p>A assinatura fica inadimplente por 7 dias. Depois disso, o acesso passa para somente leitura.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="precos" aria-labelledby="t-precos">
+  <h2 class="vitrine-titulo" id="t-precos">Preços</h2>
+  <p class="vitrine-descricao">Cartões de planos com alternância entre cobrança mensal e anual e um plano em destaque.</p>
+  <div class="vitrine-exemplo">
+    <div class="precos">
+      <fieldset class="precos-ciclo">
+        <legend class="sr-only">Ciclo de cobrança</legend>
+        <label><input type="radio" name="ciclo-vitrine" value="mensal" checked><span class="precos-ciclo-opcao">Mensal</span></label>
+        <label><input type="radio" name="ciclo-vitrine" value="anual"><span class="precos-ciclo-opcao">Anual <span class="precos-desconto">2 meses grátis</span></span></label>
+      </fieldset>
+      <div class="precos-grade-3">
+        <article class="precos-plano">
+          <div class="precos-plano-topo"><div><h3 class="precos-plano-nome">Essencial</h3><p class="precos-plano-descricao">Para quem está começando.</p></div><span class="precos-plano-icone"><i data-icone="raio"></i></span></div>
+          <p class="precos-valor"><span class="precos-valor-moeda">R$</span><span class="precos-valor-numero">49</span><span class="precos-valor-periodo">/mês</span></p>
+          <ul class="precos-recursos">
+            <li class="precos-recurso"><i data-icone="confirmar"></i>3 usuários</li>
+            <li class="precos-recurso"><i data-icone="confirmar"></i>Relatórios em CSV</li>
+            <li class="precos-recurso precos-recurso-ausente"><i data-icone="menos"></i>Integrações</li>
+          </ul>
+          <a class="precos-acao" href="#precos">Começar</a>
+        </article>
+        <article class="precos-plano precos-plano-destaque">
+          <span class="precos-selo"><i data-icone="brilho"></i>Mais escolhido</span>
+          <div class="precos-plano-topo"><div><h3 class="precos-plano-nome">Profissional</h3><p class="precos-plano-descricao">Para times que crescem todo mês.</p></div><span class="precos-plano-icone"><i data-icone="tendencia-alta"></i></span></div>
+          <p class="precos-valor"><span class="precos-valor-moeda">R$</span><span class="precos-valor-numero">129</span><span class="precos-valor-periodo">/mês</span></p>
+          <ul class="precos-recursos">
+            <li class="precos-recurso"><i data-icone="confirmar"></i>10 usuários</li>
+            <li class="precos-recurso"><i data-icone="confirmar"></i>Relatórios em CSV e PDF</li>
+            <li class="precos-recurso"><i data-icone="confirmar"></i>Webhook, Slack e Discord</li>
+          </ul>
+          <a class="precos-acao" href="#precos">Assinar o Profissional</a>
+        </article>
+        <article class="precos-plano precos-plano-atual">
+          <div class="precos-plano-topo"><div><h3 class="precos-plano-nome">Equipe</h3><p class="precos-plano-descricao">Seu plano atual.</p></div><span class="precos-plano-icone"><i data-icone="usuarios"></i></span></div>
+          <p class="precos-valor"><span class="precos-valor-moeda">R$</span><span class="precos-valor-numero">299</span><span class="precos-valor-periodo">/mês</span></p>
+          <ul class="precos-recursos">
+            <li class="precos-recurso"><i data-icone="confirmar"></i>15 usuários</li>
+            <li class="precos-recurso"><i data-icone="confirmar"></i>Permissões por pessoa</li>
+          </ul>
+          <span class="precos-acao">Plano atual</span>
+        </article>
+      </div>
+      <p class="precos-rodape">Valores em reais. Cancele quando quiser.</p>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="fatura" aria-labelledby="t-fatura">
+  <h2 class="vitrine-titulo" id="t-fatura">Fatura</h2>
+  <p class="vitrine-descricao">Documento de cobrança com itens, totais e forma de pagamento, pronto para imprimir ou salvar em PDF.</p>
+  <div class="vitrine-exemplo">
+    <article class="fatura fatura-compacta">
+      <span class="fatura-carimbo" data-situacao="paga" aria-hidden="true">Paga</span>
+      <header class="fatura-topo">
+        <div class="fatura-marca"><span class="fatura-marca-logo"><i data-icone="painel"></i></span><div><p class="fatura-marca-nome">Bento</p><p class="fatura-marca-detalhe">Empresa Exemplo Ltda.</p></div></div>
+        <div class="fatura-identificacao"><p class="fatura-tipo">Fatura</p><p class="fatura-numero">FAT-2026-00418</p><span class="fatura-situacao" data-situacao="paga"><i data-icone="confirmar" class="size-3.5"></i>Paga</span></div>
+      </header>
+      <dl class="fatura-datas">
+        <div class="fatura-data"><dt>Emitida</dt><dd>01/10/2026</dd></div>
+        <div class="fatura-data"><dt>Vencimento</dt><dd>10/10/2026</dd></div>
+        <div class="fatura-data"><dt>Paga em</dt><dd>03/10/2026</dd></div>
+        <div class="fatura-data"><dt>Período</dt><dd>Outubro</dd></div>
+      </dl>
+      <table class="fatura-itens">
+        <thead><tr><th scope="col">Descrição</th><th scope="col" class="fatura-numerico">Qtd.</th><th scope="col" class="fatura-numerico">Valor</th></tr></thead>
+        <tbody>
+          <tr><td><span class="fatura-item-nome">Plano Profissional</span><span class="fatura-item-detalhe">Cobrança mensal</span></td><td class="fatura-numerico">1</td><td class="fatura-numerico">R$ 129,00</td></tr>
+          <tr><td><span class="fatura-item-nome">Usuários adicionais</span><span class="fatura-item-detalhe">2 contas além do limite</span></td><td class="fatura-numerico">2</td><td class="fatura-numerico">R$ 38,00</td></tr>
+        </tbody>
+      </table>
+      <div class="fatura-totais">
+        <p class="fatura-total-linha"><span>Subtotal</span><span>R$ 167,00</span></p>
+        <p class="fatura-total-linha" data-tipo="desconto"><span>Cupom BOASVINDAS</span><span>− R$ 16,70</span></p>
+        <p class="fatura-total-final"><span>Total</span><span>R$ 150,30</span></p>
+      </div>
+      <div class="fatura-pagamento"><span class="fatura-pagamento-icone"><i data-icone="raio"></i></span><div class="fatura-pagamento-textos"><p class="fatura-pagamento-titulo">Pago com Pix</p><p class="fatura-pagamento-detalhe">Confirmado em 03/10/2026 às 14:22</p></div></div>
+      <footer class="fatura-rodape"><span>Dúvidas? Responda pelo painel em Notificações.</span><div class="fatura-acoes"><button type="button" class="botao botao-secundario botao-pequeno"><i data-icone="baixar"></i>Baixar PDF</button></div></footer>
+    </article>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="kanban" aria-labelledby="t-kanban">
+  <h2 class="vitrine-titulo" id="t-kanban">Kanban</h2>
+  <p class="vitrine-descricao">Quadro de colunas para acompanhar tarefas por etapa, com prazos, responsáveis e prioridade.</p>
+  <div class="vitrine-exemplo">
+    <div class="kanban" role="list" aria-label="Quadro de tarefas">
+      <section class="kanban-coluna" data-tom="anil" role="listitem" aria-label="A fazer">
+        <header class="kanban-coluna-cabecalho"><span class="kanban-coluna-marcador"></span><h3 class="kanban-coluna-titulo">A fazer</h3><span class="kanban-coluna-contador">2</span><button type="button" class="kanban-coluna-acao" aria-label="Opções da coluna"><i data-icone="mais"></i></button></header>
+        <div class="kanban-lista">
+          <article class="kanban-cartao" tabindex="0">
+            <span class="kanban-prioridade" data-nivel="alta" aria-label="Prioridade alta"></span>
+            <div class="kanban-cartao-etiquetas"><span class="kanban-etiqueta" data-tom="brasa">Cobrança</span></div>
+            <h4 class="kanban-cartao-titulo">Revisar pagamentos que falharam</h4>
+            <p class="kanban-cartao-texto">Entrar em contato com os 12 clientes com cartão recusado nesta semana.</p>
+            <div class="kanban-cartao-rodape"><span class="kanban-prazo" data-situacao="proximo"><i data-icone="relogio"></i>Amanhã</span><div class="kanban-responsaveis"><span class="avatar avatar-mini" data-cor="1">AM</span><span class="avatar avatar-mini" data-cor="3">BC</span></div></div>
+          </article>
+          <article class="kanban-cartao" tabindex="0">
+            <div class="kanban-cartao-etiquetas"><span class="kanban-etiqueta" data-tom="anil">Relatórios</span></div>
+            <h4 class="kanban-cartao-titulo">Agendar relatório semanal de receita</h4>
+            <div class="kanban-cartao-rodape"><span class="kanban-cartao-meta"><span><i data-icone="mensagens"></i>3</span></span><span class="avatar avatar-mini" data-cor="2">CD</span></div>
+          </article>
+          <button type="button" class="kanban-adicionar"><i data-icone="adicionar"></i>Adicionar tarefa</button>
+        </div>
+      </section>
+      <section class="kanban-coluna" data-tom="ouro" role="listitem" aria-label="Em andamento">
+        <header class="kanban-coluna-cabecalho"><span class="kanban-coluna-marcador"></span><h3 class="kanban-coluna-titulo">Em andamento</h3><span class="kanban-coluna-contador">1</span></header>
+        <div class="kanban-lista">
+          <article class="kanban-cartao" tabindex="0">
+            <div class="kanban-cartao-capa" aria-hidden="true"></div>
+            <h4 class="kanban-cartao-titulo">Nova página de preços</h4>
+            <div class="kanban-cartao-progresso"><span class="kanban-cartao-progresso-trilho"><span style="--valor: 60%"></span></span>3/5</div>
+            <div class="kanban-cartao-rodape"><span class="kanban-prazo"><i data-icone="calendario"></i>28 out</span><span class="avatar avatar-mini" data-cor="0">DR</span></div>
+          </article>
+        </div>
+      </section>
+      <section class="kanban-coluna" data-tom="oliva" role="listitem" aria-label="Concluído">
+        <header class="kanban-coluna-cabecalho"><span class="kanban-coluna-marcador"></span><h3 class="kanban-coluna-titulo">Concluído</h3><span class="kanban-coluna-contador">1</span></header>
+        <div class="kanban-lista">
+          <article class="kanban-cartao" data-concluido="true" tabindex="0">
+            <h4 class="kanban-cartao-titulo">Ativar integração com Slack</h4>
+            <div class="kanban-cartao-rodape"><span class="kanban-prazo" data-situacao="feito"><i data-icone="confirmar"></i>Feito</span></div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="calendario-grade" aria-labelledby="t-calendario-grade">
+  <h2 class="vitrine-titulo" id="t-calendario-grade">Calendário</h2>
+  <p class="vitrine-descricao">Mês em grade com eventos por dia, o dia de hoje destacado e dias de outros meses esmaecidos.</p>
+  <div class="vitrine-exemplo">
+    <div class="calendario-grade">
+      <div class="calendario-grade-topo">
+        <h3 class="calendario-grade-mes">Outubro de 2026</h3>
+        <button type="button" class="calendario-grade-hoje">Hoje</button>
+        <div class="calendario-grade-navegacao"><button type="button" aria-label="Mês anterior"><i data-icone="chevron-esquerda"></i></button><button type="button" aria-label="Próximo mês"><i data-icone="chevron-direita"></i></button></div>
+      </div>
+      <div class="calendario-grade-semana" aria-hidden="true"><span>dom</span><span>seg</span><span>ter</span><span>qua</span><span>qui</span><span>sex</span><span>sáb</span></div>
+      <div class="calendario-grade-dias" role="grid" aria-label="Outubro de 2026">
+        <div class="calendario-grade-dia" data-fora-do-mes="true"><span class="calendario-grade-numero">27</span></div>
+        <div class="calendario-grade-dia" data-fora-do-mes="true"><span class="calendario-grade-numero">28</span></div>
+        <div class="calendario-grade-dia" data-fora-do-mes="true"><span class="calendario-grade-numero">29</span></div>
+        <div class="calendario-grade-dia" data-fora-do-mes="true"><span class="calendario-grade-numero">30</span></div>
+        <div class="calendario-grade-dia"><span class="calendario-grade-numero">1</span><span class="calendario-grade-evento" data-tom="oliva">Fechamento</span></div>
+        <div class="calendario-grade-dia"><span class="calendario-grade-numero">2</span></div>
+        <div class="calendario-grade-dia" data-fim-de-semana="true"><span class="calendario-grade-numero">3</span></div>
+        <div class="calendario-grade-dia" data-fim-de-semana="true"><span class="calendario-grade-numero">4</span></div>
+        <div class="calendario-grade-dia"><span class="calendario-grade-numero">5</span><span class="calendario-grade-evento" data-tom="anil">Relatório semanal</span></div>
+        <div class="calendario-grade-dia"><span class="calendario-grade-numero">6</span></div>
+        <div class="calendario-grade-dia"><span class="calendario-grade-numero">7</span><span class="calendario-grade-evento" data-tom="ouro">Renovações</span><span class="calendario-grade-evento" data-tom="brasa">Manutenção</span><button type="button" class="calendario-grade-mais">+2 eventos</button></div>
+        <div class="calendario-grade-dia" data-hoje="true" aria-current="date"><span class="calendario-grade-numero">8</span><span class="calendario-grade-evento" data-tom="casca">Reunião de metas</span></div>
+        <div class="calendario-grade-dia"><span class="calendario-grade-numero">9</span></div>
+        <div class="calendario-grade-dia" data-fim-de-semana="true"><span class="calendario-grade-numero">10</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="controle-deslizante" aria-labelledby="t-controle-deslizante">
+  <h2 class="vitrine-titulo" id="t-controle-deslizante">Controle deslizante</h2>
+  <p class="vitrine-descricao">Escolha de um valor dentro de um intervalo, com trilho preenchido, marcas e campo numérico ao lado.</p>
+  <div class="vitrine-exemplo">
+    <div class="pilha">
+      <div class="deslizante">
+        <div class="deslizante-topo"><label class="deslizante-rotulo" for="deslizante-meta">Meta de conversão</label><output class="deslizante-valor" for="deslizante-meta">62%</output></div>
+        <input class="deslizante-entrada" id="deslizante-meta" type="range" min="0" max="100" value="62" style="--valor: 62%">
+        <div class="deslizante-marcas" aria-hidden="true"><span>0</span><span>25</span><span data-ativa="true">50</span><span>75</span><span>100</span></div>
+      </div>
+      <div class="deslizante deslizante-ouro deslizante-com-campo">
+        <div>
+          <label class="deslizante-rotulo" for="deslizante-usuarios">Usuários no plano</label>
+          <input class="deslizante-entrada" id="deslizante-usuarios" type="range" min="1" max="50" value="15" style="--valor: 28.6%">
+          <div class="deslizante-limites"><span>1</span><span>50</span></div>
+        </div>
+        <input class="deslizante-campo" type="number" min="1" max="50" value="15" aria-label="Usuários no plano">
+      </div>
+      <fieldset>
+        <legend class="deslizante-rotulo mb-2">Satisfação com o painel</legend>
+        <div class="deslizante-escala">
+          <label><input type="radio" name="nota-vitrine" value="1"><span class="deslizante-escala-opcao">1</span></label>
+          <label><input type="radio" name="nota-vitrine" value="2"><span class="deslizante-escala-opcao">2</span></label>
+          <label><input type="radio" name="nota-vitrine" value="3"><span class="deslizante-escala-opcao">3</span></label>
+          <label><input type="radio" name="nota-vitrine" value="4" checked><span class="deslizante-escala-opcao">4</span></label>
+          <label><input type="radio" name="nota-vitrine" value="5"><span class="deslizante-escala-opcao">5</span></label>
+        </div>
+        <div class="deslizante-escala-legenda"><span>Nada satisfeito</span><span>Muito satisfeito</span></div>
+      </fieldset>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="etiquetas-entrada" aria-labelledby="t-etiquetas-entrada">
+  <h2 class="vitrine-titulo" id="t-etiquetas-entrada">Campo de etiquetas</h2>
+  <p class="vitrine-descricao">Campo que transforma o que você digita em etiquetas removíveis, com sugestões enquanto digita.</p>
+  <div class="vitrine-exemplo">
+    <div class="etiquetas-entrada">
+      <label class="campo-rotulo" for="etiquetas-vitrine">Segmentos do cliente</label>
+      <div class="etiquetas-entrada-caixa">
+        <span class="etiquetas-chip" data-tom="oliva"><span class="etiquetas-chip-texto">Varejo</span><button type="button" class="etiquetas-chip-remover" aria-label="Remover Varejo"><i data-icone="fechar"></i></button></span>
+        <span class="etiquetas-chip" data-tom="anil"><span class="etiquetas-chip-texto">Plano anual</span><button type="button" class="etiquetas-chip-remover" aria-label="Remover Plano anual"><i data-icone="fechar"></i></button></span>
+        <span class="etiquetas-chip" data-tom="ouro"><span class="etiquetas-chip-texto">Indicação</span><button type="button" class="etiquetas-chip-remover" aria-label="Remover Indicação"><i data-icone="fechar"></i></button></span>
+        <input class="etiquetas-campo" id="etiquetas-vitrine" value="exp" role="combobox" aria-expanded="true" aria-controls="etiquetas-sugestoes-vitrine" autocomplete="off">
+      </div>
+      <div class="etiquetas-sugestoes" id="etiquetas-sugestoes-vitrine" data-aberto="true" role="listbox" style="position: static">
+        <p class="etiquetas-sugestoes-titulo">Sugestões</p>
+        <button type="button" class="etiquetas-sugestao" role="option" aria-selected="true"><span class="etiquetas-cor" style="--cor: var(--color-oliva-600)"></span><span><mark>Exp</mark>ansão</span><span class="etiquetas-sugestao-contagem">48</span></button>
+        <button type="button" class="etiquetas-sugestao" role="option" aria-selected="false"><span class="etiquetas-cor" style="--cor: var(--color-ouro-500)"></span><span><mark>Exp</mark>ortação</span><span class="etiquetas-sugestao-contagem">12</span></button>
+        <button type="button" class="etiquetas-sugestao etiquetas-sugestao-criar" role="option" aria-selected="false"><i data-icone="adicionar"></i>Criar “exp”</button>
+      </div>
+      <div class="etiquetas-rodape"><span>Enter adiciona, Backspace remove a última.</span><span class="etiquetas-limite">3 de 10</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="arvore" aria-labelledby="t-arvore">
+  <h2 class="vitrine-titulo" id="t-arvore">Árvore</h2>
+  <p class="vitrine-descricao">Lista hierárquica que abre e fecha níveis, útil para pastas de relatórios e estruturas da empresa.</p>
+  <div class="vitrine-exemplo">
+    <div class="arvore-moldura">
+      <ul class="arvore" role="tree" aria-label="Pastas de relatórios">
+        <li class="arvore-item" role="treeitem" aria-expanded="true" aria-selected="false">
+          <div class="arvore-linha" tabindex="0"><span class="arvore-alternar"><i data-icone="chevron-direita"></i></span><i data-icone="caixa" class="arvore-icone" data-tipo="pasta"></i><span class="arvore-rotulo">Financeiro</span><span class="arvore-contador">3</span></div>
+          <ul class="arvore-grupo" role="group">
+            <li class="arvore-item" role="treeitem" aria-selected="true"><div class="arvore-linha" tabindex="-1"><span class="arvore-espaco"></span><i data-icone="arquivo-planilha" class="arvore-icone" data-tipo="planilha"></i><span class="arvore-rotulo">Receita de outubro.csv</span><span class="arvore-meta">84 KB</span></div></li>
+            <li class="arvore-item" role="treeitem" aria-selected="false"><div class="arvore-linha" tabindex="-1"><span class="arvore-espaco"></span><i data-icone="arquivo" class="arvore-icone" data-tipo="documento"></i><span class="arvore-rotulo">Fechamento do trimestre.pdf</span><span class="arvore-acoes"><button type="button" class="arvore-acao" aria-label="Baixar"><i data-icone="baixar"></i></button></span></div></li>
+          </ul>
+        </li>
+        <li class="arvore-item" role="treeitem" aria-expanded="false" aria-selected="false">
+          <div class="arvore-linha" tabindex="-1"><span class="arvore-alternar"><i data-icone="chevron-direita"></i></span><i data-icone="caixa" class="arvore-icone" data-tipo="pasta"></i><span class="arvore-rotulo">Clientes</span><span class="arvore-contador">12</span></div>
+          <ul class="arvore-grupo" role="group"><li class="arvore-item" role="treeitem"><div class="arvore-linha"><span class="arvore-rotulo">Coortes.csv</span></div></li></ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="lista-arquivos" aria-labelledby="t-lista-arquivos">
+  <h2 class="vitrine-titulo" id="t-lista-arquivos">Lista de arquivos</h2>
+  <p class="vitrine-descricao">Arquivos com ícone por tipo, tamanho, progresso de envio e ações rápidas.</p>
+  <div class="vitrine-exemplo">
+    <div class="arquivos">
+      <div class="arquivos-item" data-estado="concluido">
+        <span class="arquivos-icone" data-tipo="pdf">pdf</span>
+        <div class="arquivos-textos"><p class="arquivos-nome">Relatório de receita, outubro.pdf</p><p class="arquivos-detalhe"><span>212 KB</span><span>há 5 minutos</span></p></div>
+        <span class="arquivos-situacao" data-estado="concluido"><i data-icone="confirmar"></i></span>
+        <div class="arquivos-acoes"><button type="button" class="arquivos-acao" aria-label="Baixar"><i data-icone="baixar"></i></button><button type="button" class="arquivos-acao arquivos-acao-perigo" aria-label="Excluir"><i data-icone="lixeira"></i></button></div>
+      </div>
+      <div class="arquivos-item" data-estado="enviando">
+        <span class="arquivos-icone" data-tipo="csv">csv</span>
+        <div class="arquivos-textos"><p class="arquivos-nome">clientes-importacao.csv</p><div class="arquivos-progresso"><span class="arquivos-progresso-trilho" role="progressbar" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100" aria-label="Envio"><span style="--valor: 64%"></span></span><span class="arquivos-progresso-valor">64%</span></div></div>
+        <div class="arquivos-acoes"><button type="button" class="arquivos-acao" aria-label="Cancelar envio"><i data-icone="fechar"></i></button></div>
+      </div>
+      <div class="arquivos-item" data-estado="erro">
+        <span class="arquivos-icone" data-tipo="zip">zip</span>
+        <div class="arquivos-textos"><p class="arquivos-nome">backup-completo.zip</p><p class="arquivos-erro">O arquivo passa do limite de 25 MB.</p></div>
+        <span class="arquivos-situacao" data-estado="erro"><i data-icone="fechar"></i></span>
+        <div class="arquivos-acoes"><button type="button" class="arquivos-acao" aria-label="Tentar de novo"><i data-icone="atualizar"></i></button></div>
+      </div>
+      <div class="arquivos-uso">
+        <div class="arquivos-uso-barra" aria-hidden="true"><span style="--valor: 38%; --cor: var(--color-brasa-600)"></span><span style="--valor: 22%; --cor: var(--color-oliva-600)"></span><span style="--valor: 9%; --cor: var(--color-ouro-500)"></span></div>
+        <div class="arquivos-uso-legenda"><span><i style="--cor: var(--color-brasa-600)"></i>PDF 3,8 GB</span><span><i style="--cor: var(--color-oliva-600)"></i>Planilhas 2,2 GB</span><span><i style="--cor: var(--color-ouro-500)"></i>Imagens 0,9 GB</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="comentarios" aria-labelledby="t-comentarios">
+  <h2 class="vitrine-titulo" id="t-comentarios">Comentários e conversa</h2>
+  <p class="vitrine-descricao">Discussões com respostas, menções e reações, e uma conversa em bolhas para atendimento.</p>
+  <div class="vitrine-exemplo">
+    <div class="grade-campos">
+      <div class="comentarios">
+        <article class="comentarios-item">
+          <span class="avatar avatar-pequeno" data-cor="0">AM</span>
+          <div class="comentarios-corpo">
+            <p class="comentarios-meta"><span class="comentarios-autor">Ana Martins</span><span class="comentarios-papel" data-papel="equipe">Equipe</span><time datetime="2026-10-22T09:12">há 2 horas</time></p>
+            <div class="comentarios-texto"><p><span class="comentarios-mencao">@Bruno</span> o reembolso deste cliente já foi aprovado?</p></div>
+            <div class="comentarios-acoes"><div class="comentarios-reacoes"><button type="button" class="comentarios-reacao" aria-pressed="true"><i data-icone="confirmar"></i>2</button></div><button type="button" class="comentarios-acao"><i data-icone="mensagens"></i>Responder</button></div>
+            <div class="comentarios-item-respostas">
+              <article class="comentarios-item">
+                <span class="avatar avatar-mini" data-cor="3">BC</span>
+                <div class="comentarios-corpo"><p class="comentarios-meta"><span class="comentarios-autor">Bruno Costa</span><time datetime="2026-10-22T09:40">há 1 hora</time></p><div class="comentarios-texto"><p>Aprovado. Sai no próximo ciclo.</p></div></div>
+              </article>
+            </div>
+          </div>
+        </article>
+        <div class="comentarios-novo">
+          <span class="avatar avatar-pequeno" data-cor="2">CD</span>
+          <div class="comentarios-editor"><label class="sr-only" for="comentario-vitrine">Escrever comentário</label><textarea id="comentario-vitrine" placeholder="Escreva um comentário. Use @ para mencionar."></textarea><div class="comentarios-editor-barra"><button type="button" class="comentarios-editor-ferramenta" aria-label="Anexar arquivo"><i data-icone="arquivo"></i></button><span class="comentarios-editor-dica">Ctrl + Enter envia</span><button type="button" class="botao botao-primario botao-pequeno"><i data-icone="enviar"></i>Comentar</button></div></div>
+        </div>
+      </div>
+      <div class="conversa" aria-label="Conversa com cliente">
+        <p class="conversa-dia">Hoje</p>
+        <div class="conversa-mensagem"><span class="avatar avatar-mini" data-cor="5">CL</span><div><p class="bolha">Oi! Não consigo baixar a fatura de setembro.<span class="bolha-hora">10:02</span></p></div></div>
+        <div class="conversa-mensagem" data-lado="eu"><div><p class="bolha">Acabei de reenviar. Está no anexo abaixo.<span class="bolha-anexo"><i data-icone="arquivo"></i>fatura-setembro.pdf</span><span class="bolha-hora">10:04</span></p><p class="conversa-lido"><i data-icone="confirmar"></i>Lida</p></div></div>
+        <p class="bolha-sistema">Conversa marcada como resolvida</p>
+        <div class="conversa-mensagem"><span class="conversa-digitando" aria-label="Cliente digitando"><span></span><span></span><span></span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="passo-a-passo" aria-labelledby="t-passo-a-passo">
+  <h2 class="vitrine-titulo" id="t-passo-a-passo">Passo a passo</h2>
+  <p class="vitrine-descricao">Checklist de primeiros passos e assistente em etapas para configurações mais longas.</p>
+  <div class="vitrine-exemplo">
+    <div class="grade-campos">
+      <section class="checklist" aria-labelledby="checklist-vitrine-titulo">
+        <header class="checklist-cabecalho">
+          <h3 class="checklist-titulo" id="checklist-vitrine-titulo">Primeiros passos</h3>
+          <p class="checklist-texto">Deixe o painel pronto para a equipe.</p>
+          <div class="checklist-progresso"><span class="checklist-progresso-trilho"><span style="--valor: 50%"></span></span><span class="checklist-progresso-texto">2 de 4</span></div>
+        </header>
+        <ol class="checklist-lista">
+          <li class="checklist-tarefa" data-feita="true"><span class="checklist-marcador"><i data-icone="confirmar"></i></span><div class="checklist-textos"><p class="checklist-tarefa-titulo">Preencher dados da empresa</p></div></li>
+          <li class="checklist-tarefa" data-feita="true"><span class="checklist-marcador"><i data-icone="confirmar"></i></span><div class="checklist-textos"><p class="checklist-tarefa-titulo">Escolher o tema</p></div></li>
+          <li class="checklist-tarefa" data-atual="true"><span class="checklist-marcador"><i data-icone="confirmar"></i></span><div class="checklist-textos"><p class="checklist-tarefa-titulo">Convidar a equipe</p><p class="checklist-tarefa-texto">Cadastre as pessoas e defina o papel de cada uma.</p><a class="checklist-tarefa-acao" href="#passo-a-passo"><i data-icone="usuario-novo" class="size-3.5"></i>Convidar</a></div><span class="checklist-tempo">2 min</span></li>
+          <li class="checklist-tarefa"><span class="checklist-marcador"><i data-icone="confirmar"></i></span><div class="checklist-textos"><p class="checklist-tarefa-titulo">Ligar uma integração</p></div><span class="checklist-tempo">5 min</span></li>
+        </ol>
+      </section>
+      <section class="assistente" aria-labelledby="assistente-vitrine-titulo">
+        <ol class="assistente-etapas">
+          <li class="assistente-etapa" data-estado="feita"><span class="assistente-etapa-numero"><i data-icone="confirmar"></i></span>Dados</li>
+          <li class="assistente-conector" aria-hidden="true"></li>
+          <li class="assistente-etapa" aria-current="step"><span class="assistente-etapa-numero">2</span>Plano</li>
+          <li class="assistente-conector" aria-hidden="true"></li>
+          <li class="assistente-etapa"><span class="assistente-etapa-numero">3</span>Pagamento</li>
+        </ol>
+        <div class="assistente-corpo">
+          <div class="assistente-cabecalho"><p class="assistente-passo-rotulo">Passo 2 de 3</p><h3 class="assistente-titulo" id="assistente-vitrine-titulo">Escolha o plano</h3></div>
+          <div class="assistente-opcoes">
+            <label class="assistente-opcao"><input type="radio" name="plano-vitrine" checked><span class="assistente-opcao-icone"><i data-icone="raio"></i></span><span class="assistente-opcao-textos"><span class="assistente-opcao-titulo">Profissional</span><span class="assistente-opcao-texto">R$ 129 por mês</span></span></label>
+            <label class="assistente-opcao"><input type="radio" name="plano-vitrine"><span class="assistente-opcao-icone"><i data-icone="usuarios"></i></span><span class="assistente-opcao-textos"><span class="assistente-opcao-titulo">Equipe</span><span class="assistente-opcao-texto">R$ 299 por mês</span></span></label>
+          </div>
+        </div>
+        <footer class="assistente-rodape"><button type="button" class="botao botao-fantasma">Voltar</button><button type="button" class="botao botao-primario">Continuar</button></footer>
+      </section>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="linha-status" aria-labelledby="t-linha-status">
+  <h2 class="vitrine-titulo" id="t-linha-status">Página de status</h2>
+  <p class="vitrine-descricao">Situação dos serviços com histórico de disponibilidade por dia e linha do tempo de incidentes.</p>
+  <div class="vitrine-exemplo">
+    <div class="status-pagina">
+      <div class="status-resumo" role="status"><span class="status-resumo-icone"><i data-icone="confirmar"></i></span><div><p class="status-resumo-titulo">Todos os serviços funcionando</p><p class="status-resumo-texto">Verificado há 1 minuto</p></div></div>
+      <div class="status-componentes">
+        <div class="status-componente">
+          <div class="status-componente-topo"><p class="status-componente-nome"><i data-icone="painel"></i>Painel</p><span class="status-situacao" data-situacao="operacional">Operacional</span></div>
+          <div class="status-uptime" role="img" aria-label="Disponibilidade nos últimos 14 dias: 100%"><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span></div>
+          <div class="status-uptime-legenda"><span>14 dias atrás</span><strong>100% disponível</strong><span>Hoje</span></div>
+        </div>
+        <div class="status-componente">
+          <div class="status-componente-topo"><p class="status-componente-nome"><i data-icone="webhook"></i>Webhooks</p><span class="status-situacao" data-situacao="degradado">Lentidão</span></div>
+          <div class="status-uptime" role="img" aria-label="Disponibilidade nos últimos 14 dias: 98,9%"><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia" data-situacao="manutencao"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia" data-situacao="fora"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia"></span><span class="status-uptime-dia" data-situacao="degradado"></span></div>
+          <div class="status-uptime-legenda"><span>14 dias atrás</span><strong>98,9% disponível</strong><span>Hoje</span></div>
+        </div>
+      </div>
+      <div class="incidentes">
+        <div class="incidentes-dia">
+          <h3 class="incidentes-data">15 de outubro de 2026</h3>
+          <article class="incidente" data-gravidade="alta">
+            <h4 class="incidente-titulo">Atraso na entrega de webhooks</h4>
+            <ol class="incidente-atualizacoes">
+              <li class="incidente-atualizacao" data-etapa="resolvido"><span class="incidente-etapa">Resolvido</span>A fila voltou ao normal e os eventos atrasados foram reenviados.<span class="incidente-hora">16:40</span></li>
+              <li class="incidente-atualizacao" data-etapa="investigando"><span class="incidente-etapa">Investigando</span>Eventos chegando com até 20 minutos de atraso.<span class="incidente-hora">15:05</span></li>
+            </ol>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="registro-mudancas" aria-labelledby="t-registro-mudancas">
+  <h2 class="vitrine-titulo" id="t-registro-mudancas">Registro de mudanças</h2>
+  <p class="vitrine-descricao">Histórico de versões com o tipo de cada mudança, avisos de quebra e links para detalhes.</p>
+  <div class="vitrine-exemplo">
+    <div class="mudancas">
+      <article class="mudancas-versao" data-tipo="maior">
+        <div class="mudancas-lateral"><span class="mudancas-numero">1.2.0</span><time class="mudancas-data" datetime="2026-10-20">20 out 2026</time><span class="mudancas-recente">Nova</span></div>
+        <div class="mudancas-conteudo">
+          <h3 class="mudancas-versao-titulo">Relatórios agendados</h3>
+          <p class="mudancas-resumo">Agora dá para gerar relatórios todo dia, semana ou mês e receber uma notificação quando ficam prontos.</p>
+          <ul class="mudancas-lista">
+            <li class="mudancas-item"><span class="mudancas-tipo" data-tipo="novo">Novo</span>Agendamento de relatórios em CSV e PDF.</li>
+            <li class="mudancas-item"><span class="mudancas-tipo" data-tipo="melhoria">Melhoria</span>Prévia do relatório mostra o resumo antes de gerar.</li>
+            <li class="mudancas-item"><span class="mudancas-tipo" data-tipo="correcao">Correção</span>Datas do CSV respeitam o fuso da empresa.</li>
+          </ul>
+          <div class="mudancas-quebra"><i data-icone="alerta"></i><p><strong>Atenção:</strong> a rota <code>/relatorios/exportar</code> foi substituída por <code>/relatorios</code>.</p></div>
+        </div>
+      </article>
+      <article class="mudancas-versao">
+        <div class="mudancas-lateral"><span class="mudancas-numero">1.1.3</span><time class="mudancas-data" datetime="2026-10-02">2 out 2026</time></div>
+        <div class="mudancas-conteudo">
+          <ul class="mudancas-lista">
+            <li class="mudancas-item"><span class="mudancas-tipo" data-tipo="seguranca">Segurança</span>Sessões antigas são encerradas ao trocar a senha.</li>
+            <li class="mudancas-item"><span class="mudancas-tipo" data-tipo="removido">Removido</span>Exportação em XML.</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="cartoes-perfil" aria-labelledby="t-cartoes-perfil">
+  <h2 class="vitrine-titulo" id="t-cartoes-perfil">Cartões de perfil</h2>
+  <p class="vitrine-descricao">Grade de pessoas com capa, presença, papel, estatísticas e atalhos de contato.</p>
+  <div class="vitrine-exemplo">
+    <div class="perfis-grade">
+      <article class="perfis-cartao">
+        <div class="perfis-capa" aria-hidden="true"></div>
+        <div class="perfis-corpo">
+          <span class="perfis-avatar"><span class="avatar avatar-gigante" data-cor="0">AM</span><span class="perfis-presenca" data-presenca="online" aria-label="Online"></span></span>
+          <h3 class="perfis-nome">Ana Martins</h3>
+          <p class="perfis-cargo">Administradora</p>
+          <div class="perfis-emblemas"><span class="emblema emblema-pequeno" data-papel="admin">Administrador</span></div>
+          <div class="perfis-estatisticas"><div class="perfis-estatistica"><strong>42</strong><span>relatórios</span></div><div class="perfis-estatistica"><strong>18</strong><span>contas</span></div><div class="perfis-estatistica"><strong>7</strong><span>alertas</span></div></div>
+          <div class="perfis-contatos"><a class="perfis-contato" href="#cartoes-perfil" aria-label="Enviar e-mail"><i data-icone="email"></i></a><a class="perfis-contato" href="#cartoes-perfil" aria-label="Ligar"><i data-icone="telefone"></i></a></div>
+        </div>
+        <div class="perfis-rodape"><a href="#cartoes-perfil"><i data-icone="usuario"></i>Perfil</a><a href="#cartoes-perfil"><i data-icone="mensagens"></i>Mensagem</a></div>
+      </article>
+      <article class="perfis-cartao">
+        <div class="perfis-capa" data-tom="ouro" aria-hidden="true"></div>
+        <div class="perfis-corpo">
+          <span class="perfis-avatar"><span class="avatar avatar-gigante" data-cor="3">BC</span><span class="perfis-presenca" data-presenca="ausente" aria-label="Ausente"></span></span>
+          <h3 class="perfis-nome">Bruno Costa</h3>
+          <p class="perfis-cargo">Gerente de operações</p>
+          <div class="perfis-carga"><div class="perfis-carga-topo"><span>Carga da semana</span><span>72%</span></div><div class="perfis-carga-trilho"><span style="--valor: 72%"></span></div></div>
+        </div>
+        <div class="perfis-rodape"><a href="#cartoes-perfil"><i data-icone="usuario"></i>Perfil</a><a href="#cartoes-perfil"><i data-icone="mensagens"></i>Mensagem</a></div>
+      </article>
+      <button type="button" class="perfis-convidar"><span class="perfis-convidar-icone"><i data-icone="usuario-novo"></i></span><strong>Convidar pessoa</strong><span>Defina o papel no convite</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="graficos-css" aria-labelledby="t-graficos-css">
+  <h2 class="vitrine-titulo" id="t-graficos-css">Gráficos em CSS</h2>
+  <p class="vitrine-descricao">Gráficos leves feitos só com CSS e variáveis, para cards pequenos e e-mails sem JavaScript.</p>
+  <div class="vitrine-exemplo">
+    <div class="grade-campos">
+      <figure class="barras-css" role="img" aria-label="Novas assinaturas por mês: maio 42, junho 55, julho 48, agosto 63, setembro 71, outubro 80">
+        <div class="barras-css-area">
+          <span class="barras-css-grade" aria-hidden="true"></span>
+          <div class="barras-css-coluna"><span class="barras-css-barra" style="--valor: 52%"><span class="barras-css-valor">42</span></span></div>
+          <div class="barras-css-coluna"><span class="barras-css-barra" style="--valor: 69%"><span class="barras-css-valor">55</span></span></div>
+          <div class="barras-css-coluna"><span class="barras-css-barra" style="--valor: 60%"><span class="barras-css-valor">48</span></span></div>
+          <div class="barras-css-coluna"><span class="barras-css-barra" style="--valor: 79%"><span class="barras-css-valor">63</span></span></div>
+          <div class="barras-css-coluna"><span class="barras-css-barra" style="--valor: 89%"><span class="barras-css-valor">71</span></span></div>
+          <div class="barras-css-coluna"><span class="barras-css-barra" data-destaque="true" style="--valor: 100%"><span class="barras-css-valor">80</span></span></div>
+        </div>
+        <figcaption class="barras-css-rotulos"><span>mai</span><span>jun</span><span>jul</span><span>ago</span><span>set</span><span>out</span></figcaption>
+      </figure>
+      <div class="pilha">
+        <div class="linha">
+          <div class="rosca-css-moldura" role="img" aria-label="Meta do mês: 76% atingida"><span class="rosca-css" style="--valor: 76%"></span><span class="rosca-css-centro"><span class="rosca-css-valor">76%</span><span class="rosca-css-rotulo">da meta</span></span></div>
+          <div class="medidor-css" role="img" aria-label="Uso do plano: 64%" style="--valor: 64"><span class="medidor-css-centro"><span class="medidor-css-valor">64%</span><span class="medidor-css-rotulo">uso do plano</span></span></div>
+        </div>
+        <div class="barras-horizontais-css">
+          <div class="barras-horizontais-css-item"><span class="barras-horizontais-css-rotulo">Orgânico</span><span class="barras-horizontais-css-trilho"><span style="--valor: 82%"></span></span><span class="barras-horizontais-css-valor">8,2 mil</span></div>
+          <div class="barras-horizontais-css-item"><span class="barras-horizontais-css-rotulo">Pago</span><span class="barras-horizontais-css-trilho"><span style="--valor: 54%; --cor: var(--color-ouro-500)"></span></span><span class="barras-horizontais-css-valor">5,4 mil</span></div>
+        </div>
+        <div class="linha"><span class="faiscas-css" aria-hidden="true"><span style="--valor: 30%"></span><span style="--valor: 45%"></span><span style="--valor: 40%"></span><span style="--valor: 62%"></span><span style="--valor: 58%"></span><span style="--valor: 80%"></span></span><span class="legenda-css"><span style="--cor: var(--color-primaria-700)">Receita</span><span style="--cor: var(--color-ouro-500)">Meta</span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+              <h2 class="vitrine-grupo-titulo" data-grupo="Padrões">Padrões e páginas</h2>
+<section class="vitrine-secao" id="filtros-avancados" aria-labelledby="t-filtros-avancados">
+  <h2 class="vitrine-titulo" id="t-filtros-avancados">Filtros avançados</h2>
+  <p class="vitrine-descricao">Construtor de condições em linhas, com grupos combinados por E ou OU.</p>
+  <div class="vitrine-exemplo">
+    <form class="filtro-avancado" aria-label="Filtro de usuários">
+      <div class="filtro-avancado-cabecalho">
+        <p class="filtro-avancado-titulo"><i data-icone="filtro"></i>Filtrar usuários <span class="filtro-avancado-contador">3</span></p>
+        <p class="filtro-avancado-resumo"><strong>148</strong> contas atendem às condições</p>
+      </div>
+      <div class="filtro-avancado-grupo">
+        <div class="filtro-avancado-grupo-topo">
+          <span class="filtro-avancado-grupo-rotulo">Mostrar contas que atendem a</span>
+          <div class="filtro-avancado-conector" role="group" aria-label="Combinar condições" data-valor="e">
+            <button type="button" aria-pressed="true">E</button>
+            <button type="button" aria-pressed="false">OU</button>
+          </div>
+        </div>
+        <div class="filtro-avancado-linha">
+          <label class="sr-only" for="fa-campo-1">Campo</label>
+          <select class="filtro-avancado-campo" id="fa-campo-1"><option>Plano</option><option>Status</option><option>Criado em</option></select>
+          <label class="sr-only" for="fa-op-1">Operador</label>
+          <select class="filtro-avancado-operador" id="fa-op-1"><option>é um destes</option><option>não é</option></select>
+          <div class="filtro-avancado-valor-chips">
+            <span class="filtro-avancado-chip">Profissional<button type="button" aria-label="Remover Profissional"><i data-icone="fechar"></i></button></span>
+            <span class="filtro-avancado-chip">Equipe<button type="button" aria-label="Remover Equipe"><i data-icone="fechar"></i></button></span>
+          </div>
+          <button type="button" class="filtro-avancado-remover" aria-label="Remover condição"><i data-icone="lixeira"></i></button>
+        </div>
+        <div class="filtro-avancado-linha">
+          <label class="sr-only" for="fa-campo-2">Campo</label>
+          <select class="filtro-avancado-campo" id="fa-campo-2"><option>Criado em</option></select>
+          <label class="sr-only" for="fa-op-2">Operador</label>
+          <select class="filtro-avancado-operador" id="fa-op-2"><option>entre</option></select>
+          <div class="filtro-avancado-valor-intervalo">
+            <label class="sr-only" for="fa-de">De</label>
+            <input class="filtro-avancado-valor" id="fa-de" type="date" value="2026-07-01">
+            <span>e</span>
+            <label class="sr-only" for="fa-ate">Até</label>
+            <input class="filtro-avancado-valor" id="fa-ate" type="date" value="2026-09-30">
+          </div>
+          <button type="button" class="filtro-avancado-remover" aria-label="Remover condição"><i data-icone="lixeira"></i></button>
+        </div>
+        <div class="filtro-avancado-grupo" data-aninhado="true">
+          <div class="filtro-avancado-grupo-topo">
+            <span class="filtro-avancado-grupo-rotulo">Qualquer uma</span>
+            <div class="filtro-avancado-conector" role="group" aria-label="Combinar condições do grupo" data-valor="ou">
+              <button type="button" aria-pressed="false">E</button>
+              <button type="button" aria-pressed="true">OU</button>
+            </div>
+          </div>
+          <div class="filtro-avancado-linha">
+            <label class="sr-only" for="fa-campo-3">Campo</label>
+            <select class="filtro-avancado-campo" id="fa-campo-3"><option>Status</option></select>
+            <label class="sr-only" for="fa-op-3">Operador</label>
+            <select class="filtro-avancado-operador" id="fa-op-3"><option>é</option></select>
+            <label class="sr-only" for="fa-valor-3">Valor</label>
+            <select class="filtro-avancado-valor" id="fa-valor-3"><option>Pendente</option><option>Bloqueado</option></select>
+            <button type="button" class="filtro-avancado-remover" aria-label="Remover condição"><i data-icone="lixeira"></i></button>
+          </div>
+        </div>
+        <button type="button" class="filtro-avancado-adicionar"><i data-icone="adicionar"></i>Adicionar condição</button>
+      </div>
+      <p class="filtro-avancado-expressao" aria-label="Expressão gerada">
+        <span class="filtro-avancado-expressao-token" data-tipo="campo">plano</span><span class="filtro-avancado-expressao-token" data-tipo="operador">em</span><span class="filtro-avancado-expressao-token" data-tipo="valor">(profissional, equipe)</span><span class="filtro-avancado-expressao-token" data-tipo="conector">E</span><span class="filtro-avancado-expressao-token" data-tipo="campo">criado_em</span><span class="filtro-avancado-expressao-token" data-tipo="operador">entre</span><span class="filtro-avancado-expressao-token" data-tipo="valor">01/07 e 30/09</span>
+      </p>
+      <div class="filtro-avancado-rodape">
+        <div class="filtro-avancado-salvos" role="group" aria-label="Filtros salvos">
+          <button type="button" class="filtro-avancado-salvo" aria-pressed="true"><i data-icone="salvar"></i>Assinantes do trimestre</button>
+          <button type="button" class="filtro-avancado-salvo" aria-pressed="false">Contas paradas</button>
+        </div>
+        <div class="filtro-avancado-acoes">
+          <button type="button" class="botao botao-fantasma botao-pequeno">Limpar</button>
+          <button type="submit" class="botao botao-primario botao-pequeno">Aplicar filtros</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="selecao-avancada" aria-labelledby="t-selecao-avancada">
+  <h2 class="vitrine-titulo" id="t-selecao-avancada">Seleção avançada</h2>
+  <p class="vitrine-descricao">Combobox com busca, multisseleção com chips e listbox com opções ativas, selecionadas e desabilitadas.</p>
+  <div class="vitrine-exemplo">
+    <div class="grade-campos">
+      <div class="campo">
+        <span class="campo-rotulo" id="rotulo-responsavel">Responsável pela conta</span>
+        <div class="selecao-avancada">
+          <button type="button" class="selecao-avancada-gatilho" aria-haspopup="listbox" aria-expanded="true" aria-labelledby="rotulo-responsavel">
+            <span class="selecao-avancada-valor">Carla Dias</span>
+            <i data-icone="chevron-baixo" class="selecao-avancada-seta"></i>
+          </button>
+          <div class="selecao-avancada-painel" data-aberto="true">
+            <div class="selecao-avancada-busca"><i data-icone="buscar"></i><label class="sr-only" for="busca-responsavel">Buscar pessoa</label><input id="busca-responsavel" placeholder="Buscar pessoa" value="ca"></div>
+            <div class="selecao-avancada-lista" role="listbox" aria-labelledby="rotulo-responsavel">
+              <p class="selecao-avancada-grupo-titulo">Equipe</p>
+              <div class="selecao-avancada-opcao" role="option" aria-selected="true"><span class="selecao-avancada-opcao-icone"><i data-icone="usuario"></i></span><span class="selecao-avancada-opcao-textos"><span class="selecao-avancada-opcao-titulo"><mark>Ca</mark>rla Dias</span><span class="selecao-avancada-opcao-detalhe">Analista</span></span></div>
+              <div class="selecao-avancada-opcao" role="option" aria-selected="false" data-ativa="true"><span class="selecao-avancada-opcao-icone"><i data-icone="usuario"></i></span><span class="selecao-avancada-opcao-textos"><span class="selecao-avancada-opcao-titulo">Bruno <mark>Ca</mark>stro</span><span class="selecao-avancada-opcao-detalhe">Gerente</span></span></div>
+              <div class="selecao-avancada-opcao" role="option" aria-selected="false" aria-disabled="true"><span class="selecao-avancada-opcao-icone"><i data-icone="cadeado"></i></span><span class="selecao-avancada-opcao-textos"><span class="selecao-avancada-opcao-titulo"><mark>Ca</mark>io Rocha</span><span class="selecao-avancada-opcao-detalhe">Conta bloqueada</span></span></div>
+            </div>
+            <div class="selecao-avancada-rodape"><span>3 resultados</span><button type="button">Convidar pessoa</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="campo">
+        <label class="campo-rotulo" for="etiquetas-conta">Etiquetas</label>
+        <div class="selecao-avancada-chips">
+          <span class="selecao-avancada-chip" data-tom="primaria"><span>Cliente-chave</span><button type="button" aria-label="Remover Cliente-chave"><i data-icone="fechar"></i></button></span>
+          <span class="selecao-avancada-chip" data-tom="destaque"><span>Renovação em breve</span><button type="button" aria-label="Remover Renovação em breve"><i data-icone="fechar"></i></button></span>
+          <span class="selecao-avancada-chip-mais">+2</span>
+          <input id="etiquetas-conta" placeholder="Adicionar etiqueta">
+        </div>
+      </div>
+      <div class="campo campo-inteiro">
+        <span class="campo-rotulo" id="rotulo-canais">Canais de notificação</span>
+        <div class="selecao-avancada-listbox selecao-avancada-multipla" role="listbox" aria-multiselectable="true" aria-labelledby="rotulo-canais" tabindex="0">
+          <div class="selecao-avancada-opcao" role="option" aria-selected="true"><span class="selecao-avancada-caixa"></span>Painel</div>
+          <div class="selecao-avancada-opcao" role="option" aria-selected="true"><span class="selecao-avancada-caixa"></span>Webhook</div>
+          <div class="selecao-avancada-opcao" role="option" aria-selected="false" data-ativa="true"><span class="selecao-avancada-caixa"></span>Slack</div>
+          <div class="selecao-avancada-opcao" role="option" aria-selected="false" aria-disabled="true"><span class="selecao-avancada-caixa"></span>SMS (indisponível no seu plano)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="banner" aria-labelledby="t-banner">
+  <h2 class="vitrine-titulo" id="t-banner">Banners</h2>
+  <p class="vitrine-descricao">Faixas de anúncio, avisos por tom, barra de manutenção e aviso de cookies.</p>
+  <div class="vitrine-exemplo">
+    <div class="banner-pilha">
+      <div class="banner" data-tom="anuncio" role="region" aria-label="Novidade">
+        <span class="banner-icone"><i data-icone="brilho"></i></span>
+        <p class="banner-textos"><span class="banner-titulo">Relatórios agendados chegaram.</span><span class="banner-texto">Receba o fechamento do mês sem abrir o painel.</span></p>
+        <div class="banner-acoes"><a class="banner-botao" href="#banner">Agendar agora</a><button type="button" class="banner-fechar" aria-label="Fechar aviso"><i data-icone="fechar"></i></button></div>
+      </div>
+      <div class="banner" data-tom="alerta" role="status">
+        <span class="banner-icone"><i data-icone="alerta"></i></span>
+        <p class="banner-textos"><span class="banner-titulo">Seu plano está quase no limite.</span><span class="banner-texto">92% das chamadas de API do mês já foram usadas.</span><a class="banner-link" href="#banner">Ver uso<i data-icone="chevron-direita"></i></a></p>
+      </div>
+      <div class="banner" data-tom="erro" role="alert">
+        <span class="banner-icone"><i data-icone="erro"></i></span>
+        <p class="banner-textos"><span class="banner-titulo">O webhook de pagamentos está falhando.</span><span class="banner-texto">As últimas 3 entregas voltaram com erro 500.</span></p>
+        <div class="banner-acoes"><a class="banner-botao" href="#banner">Revisar integração</a></div>
+      </div>
+      <p class="banner-manutencao" role="status"><strong>Manutenção programada</strong>Sábado, <time datetime="2026-10-24T23:00">23h</time> às <time datetime="2026-10-25T01:00">1h</time>. O painel fica só para leitura.</p>
+    </div>
+    <div class="banner-cookies relative! inset-auto! mt-4" role="dialog" aria-labelledby="titulo-cookies">
+      <div class="banner-cookies-topo">
+        <span class="banner-cookies-icone"><i data-icone="escudo"></i></span>
+        <div><p class="banner-cookies-titulo" id="titulo-cookies">Cookies deste painel</p><p class="banner-cookies-texto">Usamos cookies para manter sua sessão. Os de medição são opcionais.</p></div>
+      </div>
+      <div class="banner-cookies-opcoes">
+        <div class="banner-cookies-opcao"><div><p class="banner-cookies-opcao-nome">Essenciais</p><p class="banner-cookies-opcao-detalhe">Sessão e segurança. Sempre ligados.</p></div><label class="interruptor interruptor-pequeno"><input type="checkbox" checked disabled aria-label="Cookies essenciais"><span class="interruptor-trilho"></span></label></div>
+        <div class="banner-cookies-opcao"><div><p class="banner-cookies-opcao-nome">Medição</p><p class="banner-cookies-opcao-detalhe">Ajuda a entender quais páginas são usadas.</p></div><label class="interruptor interruptor-pequeno"><input type="checkbox" aria-label="Cookies de medição"><span class="interruptor-trilho"></span></label></div>
+      </div>
+      <div class="banner-cookies-acoes"><button type="button" class="botao botao-secundario">Recusar opcionais</button><button type="button" class="botao botao-primario">Aceitar e continuar</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="erros" aria-labelledby="t-erros">
+  <h2 class="vitrine-titulo" id="t-erros">Páginas de erro</h2>
+  <p class="vitrine-descricao">Layouts de 404, 500 e manutenção com número grande e ilustração em grade bento feita só com CSS.</p>
+  <div class="vitrine-exemplo">
+    <div class="erro-pagina min-h-0! rounded-painel" data-tipo="404">
+      <div class="erro-pagina-caixa">
+        <div class="erro-pagina-textos">
+          <span class="erro-pagina-rotulo"><i data-icone="buscar"></i>Página não encontrada</span>
+          <p class="erro-pagina-codigo" aria-hidden="true">404</p>
+          <h3 class="erro-pagina-titulo">Esse endereço não existe no painel</h3>
+          <p class="erro-pagina-texto">O link pode ter mudado ou a página foi removida. Volte para o início ou use a busca.</p>
+          <div class="erro-pagina-acoes"><a class="botao botao-primario" href="#erros"><i data-icone="casa"></i>Ir para a visão geral</a><button type="button" class="botao botao-secundario"><i data-icone="buscar"></i>Buscar no painel</button></div>
+        </div>
+        <div class="erro-ilustracao" data-tipo="404" aria-hidden="true">
+          <span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span>
+          <span class="erro-ilustracao-selo"><i data-icone="buscar"></i></span>
+        </div>
+      </div>
+    </div>
+    <div class="erro-pagina min-h-0! mt-4 rounded-painel" data-tipo="manutencao">
+      <div class="erro-pagina-caixa">
+        <div class="erro-pagina-textos">
+          <span class="erro-pagina-rotulo"><i data-icone="configuracoes"></i>Manutenção</span>
+          <h3 class="erro-pagina-titulo">Voltamos em instantes</h3>
+          <p class="erro-pagina-texto">Estamos atualizando o banco de dados. Nenhum dado é perdido.</p>
+          <div class="erro-manutencao-prazo" aria-label="Tempo restante"><div><strong>00</strong><span>horas</span></div><div><strong>18</strong><span>minutos</span></div><div><strong>40</strong><span>segundos</span></div></div>
+          <div class="erro-manutencao-status">
+            <div class="erro-manutencao-item"><span class="erro-manutencao-item-nome">Painel</span><span class="erro-manutencao-item-estado" data-estado="manutencao">Em manutenção</span></div>
+            <div class="erro-manutencao-item"><span class="erro-manutencao-item-nome">API pública</span><span class="erro-manutencao-item-estado" data-estado="ok">Funcionando</span></div>
+          </div>
+        </div>
+        <div class="erro-ilustracao" data-tipo="manutencao" aria-hidden="true">
+          <span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span>
+          <span class="erro-ilustracao-selo" data-girando="true"><i data-icone="configuracoes"></i></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="boas-vindas" aria-labelledby="t-boas-vindas">
+  <h2 class="vitrine-titulo" id="t-boas-vindas">Boas-vindas</h2>
+  <p class="vitrine-descricao">Cartão de boas-vindas, checklist de primeiros passos com progresso e cartão de dica.</p>
+  <div class="vitrine-exemplo pilha">
+    <div class="boas-vindas">
+      <div class="boas-vindas-textos">
+        <p class="boas-vindas-saudacao">Bem-vinda ao Bento</p>
+        <h3 class="boas-vindas-titulo">Seu painel está pronto para receber dados</h3>
+        <p class="boas-vindas-texto">Conecte a cobrança, convide a equipe e escolha quais números aparecem primeiro.</p>
+        <div class="boas-vindas-acoes"><a class="botao botao-destaque" href="#boas-vindas">Começar configuração</a><button type="button" class="botao botao-claro">Ver um tour de 2 minutos</button></div>
+      </div>
+      <div class="boas-vindas-mosaico" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <button type="button" class="boas-vindas-fechar" aria-label="Dispensar boas-vindas"><i data-icone="fechar"></i></button>
+    </div>
+    <div class="bento-colunas">
+      <section class="primeiros-passos" aria-labelledby="titulo-passos">
+        <div class="primeiros-passos-cabecalho">
+          <div class="primeiros-passos-topo"><div><h3 class="primeiros-passos-titulo" id="titulo-passos">Primeiros passos</h3><p class="primeiros-passos-texto">Leva cerca de 10 minutos no total.</p></div></div>
+          <div class="primeiros-passos-progresso"><div class="primeiros-passos-trilho" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso"><span style="--valor: 50%"></span></div><span class="primeiros-passos-contagem">2 de 4</span></div>
+        </div>
+        <ol class="primeiros-passos-lista">
+          <li class="primeiros-passos-item" data-feito="true"><span class="primeiros-passos-marcador"><i data-icone="confirmar"></i></span><div class="primeiros-passos-item-textos"><p class="primeiros-passos-item-titulo">Criar a conta da empresa</p><p class="primeiros-passos-item-texto">Nome, moeda e fuso horário definidos.</p></div></li>
+          <li class="primeiros-passos-item" data-feito="true"><span class="primeiros-passos-marcador"><i data-icone="confirmar"></i></span><div class="primeiros-passos-item-textos"><p class="primeiros-passos-item-titulo">Definir a meta mensal</p><p class="primeiros-passos-item-texto">Aparece no card dourado da visão geral.</p></div></li>
+          <li class="primeiros-passos-item" data-atual="true"><span class="primeiros-passos-marcador">3</span><div class="primeiros-passos-item-textos"><p class="primeiros-passos-item-titulo">Convidar a equipe</p><p class="primeiros-passos-item-texto">Cada pessoa recebe um papel com permissões próprias.</p><span class="primeiros-passos-item-tempo"><i data-icone="relogio"></i>2 min</span></div><a class="botao botao-primario botao-pequeno primeiros-passos-item-acao" href="#boas-vindas">Convidar</a></li>
+          <li class="primeiros-passos-item"><span class="primeiros-passos-marcador">4</span><div class="primeiros-passos-item-textos"><p class="primeiros-passos-item-titulo">Ligar uma integração</p><p class="primeiros-passos-item-texto">Webhook, Slack ou Discord para receber eventos.</p></div></li>
+        </ol>
+      </section>
+      <aside class="dica-cartao" aria-label="Dica">
+        <span class="dica-cartao-icone"><i data-icone="brilho"></i></span>
+        <div class="dica-cartao-textos">
+          <p class="dica-cartao-titulo">Busque de qualquer página</p>
+          <p class="dica-cartao-texto">Aperte <span class="tecla">Ctrl</span> <span class="tecla">K</span> para achar usuários, transações e telas.</p>
+          <div class="dica-cartao-navegacao"><span class="dica-cartao-pontos" aria-hidden="true"><span aria-current="true"></span><span></span><span></span></span><button type="button" class="botao botao-link">Próxima dica</button></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="cartao-pagamento" aria-labelledby="t-cartao-pagamento">
+  <h2 class="vitrine-titulo" id="t-cartao-pagamento">Pagamento</h2>
+  <p class="vitrine-descricao">Cartão de crédito visual, lista de métodos de pagamento e formulário de cobrança com resumo.</p>
+  <div class="vitrine-exemplo">
+    <div class="cobranca">
+      <div class="cobranca-formulario">
+        <div class="cartao-credito" role="img" aria-label="Cartão final 4821, validade 08/29">
+          <div class="cartao-credito-topo"><span class="cartao-credito-chip"></span><span class="cartao-credito-bandeira">Bento Pay</span></div>
+          <p class="cartao-credito-numero">•••• •••• •••• 4821</p>
+          <div class="cartao-credito-rodape"><div class="cartao-credito-campo"><span class="cartao-credito-rotulo">Titular</span><span class="cartao-credito-valor">NOME NO CARTÃO</span></div><div class="cartao-credito-campo"><span class="cartao-credito-rotulo">Validade</span><span class="cartao-credito-valor">08/29</span></div></div>
+        </div>
+        <fieldset class="metodos-pagamento">
+          <legend class="campo-rotulo mb-2">Forma de pagamento</legend>
+          <label class="metodo-pagamento"><input type="radio" name="metodo" checked><span class="metodo-pagamento-icone" data-tipo="cartao"><i data-icone="cartao"></i></span><span class="metodo-pagamento-textos"><span class="metodo-pagamento-nome">Cartão final 4821 <span class="metodo-pagamento-padrao">Padrão</span></span><span class="metodo-pagamento-detalhe">Vence em 08/2029</span></span><span class="metodo-pagamento-radio"></span></label>
+          <label class="metodo-pagamento"><input type="radio" name="metodo"><span class="metodo-pagamento-icone" data-tipo="pix"><i data-icone="raio"></i></span><span class="metodo-pagamento-textos"><span class="metodo-pagamento-nome">Pix</span><span class="metodo-pagamento-detalhe">Aprovação na hora</span></span><span class="metodo-pagamento-radio"></span></label>
+          <label class="metodo-pagamento" data-expirado="true"><input type="radio" name="metodo"><span class="metodo-pagamento-icone" data-tipo="cartao"><i data-icone="cartao"></i></span><span class="metodo-pagamento-textos"><span class="metodo-pagamento-nome">Cartão final 0937</span><span class="metodo-pagamento-detalhe">Expirou em 03/2026</span></span><span class="metodo-pagamento-radio"></span></label>
+          <button type="button" class="metodo-pagamento-novo"><i data-icone="adicionar"></i>Adicionar forma de pagamento</button>
+        </fieldset>
+      </div>
+      <aside class="cobranca-resumo" aria-label="Resumo da cobrança">
+        <p class="cobranca-resumo-titulo">Plano Profissional anual</p>
+        <p class="cobranca-resumo-linha"><span>12 meses</span><strong>R$ 1.548,00</strong></p>
+        <p class="cobranca-resumo-linha" data-tipo="desconto"><span>Desconto anual</span><strong>− R$ 258,00</strong></p>
+        <div class="cobranca-resumo-total"><span>Total</span><strong>R$ 1.290,00</strong></div>
+        <div class="cobranca-cupom"><label class="sr-only" for="cupom">Cupom</label><input class="entrada" id="cupom" placeholder="Cupom de desconto"><button type="button" class="botao botao-secundario">Aplicar</button></div>
+        <button type="button" class="botao botao-primario botao-bloco">Confirmar pagamento</button>
+        <p class="cobranca-seguranca"><i data-icone="escudo-ok"></i>Pagamento processado com criptografia.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="uso-plano" aria-labelledby="t-uso-plano">
+  <h2 class="vitrine-titulo" id="t-uso-plano">Uso do plano</h2>
+  <p class="vitrine-descricao">Medidores de cota com limite, níveis de atenção e alerta de excesso.</p>
+  <div class="vitrine-exemplo">
+    <section class="uso-plano" aria-labelledby="titulo-uso">
+      <div class="uso-plano-cabecalho"><div><h3 class="uso-plano-nome" id="titulo-uso">Profissional <span class="uso-plano-selo">Atual</span></h3><p class="uso-plano-periodo">Ciclo de 1 a 31 de outubro</p></div><a class="botao botao-secundario botao-pequeno" href="#uso-plano">Mudar de plano</a></div>
+      <div class="uso-plano-lista">
+        <div class="uso-cota"><div class="uso-cota-topo"><span class="uso-cota-nome"><i data-icone="usuarios"></i>Usuários da equipe</span><span class="uso-cota-valor"><strong>6</strong> de 10</span></div><div class="uso-cota-trilho" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" aria-label="Usuários da equipe"><span class="uso-cota-preenchido" style="--uso: 60%"></span></div></div>
+        <div class="uso-cota" data-nivel="atencao"><div class="uso-cota-topo"><span class="uso-cota-nome"><i data-icone="raio"></i>Chamadas de API</span><span class="uso-cota-valor"><strong>92 mil</strong> de 100 mil</span></div><div class="uso-cota-trilho" role="progressbar" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100" aria-label="Chamadas de API"><span class="uso-cota-previsto" style="--previsto: 100%"></span><span class="uso-cota-preenchido" style="--uso: 92%"></span><span class="uso-cota-limite" style="--limite: 80%"></span></div><div class="uso-cota-legenda"><span>Aviso em 80%</span><span>Previsão: atinge o limite dia 29</span></div></div>
+        <div class="uso-cota" data-nivel="excedido"><div class="uso-cota-topo"><span class="uso-cota-nome"><i data-icone="arquivo"></i>Relatórios gerados</span><span class="uso-cota-valor"><strong>54</strong> de 50</span></div><div class="uso-cota-trilho" role="progressbar" aria-valuenow="108" aria-valuemin="0" aria-valuemax="100" aria-label="Relatórios gerados"><span class="uso-cota-preenchido" style="--uso: 100%"></span></div></div>
+      </div>
+      <div class="uso-alerta" data-nivel="excedido" role="alert"><i data-icone="alerta"></i><div class="uso-alerta-textos"><p class="uso-alerta-titulo">Você passou do limite de relatórios</p><p>Os 4 relatórios extras entram na próxima fatura. Mude de plano para ter 200 por mês.</p><div class="uso-alerta-acoes"><a class="botao botao-perigo botao-pequeno" href="#uso-plano">Ver planos</a></div></div></div>
+      <div class="uso-plano-grade">
+        <div class="uso-medidor"><span class="uso-medidor-anel" style="--uso: 38"><span>38%</span></span><div class="uso-medidor-textos"><span class="uso-medidor-nome">Armazenamento</span><span class="uso-medidor-detalhe">3,8 GB de 10 GB</span></div></div>
+        <div class="uso-medidor" data-nivel="atencao"><span class="uso-medidor-anel" style="--uso: 84"><span>84%</span></span><div class="uso-medidor-textos"><span class="uso-medidor-nome">Webhooks</span><span class="uso-medidor-detalhe">42 mil de 50 mil</span></div></div>
+      </div>
+      <div class="uso-plano-rodape"><span class="uso-plano-renovacao"><i data-icone="calendario"></i>Renova em 1º de novembro</span><span>Valores atualizados a cada hora</span></div>
+    </section>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="equipe" aria-labelledby="t-equipe">
+  <h2 class="vitrine-titulo" id="t-equipe">Equipe</h2>
+  <p class="vitrine-descricao">Lista de membros com papéis, convite por e-mail e convites pendentes.</p>
+  <div class="vitrine-exemplo">
+    <section class="equipe" aria-labelledby="titulo-equipe">
+      <div class="equipe-cabecalho"><h3 class="equipe-titulo" id="titulo-equipe">Membros <span class="equipe-contador">4</span></h3><div class="equipe-assentos"><span><strong>4</strong> de 10 assentos</span><span class="equipe-assentos-barra"><span style="--valor: 40%"></span></span></div></div>
+      <form class="equipe-convidar" aria-label="Convidar membro">
+        <div class="equipe-convidar-campos"><label class="sr-only" for="convite-email">E-mail</label><input class="entrada" id="convite-email" type="email" placeholder="email@empresa.com"><label class="sr-only" for="convite-papel">Papel</label><select class="selecao" id="convite-papel"><option>Editor</option><option>Leitor</option><option>Admin</option></select></div>
+        <button type="submit" class="botao botao-primario"><i data-icone="usuario-novo"></i>Enviar convite</button>
+      </form>
+      <ul class="equipe-lista" role="list">
+        <li class="equipe-membro" data-voce="true"><span class="avatar avatar-pequeno" data-cor="0" aria-hidden="true">AM</span><div class="equipe-membro-textos"><span class="equipe-membro-nome">Ana Martins <span class="equipe-membro-voce">Você</span></span><span class="equipe-membro-email">admin@bento.local</span></div><span class="equipe-membro-papel"><span class="equipe-papel" data-papel="dono"><i data-icone="chave"></i>Dono</span></span><span class="equipe-membro-atividade" data-online="true">Online</span><span class="equipe-membro-acoes"></span></li>
+        <li class="equipe-membro"><span class="avatar avatar-pequeno" data-cor="1" aria-hidden="true">BC</span><div class="equipe-membro-textos"><span class="equipe-membro-nome">Bruno Costa</span><span class="equipe-membro-email">gerente@bento.local</span></div><span class="equipe-membro-papel"><label class="sr-only" for="papel-bruno">Papel de Bruno Costa</label><select id="papel-bruno"><option>Admin</option><option>Editor</option></select></span><span class="equipe-membro-atividade">há 2 horas</span><span class="equipe-membro-acoes"><button type="button" class="botao botao-fantasma botao-icone botao-pequeno" aria-label="Ações para Bruno Costa"><i data-icone="mais"></i></button></span></li>
+        <li class="equipe-membro" data-suspenso="true"><span class="avatar avatar-pequeno" data-cor="2" aria-hidden="true">DR</span><div class="equipe-membro-textos"><span class="equipe-membro-nome">Diego Rocha</span><span class="equipe-membro-email">suporte@bento.local</span></div><span class="equipe-membro-papel"><span class="equipe-papel" data-papel="leitor">Leitor</span></span><span class="equipe-membro-atividade">há 12 dias</span><span class="equipe-membro-acoes"><button type="button" class="botao botao-fantasma botao-icone botao-pequeno" aria-label="Ações para Diego Rocha"><i data-icone="mais"></i></button></span></li>
+      </ul>
+      <div class="convites-pendentes">
+        <p class="convites-pendentes-titulo">Convites pendentes <span>2</span></p>
+        <div class="convite"><span class="convite-icone"><i data-icone="email"></i></span><div class="convite-textos"><span class="convite-email">financeiro@exemplo.com</span><span class="convite-detalhe">Editor, enviado há 3 dias</span></div><div class="convite-acoes"><button type="button" class="botao botao-fantasma botao-pequeno">Reenviar</button><button type="button" class="botao botao-fantasma botao-pequeno">Cancelar</button></div></div>
+        <div class="convite" data-expirado="true"><span class="convite-icone"><i data-icone="email"></i></span><div class="convite-textos"><span class="convite-email">vendas@exemplo.com</span><span class="convite-detalhe">Convite expirado</span></div><div class="convite-acoes"><button type="button" class="botao botao-fantasma botao-pequeno">Reenviar</button></div></div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="sobreposicoes" aria-labelledby="t-sobreposicoes">
+  <h2 class="vitrine-titulo" id="t-sobreposicoes">Sobreposições</h2>
+  <p class="vitrine-descricao">Hovercard, menu de contexto, balão com seta em quatro lados e folha inferior para celular.</p>
+  <div class="vitrine-exemplo">
+    <div class="grid gap-16 py-16 sm:grid-cols-2">
+      <div class="balao-ancora justify-center">
+        <button type="button" class="botao botao-secundario" aria-describedby="balao-cima">Balão acima</button>
+        <div class="balao" id="balao-cima" role="tooltip" data-lado="cima" data-aberto="true"><p class="balao-titulo">Receita recorrente</p><p class="balao-texto">Soma das assinaturas ativas convertidas para valor mensal.</p></div>
+      </div>
+      <div class="balao-ancora justify-center">
+        <button type="button" class="botao botao-secundario" aria-describedby="balao-baixo">Balão abaixo</button>
+        <div class="balao balao-escuro" id="balao-baixo" role="tooltip" data-lado="baixo" data-aberto="true"><p class="balao-texto">Atalho: Ctrl + K</p></div>
+      </div>
+      <div class="relative">
+        <div class="hovercard relative!" data-aberto="true" role="dialog" aria-label="Cartão de Carla Dias">
+          <div class="hovercard-capa"></div>
+          <div class="hovercard-corpo">
+            <span class="avatar hovercard-avatar" data-cor="6" aria-hidden="true">CD</span>
+            <div><p class="hovercard-nome">Carla Dias</p><p class="hovercard-detalhe">Analista, entrou há 1 ano</p></div>
+            <dl class="hovercard-metricas"><div><dt><span>Relatórios</span></dt><dd><strong>38</strong></dd></div><div><dt><span>Filtros</span></dt><dd><strong>12</strong></dd></div><div><dt><span>Acessos</span></dt><dd><strong>214</strong></dd></div></dl>
+            <div class="hovercard-acoes"><button type="button" class="botao botao-secundario botao-pequeno">Ver perfil</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="menu-contexto relative!" data-aberto="true" role="menu" aria-label="Ações da linha">
+          <p class="menu-contexto-titulo">TX-004821</p>
+          <button type="button" class="menu-contexto-item" role="menuitem"><i data-icone="olho"></i>Abrir detalhes<kbd>Enter</kbd></button>
+          <button type="button" class="menu-contexto-item" role="menuitem"><i data-icone="copiar"></i>Copiar código<kbd>Ctrl C</kbd></button>
+          <button type="button" class="menu-contexto-item" role="menuitem" aria-haspopup="true"><i data-icone="baixar"></i>Exportar como</button>
+          <div class="menu-contexto-separador" role="separator"></div>
+          <button type="button" class="menu-contexto-item" role="menuitem" data-perigo="true"><i data-icone="desfazer"></i>Reembolsar</button>
+        </div>
+      </div>
+    </div>
+    <div class="folha-inferior-demonstracao relative overflow-hidden rounded-painel bg-neutra-200 p-4 pt-24 dark:bg-neutra-800">
+      <div class="folha-inferior relative! sm:right-auto! sm:bottom-auto! sm:max-w-none! sm:translate-x-0!" role="dialog" aria-labelledby="titulo-folha">
+        <span class="folha-inferior-alca" aria-hidden="true"></span>
+        <div class="folha-inferior-cabecalho"><p class="folha-inferior-titulo" id="titulo-folha">Paula Lima</p><button type="button" class="botao botao-fantasma botao-icone botao-pequeno" aria-label="Fechar"><i data-icone="fechar"></i></button></div>
+        <div class="folha-inferior-corpo">
+          <button type="button" class="folha-inferior-opcao"><i data-icone="editar"></i>Editar dados</button>
+          <button type="button" class="folha-inferior-opcao"><i data-icone="chave"></i>Gerar senha temporária</button>
+          <button type="button" class="folha-inferior-opcao" data-perigo="true"><i data-icone="cadeado"></i>Bloquear conta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="formularios-avancados" aria-labelledby="t-formularios-avancados">
+  <h2 class="vitrine-titulo" id="t-formularios-avancados">Formulários avançados</h2>
+  <p class="vitrine-descricao">Rótulo flutuante, código de verificação, seletor de cor, grupos de entrada, prévia de arquivo e contador de caracteres.</p>
+  <div class="vitrine-exemplo">
+    <div class="grade-campos">
+      <label class="rotulo-flutuante"><input type="email" placeholder="E-mail de cobrança" value="financeiro@exemplo.com"><span>E-mail de cobrança</span></label>
+      <label class="rotulo-flutuante"><input type="text" placeholder="Nome da empresa"><span>Nome da empresa</span></label>
+      <fieldset class="campo">
+        <legend class="campo-rotulo mb-1.5">Código enviado por e-mail</legend>
+        <div class="codigo-otp">
+          <input inputmode="numeric" maxlength="1" placeholder=" " value="4" aria-label="Dígito 1"><input inputmode="numeric" maxlength="1" placeholder=" " value="8" aria-label="Dígito 2"><input inputmode="numeric" maxlength="1" placeholder=" " value="2" aria-label="Dígito 3"><span class="codigo-otp-separador" aria-hidden="true"></span><input inputmode="numeric" maxlength="1" placeholder=" " aria-label="Dígito 4"><input inputmode="numeric" maxlength="1" placeholder=" " aria-label="Dígito 5"><input inputmode="numeric" maxlength="1" placeholder=" " aria-label="Dígito 6">
+        </div>
+        <p class="codigo-otp-ajuda"><span>Válido por 10 minutos</span><button type="button" disabled>Reenviar em 0:42</button></p>
+      </fieldset>
+      <fieldset class="seletor-cor">
+        <legend class="campo-rotulo mb-1.5">Cor da etiqueta</legend>
+        <div class="seletor-cor-amostras">
+          <label class="seletor-cor-amostra"><input type="radio" name="cor-etiqueta" checked aria-label="Oliva"><span style="--cor: #31401A"></span></label>
+          <label class="seletor-cor-amostra"><input type="radio" name="cor-etiqueta" aria-label="Ouro"><span style="--cor: #BF9A54"></span></label>
+          <label class="seletor-cor-amostra"><input type="radio" name="cor-etiqueta" aria-label="Sálvia"><span style="--cor: #A1A680"></span></label>
+          <label class="seletor-cor-amostra"><input type="radio" name="cor-etiqueta" aria-label="Casca"><span style="--cor: #4D3A25"></span></label>
+          <label class="seletor-cor-amostra"><input type="radio" name="cor-etiqueta" aria-label="Brasa"><span style="--cor: #B04A2F"></span></label>
+        </div>
+        <div class="seletor-cor-personalizada"><label class="sr-only" for="cor-livre">Cor personalizada</label><input type="color" id="cor-livre" value="#31401a"><label class="sr-only" for="cor-hex">Código da cor</label><input type="text" id="cor-hex" value="#31401A"><span class="seletor-cor-previa" style="--cor: #31401A">Prévia</span></div>
+      </fieldset>
+      <div class="campo">
+        <label class="campo-rotulo" for="dominio">Domínio do painel</label>
+        <div class="grupo-entrada"><span class="grupo-entrada-texto">https://</span><input id="dominio" value="painel.exemplo.com"><button type="button" class="grupo-entrada-botao" data-tom="primaria"><i data-icone="confirmar"></i>Verificar</button></div>
+      </div>
+      <div class="campo">
+        <span class="campo-rotulo" id="rotulo-assentos">Assentos extras</span>
+        <div class="grupo-entrada-numero" role="group" aria-labelledby="rotulo-assentos"><button type="button" aria-label="Diminuir"><i data-icone="menos"></i></button><input value="3" inputmode="numeric" aria-labelledby="rotulo-assentos"><button type="button" aria-label="Aumentar"><i data-icone="adicionar"></i></button></div>
+      </div>
+      <div class="campo campo-inteiro">
+        <span class="campo-rotulo">Arquivos enviados</span>
+        <div class="pilha-pequena">
+          <div class="previa-arquivo" data-estado="concluido"><span class="previa-arquivo-miniatura" data-tipo="csv">csv</span><div class="previa-arquivo-textos"><span class="previa-arquivo-nome">clientes-importacao.csv</span><span class="previa-arquivo-detalhe">248 KB, enviado</span><span class="previa-arquivo-trilho"><span style="--progresso: 100%"></span></span></div><button type="button" class="previa-arquivo-remover" aria-label="Remover arquivo"><i data-icone="fechar"></i></button></div>
+          <div class="previa-arquivo"><span class="previa-arquivo-miniatura" data-tipo="pdf">pdf</span><div class="previa-arquivo-textos"><span class="previa-arquivo-nome">contrato-servico.pdf</span><span class="previa-arquivo-detalhe">1,2 MB de 2,9 MB</span><span class="previa-arquivo-trilho"><span style="--progresso: 42%"></span></span></div><button type="button" class="previa-arquivo-remover" aria-label="Cancelar envio"><i data-icone="fechar"></i></button></div>
+          <div class="previa-arquivo" data-estado="erro"><span class="previa-arquivo-miniatura">zip</span><div class="previa-arquivo-textos"><span class="previa-arquivo-nome">backup-antigo.zip</span><span class="previa-arquivo-detalhe">Formato não aceito. Envie CSV, PDF ou imagem.</span></div><button type="button" class="previa-arquivo-remover" aria-label="Remover arquivo"><i data-icone="fechar"></i></button></div>
+        </div>
+      </div>
+      <div class="campo campo-inteiro">
+        <div class="campo-com-contador"><label class="campo-rotulo" for="mensagem-aviso">Mensagem do aviso</label><span class="contador-caracteres" data-nivel="perto" aria-live="polite">276/300</span></div>
+        <textarea class="area-texto" id="mensagem-aviso" maxlength="300">A cobrança do plano Equipe passa a ser feita no dia 5 de cada mês a partir de novembro. Quem paga por Pix recebe a chave nova por e-mail. Nada muda para quem paga com cartão de crédito cadastrado no painel.</textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="impressao-relatorio" aria-labelledby="t-impressao-relatorio">
+  <h2 class="vitrine-titulo" id="t-impressao-relatorio">Relatório para impressão</h2>
+  <p class="vitrine-descricao">Página A4 com cabeçalho, quadro de resumo, gráfico e tabela zebrada que repete o cabeçalho ao imprimir.</p>
+  <div class="vitrine-exemplo overflow-x-auto">
+    <article class="relatorio-impresso">
+      <div class="relatorio-impresso-pagina min-h-0!">
+        <header class="relatorio-impresso-cabecalho"><span class="relatorio-impresso-cabecalho-marca"><i data-icone="painel"></i>Bento</span><span class="relatorio-impresso-cabecalho-info">Gerado em 22/10/2026<br>Página 1 de 3</span></header>
+        <h3 class="relatorio-impresso-titulo">Receita de setembro</h3>
+        <p class="relatorio-impresso-periodo">De 01/09/2026 a 30/09/2026</p>
+        <dl class="relatorio-impresso-resumo">
+          <div><dt>Receita</dt><dd>R$ 184 mil <small>+8,2%</small></dd></div>
+          <div><dt>Transações</dt><dd>1.326</dd></div>
+          <div><dt>Ticket médio</dt><dd>R$ 139</dd></div>
+          <div><dt>Reembolsos</dt><dd>R$ 3,1 mil <small data-negativo="true">+1,4%</small></dd></div>
+        </dl>
+        <div class="relatorio-impresso-grafico" aria-hidden="true"><span style="--altura: 40%"></span><span style="--altura: 55%"></span><span style="--altura: 48%"></span><span style="--altura: 62%"></span><span style="--altura: 70%"></span><span style="--altura: 66%"></span><span style="--altura: 82%"></span><span style="--altura: 90%" data-destaque="true"></span></div>
+        <section class="relatorio-impresso-secao">
+          <h4 class="relatorio-impresso-secao-titulo">Receita por dia</h4>
+          <table class="relatorio-impresso-tabela">
+            <thead><tr><th scope="col">Data</th><th scope="col" class="numero">Transações</th><th scope="col" class="numero">Receita</th><th scope="col" class="numero">Reembolsos</th></tr></thead>
+            <tbody>
+              <tr><td>01/09</td><td class="numero">41</td><td class="numero">R$ 5.689,00</td><td class="numero">R$ 0,00</td></tr>
+              <tr><td>02/09</td><td class="numero">47</td><td class="numero">R$ 6.523,00</td><td class="numero">R$ 129,00</td></tr>
+              <tr><td>03/09</td><td class="numero">39</td><td class="numero">R$ 5.411,00</td><td class="numero">R$ 0,00</td></tr>
+            </tbody>
+            <tfoot><tr><td>Total</td><td class="numero">127</td><td class="numero">R$ 17.623,00</td><td class="numero">R$ 129,00</td></tr></tfoot>
+          </table>
+          <p class="relatorio-impresso-nota">Valores em reais, com transações pagas no fuso de Brasília.</p>
+        </section>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="animacoes-graficos" aria-labelledby="t-animacoes-graficos">
+  <h2 class="vitrine-titulo" id="t-animacoes-graficos">Animações e cores de gráfico</h2>
+  <p class="vitrine-descricao">Utilitários de entrada, saída e atenção que respeitam movimento reduzido, e as oito cores de série que mudam com a paleta e o modo escuro.</p>
+  <div class="vitrine-exemplo pilha">
+    <div class="grid gap-3 sm:grid-cols-4">
+      <div class="cartao aparecer-cima"><p class="text-sm font-semibold">aparecer-cima</p></div>
+      <div class="cartao aparecer-escala atraso-curto"><p class="text-sm font-semibold">aparecer-escala</p></div>
+      <div class="cartao aparecer-mola atraso-medio"><p class="text-sm font-semibold">aparecer-mola</p></div>
+      <div class="cartao flex-row! items-center gap-3"><i data-icone="sino" class="size-5 balancar-sino"></i><span class="size-2.5 rounded-full bg-destaque-500 pulsar-suave" aria-hidden="true"></span><i data-icone="configuracoes" class="size-5 girar-lento"></i></div>
+    </div>
+    <div class="flex flex-wrap gap-4" aria-label="Legenda das séries">
+      <span class="legenda-serie legenda-serie-1">Série 1</span><span class="legenda-serie legenda-serie-2">Série 2</span><span class="legenda-serie legenda-serie-3">Série 3</span><span class="legenda-serie legenda-serie-4">Série 4</span><span class="legenda-serie legenda-serie-5">Série 5</span><span class="legenda-serie legenda-serie-6">Série 6</span><span class="legenda-serie legenda-serie-7">Série 7</span><span class="legenda-serie legenda-serie-8">Série 8</span>
+    </div>
+    <div class="faixa-series" role="img" aria-label="Participação de cada série">
+      <span class="barra-serie-1" style="--peso: 4"></span><span class="barra-serie-2" style="--peso: 3"></span><span class="barra-serie-3" style="--peso: 2"></span><span class="barra-serie-4" style="--peso: 2"></span><span class="barra-serie-5" style="--peso: 1"></span><span class="barra-serie-6" style="--peso: 1"></span><span class="barra-serie-7" style="--peso: 1"></span><span class="barra-serie-8" style="--peso: 1"></span>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="modelos-bento" aria-labelledby="t-modelos-bento">
+  <h2 class="vitrine-titulo" id="t-modelos-bento">Modelos de grade bento</h2>
+  <p class="vitrine-descricao">Cinco grades prontas com áreas nomeadas que se reorganizam no tablet e no desktop.</p>
+  <div class="vitrine-exemplo pilha">
+    <fieldset class="modelos-bento-galeria">
+      <legend class="sr-only">Escolha um modelo</legend>
+      <label class="modelos-bento-opcao"><input type="radio" name="modelo" checked><span class="modelo-bento-miniatura modelo-vendas" aria-hidden="true"><span data-area="destaque"></span><span data-area="meta"></span><span data-area="funil"></span><span data-area="ranking"></span><span data-area="pedidos"></span><span data-area="canais"></span></span><span class="modelos-bento-opcao-nome">Vendas</span><span class="modelos-bento-opcao-texto">Receita, meta e funil</span></label>
+      <label class="modelos-bento-opcao"><input type="radio" name="modelo"><span class="modelo-bento-miniatura modelo-produto" aria-hidden="true"><span data-area="ativos"></span><span data-area="retencao"></span><span data-area="recursos"></span><span data-area="nps"></span><span data-area="eventos"></span><span data-area="versoes"></span></span><span class="modelos-bento-opcao-nome">Produto</span><span class="modelos-bento-opcao-texto">Uso e retenção</span></label>
+      <label class="modelos-bento-opcao"><input type="radio" name="modelo"><span class="modelo-bento-miniatura modelo-suporte" aria-hidden="true"><span data-area="abertos"></span><span data-area="tempo"></span><span data-area="satisfacao"></span><span data-area="fila"></span><span data-area="agentes"></span><span data-area="temas"></span></span><span class="modelos-bento-opcao-nome">Suporte</span><span class="modelos-bento-opcao-texto">Fila e satisfação</span></label>
+      <label class="modelos-bento-opcao"><input type="radio" name="modelo"><span class="modelo-bento-miniatura modelo-financeiro" aria-hidden="true"><span data-area="caixa"></span><span data-area="receitas"></span><span data-area="despesas"></span><span data-area="margem"></span><span data-area="contas"></span><span data-area="previsao"></span></span><span class="modelos-bento-opcao-nome">Financeiro</span><span class="modelos-bento-opcao-texto">Caixa e previsão</span></label>
+      <label class="modelos-bento-opcao"><input type="radio" name="modelo"><span class="modelo-bento-miniatura modelo-marketing" aria-hidden="true"><span data-area="alcance"></span><span data-area="campanhas"></span><span data-area="conversao"></span><span data-area="origem"></span><span data-area="conteudo"></span><span data-area="custo"></span></span><span class="modelos-bento-opcao-nome">Marketing</span><span class="modelos-bento-opcao-texto">Campanhas e custo</span></label>
+    </fieldset>
+    <div class="modelo-bento modelo-vendas">
+      <div class="modelo-bento-celula" data-area="destaque" data-tom="destaque"><span class="modelo-bento-rotulo">Receita do mês</span><span class="modelo-bento-valor">R$ 184 mil</span></div>
+      <div class="modelo-bento-celula" data-area="meta" data-tom="ouro"><span class="modelo-bento-rotulo">Meta</span><span class="modelo-bento-valor">76%</span></div>
+      <div class="modelo-bento-celula" data-area="funil"><span class="modelo-bento-rotulo">Conversão</span><span class="modelo-bento-valor">3,4%</span></div>
+      <div class="modelo-bento-celula" data-area="ranking"><span class="modelo-bento-rotulo">Planos mais vendidos</span></div>
+      <div class="modelo-bento-celula" data-area="pedidos"><span class="modelo-bento-rotulo">Pedidos recentes</span></div>
+      <div class="modelo-bento-celula" data-area="canais" data-tom="vazio"><span class="modelo-bento-rotulo">Adicionar card</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="estados-vazios" aria-labelledby="t-estados-vazios">
+  <h2 class="vitrine-titulo" id="t-estados-vazios">Estados vazios ilustrados</h2>
+  <p class="vitrine-descricao">Ilustrações feitas com formas CSS para lista vazia, erro, falta de permissão e busca sem resultado, e cartões de primeiro uso.</p>
+  <div class="vitrine-exemplo pilha">
+    <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <div class="vazio-ilustrado vazio-ilustrado-moldura">
+        <div class="vazio-ilustrado-arte" aria-hidden="true"><span class="forma-caixa"><span class="forma-caixa-folha"></span></span><span class="forma-brilho" data-posicao="1"></span><span class="forma-brilho" data-posicao="2"></span></div>
+        <h3 class="vazio-ilustrado-titulo">Nenhum relatório ainda</h3>
+        <p class="vazio-ilustrado-texto">Gere o primeiro e ele fica guardado aqui para baixar de novo.</p>
+        <div class="vazio-ilustrado-acoes"><a class="botao botao-primario botao-pequeno" href="#estados-vazios">Gerar relatório</a></div>
+      </div>
+      <div class="vazio-ilustrado vazio-ilustrado-moldura" data-tipo="erro">
+        <div class="vazio-ilustrado-arte" aria-hidden="true"><span class="forma-grade-quebrada"><span></span><span></span><span></span><span></span><span></span><span></span></span></div>
+        <h3 class="vazio-ilustrado-titulo">Não foi possível carregar</h3>
+        <p class="vazio-ilustrado-texto">A API demorou para responder. Tente de novo em instantes.</p>
+        <div class="vazio-ilustrado-acoes"><button type="button" class="botao botao-secundario botao-pequeno"><i data-icone="atualizar"></i>Tentar de novo</button></div>
+      </div>
+      <div class="vazio-ilustrado vazio-ilustrado-moldura" data-tipo="bloqueado">
+        <div class="vazio-ilustrado-arte" aria-hidden="true"><span class="forma-cadeado"></span></div>
+        <h3 class="vazio-ilustrado-titulo">Sem permissão</h3>
+        <p class="vazio-ilustrado-texto">Peça a um administrador para liberar o acesso a relatórios.</p>
+      </div>
+      <div class="vazio-ilustrado vazio-ilustrado-moldura">
+        <div class="vazio-ilustrado-arte" aria-hidden="true"><span class="forma-lupa"></span></div>
+        <h3 class="vazio-ilustrado-titulo">Nada encontrado</h3>
+        <p class="vazio-ilustrado-texto">Nenhum usuário com “marcelo” no nome ou e-mail.</p>
+        <ul class="vazio-ilustrado-sugestoes"><li class="vazio-ilustrado-sugestao">Confira a grafia</li><li class="vazio-ilustrado-sugestao">Remova os filtros de status</li></ul>
+      </div>
+    </div>
+    <div class="primeiro-uso">
+      <article class="primeiro-uso-cartao" data-tom="primaria"><div class="primeiro-uso-cartao-arte"><span class="primeiro-uso-cartao-icone"><i data-icone="usuario-novo"></i></span></div><span class="primeiro-uso-cartao-tempo">2 min</span><h3 class="primeiro-uso-cartao-titulo">Convide a equipe</h3><p class="primeiro-uso-cartao-texto">Cada pessoa entra com um papel e só vê o que precisa.</p><a class="primeiro-uso-cartao-link" href="#estados-vazios">Convidar pessoas<i data-icone="chevron-direita"></i></a></article>
+      <article class="primeiro-uso-cartao" data-tom="destaque"><div class="primeiro-uso-cartao-arte"><span class="primeiro-uso-cartao-icone"><i data-icone="integracao"></i></span></div><span class="primeiro-uso-cartao-tempo">5 min</span><h3 class="primeiro-uso-cartao-titulo">Ligue uma integração</h3><p class="primeiro-uso-cartao-texto">Receba transações pagas no Slack, Discord ou no seu webhook.</p><a class="primeiro-uso-cartao-link" href="#estados-vazios">Ver integrações<i data-icone="chevron-direita"></i></a></article>
+      <article class="primeiro-uso-cartao" data-feito="true"><div class="primeiro-uso-cartao-arte"><span class="primeiro-uso-cartao-icone"><i data-icone="alvo"></i></span></div><h3 class="primeiro-uso-cartao-titulo">Defina a meta do mês</h3><p class="primeiro-uso-cartao-texto">O progresso aparece no card dourado da visão geral.</p><a class="primeiro-uso-cartao-link" href="#estados-vazios">Ajustar meta<i data-icone="chevron-direita"></i></a></article>
+    </div>
+  </div>
+</section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

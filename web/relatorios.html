@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Relatórios detalhados de receita, transações, usuários, assinaturas e crescimento, com exportação em CSV e PDF.">
+    <title>Relatórios | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/js/paginas/relatorios.js"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Relatórios</h1>
+              <p class="pagina-descricao">Escolha os dados e o período, confira a prévia e baixe em CSV ou PDF.</p>
+            </div>
+            <div class="pagina-acoes">
+              <button type="button" class="botao botao-secundario" data-acao="agendar" data-permissao="relatorios.agendar"><i data-icone="agendamento"></i>Agendar envio</button>
+            </div>
+          </div>
+
+          <div class="relatorios-grade">
+            <section class="cartao" aria-labelledby="titulo-novo-relatorio">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-novo-relatorio">Novo relatório</h2>
+                  <p class="cartao-subtitulo">Três passos: dados, período e formato</p>
+                </div>
+              </div>
+              <form class="formulario" data-construtor novalidate>
+                <fieldset class="campo">
+                  <legend class="campo-rotulo mb-1.5">Dados</legend>
+                  <div class="tipos-relatorio" data-tipos>
+                    <span class="esqueleto esqueleto-bloco min-h-14"></span>
+                    <span class="esqueleto esqueleto-bloco min-h-14"></span>
+                    <span class="esqueleto esqueleto-bloco min-h-14"></span>
+                  </div>
+                </fieldset>
+                <fieldset class="campo">
+                  <legend class="campo-rotulo mb-1.5">Período</legend>
+                  <div class="intervalo-datas w-full">
+                    <i data-icone="intervalo"></i>
+                    <label class="sr-only" for="relatorio-inicio">Data inicial</label>
+                    <input type="date" id="relatorio-inicio" name="inicio" required class="flex-1">
+                    <span class="intervalo-datas-separador" aria-hidden="true">até</span>
+                    <label class="sr-only" for="relatorio-fim">Data final</label>
+                    <input type="date" id="relatorio-fim" name="fim" required class="flex-1">
+                  </div>
+                  <div class="predefinicoes mt-2" role="group" aria-label="Períodos prontos">
+                    <button type="button" data-dias="7">7 dias</button>
+                    <button type="button" data-dias="30">30 dias</button>
+                    <button type="button" data-dias="90">90 dias</button>
+                    <button type="button" data-dias="365">12 meses</button>
+                  </div>
+                </fieldset>
+                <fieldset class="campo">
+                  <legend class="campo-rotulo mb-1.5">Formato</legend>
+                  <div class="segmentado">
+                    <label><input type="radio" name="formato" value="pdf" checked><span><i data-icone="arquivo"></i>PDF</span></label>
+                    <label><input type="radio" name="formato" value="csv"><span><i data-icone="arquivo-planilha"></i>CSV</span></label>
+                  </div>
+                  <p class="campo-ajuda">PDF para ler e compartilhar. CSV para abrir no Excel, Google Sheets ou importar em outra ferramenta.</p>
+                </fieldset>
+                <label class="campo">
+                  <span class="campo-rotulo">Nome <span class="campo-rotulo-extra">opcional</span></span>
+                  <input class="entrada" name="nome" maxlength="120" placeholder="Ex.: Fechamento de outubro">
+                </label>
+                <div class="formulario-acoes">
+                  <button type="button" class="botao botao-secundario" data-acao="previa"><i data-icone="olho"></i>Atualizar prévia</button>
+                  <button type="submit" class="botao botao-primario" data-gerar data-permissao="relatorios.gerar"><i data-icone="arquivo-baixar"></i>Gerar e baixar</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="cartao" aria-labelledby="titulo-previa">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-previa">Prévia</h2>
+                  <p class="cartao-subtitulo" data-previa-subtitulo>Primeiras linhas do relatório</p>
+                </div>
+              </div>
+              <dl class="previa-resumo" data-previa-resumo></dl>
+              <div class="previa-moldura" data-previa>
+                <div class="vazio vazio-compacto"><span class="giro"></span></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="bento bento-solto mt-5">
+            <section class="tabela-cartao bento-dois-tercos" aria-labelledby="titulo-historico">
+              <div class="tabela-barra">
+                <div class="tabela-barra-titulo">
+                  <h2 class="cartao-titulo" id="titulo-historico">Histórico</h2>
+                  <p class="cartao-subtitulo">Relatórios gerados ficam guardados para baixar de novo</p>
+                </div>
+              </div>
+              <div data-historico></div>
+            </section>
+
+            <section class="cartao bento-terco" aria-labelledby="titulo-agendamentos">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-agendamentos">Envios agendados</h2>
+                  <p class="cartao-subtitulo">Gerados sozinhos; você recebe uma notificação</p>
+                </div>
+              </div>
+              <div data-agendamentos>
+                <div class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span></div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

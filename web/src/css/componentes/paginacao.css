@@ -1,0 +1,57 @@
+@layer components {
+  .paginacao {
+    @apply flex w-full flex-wrap items-center justify-between gap-3 text-sm;
+  }
+
+  .paginacao-info {
+    @apply text-xs text-neutra-600 tabular-nums dark:text-neutra-400;
+  }
+
+  .paginacao-info strong {
+    @apply font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .paginacao-lado {
+    @apply flex items-center gap-3;
+  }
+
+  .paginacao-tamanho {
+    @apply hidden items-center gap-2 text-xs text-neutra-600 sm:flex dark:text-neutra-400;
+  }
+
+  .paginacao-tamanho .selecao {
+    @apply h-8 w-auto py-0 pr-8 pl-2.5 text-xs;
+  }
+
+  .paginacao-controles {
+    @apply flex items-center gap-1;
+  }
+
+  .paginacao-botao {
+    @apply grid h-8 min-w-8 place-items-center rounded-[0.55rem] px-2 text-xs font-semibold text-neutra-700 tabular-nums transition-colors hover:bg-neutra-200 hover:text-neutra-950 disabled:pointer-events-none disabled:opacity-40 dark:text-neutra-300 dark:hover:bg-neutra-800 dark:hover:text-neutra-50;
+  }
+
+  .paginacao-botao svg {
+    @apply size-4;
+  }
+
+  .paginacao-botao[aria-current="page"] {
+    @apply bg-primaria-800 text-creme hover:bg-primaria-800 hover:text-creme dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .paginacao-reticencias {
+    @apply grid h-8 w-6 place-items-center text-xs text-neutra-500;
+  }
+
+  .paginacao-numeros {
+    @apply hidden items-center gap-1 sm:flex;
+  }
+
+  .paginacao-movel {
+    @apply px-2 text-xs font-semibold text-neutra-700 tabular-nums sm:hidden dark:text-neutra-300;
+  }
+
+  .carregar-mais {
+    @apply mx-auto mt-4 flex;
+  }
+}

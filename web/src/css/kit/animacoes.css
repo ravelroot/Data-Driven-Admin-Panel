@@ -1,0 +1,518 @@
+@utility aparecer {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-fade 240ms var(--ease-saida) both;
+  }
+}
+
+@utility aparecer-cima {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-cima 320ms var(--ease-saida) both;
+  }
+}
+
+@utility aparecer-baixo {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-descer 320ms var(--ease-saida) both;
+  }
+}
+
+@utility aparecer-esquerda {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-esquerda 320ms var(--ease-saida) both;
+  }
+}
+
+@utility aparecer-direita {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-direita 320ms var(--ease-saida) both;
+  }
+}
+
+@utility aparecer-escala {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-escala 220ms var(--ease-saida) both;
+  }
+}
+
+@utility aparecer-mola {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-mola 480ms var(--ease-mola) both;
+  }
+}
+
+@utility aparecer-desfoque {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-desfoque 360ms var(--ease-saida) both;
+  }
+}
+
+@utility desaparecer {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-fade 180ms var(--ease-entrada) reverse both;
+  }
+}
+
+@utility desaparecer-baixo {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-cima 200ms var(--ease-entrada) reverse both;
+  }
+}
+
+@utility desaparecer-escala {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-escala 160ms var(--ease-entrada) reverse both;
+  }
+}
+
+@utility deslizar-de-cima {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: entrada-de-cima 360ms var(--ease-saida) both;
+  }
+}
+
+@utility deslizar-de-baixo {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-subir-folha 360ms var(--ease-saida) both;
+  }
+}
+
+@utility deslizar-de-esquerda {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: entrada-de-esquerda 360ms var(--ease-saida) both;
+  }
+}
+
+@utility deslizar-de-direita {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: entrada-de-direita 360ms var(--ease-saida) both;
+  }
+}
+
+@utility deslizar-para-cima {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: entrada-de-cima 240ms var(--ease-entrada) reverse both;
+  }
+}
+
+@utility deslizar-para-baixo {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-subir-folha 240ms var(--ease-entrada) reverse both;
+  }
+}
+
+@utility deslizar-para-direita {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: entrada-de-direita 240ms var(--ease-entrada) reverse both;
+  }
+}
+
+@utility girar-lento {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: rotacao-lenta 6s linear infinite;
+  }
+}
+
+@utility girar-reverso {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: rotacao-lenta 6s linear infinite reverse;
+  }
+}
+
+@utility balancar {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: balanco-horizontal 420ms ease-in-out both;
+  }
+}
+
+@utility balancar-sino {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: balanco-sino 900ms ease-in-out both;
+    transform-origin: 50% 8%;
+  }
+}
+
+@utility pulsar-suave {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pulsacao-suave 1.8s ease-in-out infinite;
+  }
+}
+
+@utility pulsar-anel {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: pulsacao-anel 2s ease-out infinite;
+  }
+}
+
+@utility quicar {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: quique-atencao 1s ease-in-out infinite;
+  }
+}
+
+@utility flutuar {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: flutuacao 4s ease-in-out infinite;
+  }
+}
+
+@utility brilhar-borda {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: brilho-borda 2.4s ease-in-out infinite;
+  }
+}
+
+@utility contar-subindo {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: surgimento-numero 600ms var(--ease-mola) both;
+  }
+}
+
+@utility revelar-largura {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: revelacao-largura 700ms var(--ease-saida) both;
+    transform-origin: left center;
+  }
+}
+
+@utility revelar-altura {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: revelacao-altura 700ms var(--ease-saida) both;
+    transform-origin: center bottom;
+  }
+}
+
+@utility animacao-rapida {
+  animation-duration: 140ms;
+}
+
+@utility animacao-lenta {
+  animation-duration: 700ms;
+}
+
+@utility animacao-pausada {
+  animation-play-state: paused;
+}
+
+@utility animacao-infinita {
+  animation-iteration-count: infinite;
+}
+
+@utility animacao-uma-vez {
+  animation-iteration-count: 1;
+}
+
+@utility atraso-curto {
+  animation-delay: 80ms;
+}
+
+@utility atraso-medio {
+  animation-delay: 200ms;
+}
+
+@utility atraso-longo {
+  animation-delay: 400ms;
+}
+
+@utility escalonar-filhos {
+  & > * {
+    animation-delay: calc(var(--indice, 0) * 60ms);
+  }
+
+  & > :nth-child(1) { --indice: 0; }
+  & > :nth-child(2) { --indice: 1; }
+  & > :nth-child(3) { --indice: 2; }
+  & > :nth-child(4) { --indice: 3; }
+  & > :nth-child(5) { --indice: 4; }
+  & > :nth-child(6) { --indice: 5; }
+  & > :nth-child(7) { --indice: 6; }
+  & > :nth-child(8) { --indice: 7; }
+}
+
+@utility sem-animacao {
+  animation: none !important;
+  transition: none !important;
+}
+
+@keyframes surgimento-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes surgimento-cima {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes surgimento-descer {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes surgimento-esquerda {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes surgimento-direita {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes surgimento-escala {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes surgimento-mola {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes surgimento-desfoque {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes surgimento-subir-folha {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes surgimento-numero {
+  from {
+    opacity: 0;
+    transform: translateY(0.4em);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes entrada-de-cima {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes entrada-de-esquerda {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes entrada-de-direita {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes rotacao-lenta {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes balanco-horizontal {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes balanco-sino {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+
+  15% {
+    transform: rotate(14deg);
+  }
+
+  30% {
+    transform: rotate(-12deg);
+  }
+
+  45% {
+    transform: rotate(8deg);
+  }
+
+  60% {
+    transform: rotate(-5deg);
+  }
+
+  75% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes pulsacao-suave {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+}
+
+@keyframes pulsacao-anel {
+  0% {
+    box-shadow: 0 0 0 0 rgb(163 160 159 / 0.5);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgb(163 160 159 / 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgb(163 160 159 / 0);
+  }
+}
+
+@keyframes quique-atencao {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-5px);
+  }
+
+  60% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes flutuacao {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes brilho-borda {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px rgb(163 160 159 / 0.25);
+  }
+
+  50% {
+    box-shadow: 0 0 0 3px rgb(163 160 159 / 0.5);
+  }
+}
+
+@keyframes revelacao-largura {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes revelacao-altura {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}

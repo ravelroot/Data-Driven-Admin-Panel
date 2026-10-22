@@ -1,0 +1,86 @@
+@layer components {
+  .avisos {
+    @apply pointer-events-none fixed right-0 bottom-0 z-[70] flex w-full flex-col-reverse gap-2 p-4 sm:max-w-sm sm:p-5;
+  }
+
+  .aviso {
+    @apply pointer-events-auto relative flex w-full items-start gap-3 overflow-hidden rounded-controle border border-neutra-200 bg-neutra-50 p-4 pr-10 text-sm shadow-flutuante dark:border-neutra-700 dark:bg-neutra-900;
+    animation: subir 280ms var(--ease-mola) both;
+  }
+
+  .aviso[data-saindo="true"] {
+    animation: surgir 180ms var(--ease-entrada) reverse both;
+  }
+
+  .aviso-icone {
+    @apply mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .aviso-icone svg {
+    @apply size-3.5;
+    stroke-width: 2.5;
+  }
+
+  .aviso[data-tipo="sucesso"] .aviso-icone {
+    @apply bg-oliva-600 text-creme dark:bg-oliva-400 dark:text-tinta;
+  }
+
+  .aviso[data-tipo="erro"] .aviso-icone {
+    @apply bg-brasa-600 text-creme dark:bg-brasa-400 dark:text-tinta;
+  }
+
+  .aviso[data-tipo="alerta"] .aviso-icone {
+    @apply bg-ouro-500 text-black;
+  }
+
+  .aviso[data-tipo="info"] .aviso-icone {
+    @apply bg-anil-600 text-creme dark:bg-anil-300 dark:text-tinta;
+  }
+
+  .aviso-textos {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5;
+  }
+
+  .aviso-titulo {
+    @apply font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .aviso-texto {
+    @apply text-neutra-700 dark:text-neutra-300;
+  }
+
+  .aviso-acao {
+    @apply mt-1.5 self-start text-xs font-bold text-primaria-700 underline-offset-2 hover:underline dark:text-destaque-300;
+  }
+
+  .aviso-fechar {
+    @apply absolute top-3 right-3 grid size-6 place-items-center rounded-md text-neutra-500 hover:bg-neutra-200 hover:text-neutra-900 dark:hover:bg-neutra-800 dark:hover:text-neutra-100;
+  }
+
+  .aviso-fechar svg {
+    @apply size-3.5;
+  }
+
+  .aviso-progresso {
+    @apply absolute inset-x-0 bottom-0 h-0.5 origin-left bg-neutra-300 dark:bg-neutra-600;
+    animation-name: progresso-aviso;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+  }
+
+  .aviso:hover .aviso-progresso {
+    animation-play-state: paused;
+  }
+
+  .aviso[data-tipo="sucesso"] .aviso-progresso {
+    @apply bg-oliva-500;
+  }
+
+  .aviso[data-tipo="erro"] .aviso-progresso {
+    @apply bg-brasa-500;
+  }
+
+  .aviso[data-tipo="alerta"] .aviso-progresso {
+    @apply bg-ouro-500;
+  }
+}

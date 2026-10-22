@@ -1,0 +1,45 @@
+@layer components {
+  .intervalo-datas {
+    @apply inline-flex h-9 items-center gap-1 rounded-controle border border-neutra-300 bg-neutra-50 px-2 text-sm dark:border-neutra-700 dark:bg-neutra-900;
+  }
+
+  .intervalo-datas:focus-within {
+    @apply border-primaria-700 shadow-anel dark:border-destaque-400;
+  }
+
+  .intervalo-datas > svg {
+    @apply size-4 shrink-0 text-neutra-500;
+  }
+
+  .intervalo-datas input {
+    @apply h-full w-[8.25rem] border-0 bg-transparent px-1 text-sm font-medium text-neutra-900 tabular-nums outline-none dark:text-neutra-100;
+  }
+
+  .intervalo-datas-separador {
+    @apply text-neutra-400;
+  }
+
+  .predefinicoes {
+    @apply flex flex-wrap gap-1.5;
+  }
+
+  .predefinicoes button {
+    @apply h-7 rounded-full border border-neutra-300 px-2.5 text-xs font-semibold text-neutra-700 hover:border-neutra-500 hover:text-neutra-950 dark:border-neutra-700 dark:text-neutra-300 dark:hover:border-neutra-500 dark:hover:text-neutra-50;
+  }
+
+  .predefinicoes button[aria-pressed="true"] {
+    @apply border-primaria-800 bg-primaria-800 text-creme dark:border-destaque-400 dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .agrupamento {
+    @apply inline-flex items-center gap-2 text-xs font-medium text-neutra-600 dark:text-neutra-400;
+  }
+
+  .agrupamento .selecao {
+    @apply h-9 w-auto text-sm;
+  }
+
+  .data-relativa {
+    @apply whitespace-nowrap text-neutra-600 tabular-nums dark:text-neutra-400;
+  }
+}

@@ -1,0 +1,44 @@
+name: bento
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${BENTO_DB_NOME:-bento}
+      POSTGRES_USER: ${BENTO_DB_USUARIO:-bento}
+      POSTGRES_PASSWORD: ${BENTO_DB_SENHA:?Defina BENTO_DB_SENHA no arquivo .env}
+    volumes:
+      - dados-postgres:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  bento:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${BENTO_DB_USUARIO:-bento}:${BENTO_DB_SENHA}@postgres:5432/${BENTO_DB_NOME:-bento}
+      BENTO_SEGREDO_JWT: ${BENTO_SEGREDO_JWT:?Defina BENTO_SEGREDO_JWT no arquivo .env}
+      BENTO_HTTPS: ${BENTO_HTTPS:-false}
+      BENTO_ORIGENS: ${BENTO_ORIGENS:-}
+      BENTO_PROXY: ${BENTO_PROXY:-false}
+      BENTO_SEMEAR: ${BENTO_SEMEAR:-auto}
+      BENTO_SIMULADOR: ${BENTO_SIMULADOR:-true}
+      BENTO_SIMULADOR_INTERVALO: ${BENTO_SIMULADOR_INTERVALO:-25}
+      BENTO_FUSO: ${BENTO_FUSO:-America/Sao_Paulo}
+      BENTO_LOG: ${BENTO_LOG:-info}
+      BENTO_POOL: ${BENTO_POOL:-10}
+      BENTO_ADMIN_EMAIL: ${BENTO_ADMIN_EMAIL:-}
+      BENTO_ADMIN_SENHA: ${BENTO_ADMIN_SENHA:-}
+      BENTO_ADMIN_NOME: ${BENTO_ADMIN_NOME:-}
+    ports:
+      - "${BENTO_PORTA:-8080}:8080"
+
+volumes:
+  dados-postgres:

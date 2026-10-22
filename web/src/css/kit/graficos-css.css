@@ -1,0 +1,268 @@
+@layer components {
+  .barras-css {
+    @apply flex flex-col gap-2;
+    --barras-altura: 12rem;
+  }
+
+  .barras-css-area {
+    @apply relative flex items-end gap-2 border-b border-neutra-300 pt-4 dark:border-neutra-700;
+    height: var(--barras-altura);
+  }
+
+  .barras-css-grade {
+    @apply pointer-events-none absolute inset-0;
+    background-image: linear-gradient(to top, var(--color-neutra-200) 1px, transparent 1px);
+    background-size: 100% 25%;
+  }
+
+  .dark .barras-css-grade {
+    background-image: linear-gradient(to top, var(--color-neutra-800) 1px, transparent 1px);
+  }
+
+  .barras-css-coluna {
+    @apply relative z-[1] flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1;
+  }
+
+  .barras-css-barra {
+    @apply relative w-full max-w-12 rounded-t-md bg-primaria-700 transition-[height] duration-700 ease-(--ease-saida) dark:bg-primaria-300;
+    height: var(--valor, 0%);
+  }
+
+  .barras-css-barra:hover {
+    @apply bg-primaria-800 dark:bg-primaria-200;
+  }
+
+  .barras-css-barra[data-tom="ouro"] {
+    @apply bg-destaque-500 dark:bg-destaque-400;
+  }
+
+  .barras-css-barra[data-tom="salvia"] {
+    @apply bg-salvia-500 dark:bg-salvia-300;
+  }
+
+  .barras-css-barra[data-tom="brasa"] {
+    @apply bg-brasa-600 dark:bg-brasa-300;
+  }
+
+  .barras-css-barra[data-tom="neutro"] {
+    @apply bg-neutra-300 dark:bg-neutra-700;
+  }
+
+  .barras-css-barra[data-destaque="true"] {
+    @apply bg-destaque-500 dark:bg-destaque-400;
+  }
+
+  .barras-css-valor {
+    @apply absolute -top-5 left-1/2 -translate-x-1/2 text-[0.625rem] font-bold whitespace-nowrap text-neutra-700 tabular-nums dark:text-neutra-300;
+  }
+
+  .barras-css-rotulos {
+    @apply flex gap-2;
+  }
+
+  .barras-css-rotulos > span {
+    @apply min-w-0 flex-1 truncate text-center text-[0.6875rem] text-neutra-500 tabular-nums;
+  }
+
+  .barras-css-empilhada {
+    @apply flex w-full max-w-12 flex-col-reverse overflow-hidden rounded-t-md;
+    height: var(--valor, 100%);
+  }
+
+  .barras-css-empilhada > span {
+    @apply block w-full;
+    height: var(--parte, 0%);
+    background-color: var(--cor, var(--color-primaria-700));
+  }
+
+  .barras-css-empilhada > span + span {
+    box-shadow: inset 0 -1px 0 var(--color-neutra-50);
+  }
+
+  .dark .barras-css-empilhada > span + span {
+    box-shadow: inset 0 -1px 0 var(--color-neutra-900);
+  }
+
+  .barras-horizontais-css {
+    @apply flex flex-col gap-3;
+  }
+
+  .barras-horizontais-css-item {
+    @apply grid grid-cols-[7rem_minmax(0,1fr)_4rem] items-center gap-3 text-sm;
+  }
+
+  .barras-horizontais-css-rotulo {
+    @apply truncate text-neutra-700 dark:text-neutra-300;
+  }
+
+  .barras-horizontais-css-trilho {
+    @apply h-3 overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .barras-horizontais-css-trilho > span {
+    @apply block h-full rounded-full transition-[width] duration-700 ease-(--ease-saida);
+    width: var(--valor, 0%);
+    background-color: var(--cor, var(--color-primaria-700));
+  }
+
+  .barras-horizontais-css-valor {
+    @apply text-right text-sm font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .barra-segmentada-css {
+    @apply flex h-3 w-full gap-[2px] overflow-hidden rounded-full;
+  }
+
+  .barra-segmentada-css > span {
+    @apply h-full;
+    width: var(--valor, 0%);
+    background-color: var(--cor, var(--color-primaria-700));
+  }
+
+  .barra-segmentada-css > span:first-child {
+    @apply rounded-l-full;
+  }
+
+  .barra-segmentada-css > span:last-child {
+    @apply rounded-r-full;
+  }
+
+  .rosca-css {
+    @apply relative grid aspect-square w-36 place-items-center rounded-full;
+    --rosca-cor: var(--color-primaria-700);
+    --rosca-trilho: var(--color-neutra-200);
+    --rosca-espessura: 14px;
+    background: conic-gradient(var(--rosca-cor) 0 var(--valor, 0%), var(--rosca-trilho) var(--valor, 0%) 100%);
+    mask: radial-gradient(farthest-side, transparent calc(100% - var(--rosca-espessura)), black calc(100% - var(--rosca-espessura) + 1px));
+  }
+
+  .dark .rosca-css {
+    --rosca-cor: var(--color-destaque-400);
+    --rosca-trilho: var(--color-neutra-800);
+  }
+
+  .rosca-css-moldura {
+    @apply relative inline-grid place-items-center;
+  }
+
+  .rosca-css-centro {
+    @apply pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center;
+  }
+
+  .rosca-css-valor {
+    @apply font-titulo text-2xl font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .rosca-css-rotulo {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .rosca-css-multipla {
+    background: conic-gradient(var(--cor-1, var(--color-primaria-700)) 0 var(--parte-1, 25%), var(--cor-2, var(--color-destaque-500)) var(--parte-1, 25%) var(--parte-2, 50%), var(--cor-3, var(--color-salvia-500)) var(--parte-2, 50%) var(--parte-3, 75%), var(--cor-4, var(--color-casca-600)) var(--parte-3, 75%) 100%);
+  }
+
+  .rosca-css-pequena {
+    @apply w-20;
+    --rosca-espessura: 9px;
+  }
+
+  .rosca-css-grande {
+    @apply w-48;
+    --rosca-espessura: 18px;
+  }
+
+  .rosca-css-ouro {
+    --rosca-cor: var(--color-destaque-500);
+  }
+
+  .rosca-css-perigo {
+    --rosca-cor: var(--color-brasa-600);
+  }
+
+  .medidor-css {
+    @apply relative aspect-[2/1] w-44 overflow-hidden;
+  }
+
+  .medidor-css::before {
+    @apply absolute inset-0 rounded-t-full;
+    content: "";
+    background: conic-gradient(from -90deg at 50% 100%, var(--color-primaria-700) 0 calc(var(--valor, 0) * 1.8deg), var(--color-neutra-200) calc(var(--valor, 0) * 1.8deg) 180deg, transparent 180deg);
+    mask: radial-gradient(farthest-side at 50% 100%, transparent calc(100% - 16px), black calc(100% - 15px));
+  }
+
+  .dark .medidor-css::before {
+    background: conic-gradient(from -90deg at 50% 100%, var(--color-destaque-400) 0 calc(var(--valor, 0) * 1.8deg), var(--color-neutra-800) calc(var(--valor, 0) * 1.8deg) 180deg, transparent 180deg);
+  }
+
+  .medidor-css-centro {
+    @apply absolute inset-x-0 bottom-0 flex flex-col items-center;
+  }
+
+  .medidor-css-valor {
+    @apply font-titulo text-2xl font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .medidor-css-rotulo {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .faiscas-css {
+    @apply inline-flex h-8 items-end gap-[2px];
+  }
+
+  .faiscas-css > span {
+    @apply w-1.5 rounded-t-[2px] bg-neutra-300 dark:bg-neutra-700;
+    height: var(--valor, 20%);
+  }
+
+  .faiscas-css > span:last-child {
+    @apply bg-primaria-700 dark:bg-destaque-400;
+  }
+
+  .faiscas-css[data-tendencia="baixa"] > span:last-child {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .faiscas-css-largas > span {
+    @apply w-2.5;
+  }
+
+  .pontos-css {
+    @apply grid gap-1;
+    grid-template-columns: repeat(var(--colunas, 10), minmax(0, 1fr));
+  }
+
+  .pontos-css > span {
+    @apply aspect-square rounded-[3px] bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .pontos-css > span[data-ativo="true"] {
+    @apply bg-primaria-700 dark:bg-destaque-400;
+  }
+
+  .legenda-css {
+    @apply flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .legenda-css > span {
+    @apply inline-flex items-center gap-1.5;
+  }
+
+  .legenda-css > span::before {
+    @apply size-2.5 rounded-[3px];
+    content: "";
+    background-color: var(--cor, var(--color-primaria-700));
+  }
+
+  .grafico-css-vazio {
+    @apply grid h-full min-h-32 place-items-center text-sm text-neutra-500;
+  }
+}
+
+@utility graficos-css-largura {
+  width: var(--valor, 0%);
+}
+
+@utility graficos-css-altura {
+  height: var(--valor, 0%);
+}

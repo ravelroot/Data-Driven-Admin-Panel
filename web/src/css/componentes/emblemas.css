@@ -1,0 +1,148 @@
+@layer components {
+  .emblema {
+    @apply inline-flex h-6 shrink-0 items-center gap-1.5 rounded-full bg-neutra-200 px-2.5 text-xs font-semibold whitespace-nowrap text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  .emblema svg {
+    @apply size-3.5;
+  }
+
+  .emblema-pequeno {
+    @apply h-5 px-2 text-micro;
+  }
+
+  .emblema-quadrado {
+    @apply rounded-md;
+  }
+
+  .emblema::before {
+    @apply hidden size-1.5 shrink-0 rounded-full bg-current;
+    content: "";
+  }
+
+  .emblema[data-status]::before,
+  .emblema-ponto::before {
+    @apply block;
+  }
+
+  .emblema-oliva,
+  .emblema[data-status="ativo"],
+  .emblema[data-status="paga"],
+  .emblema[data-status="ativa"],
+  .emblema[data-status="pronto"],
+  .emblema[data-status="conectada"],
+  .emblema[data-status="sucesso"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .emblema-ouro,
+  .emblema[data-status="pendente"],
+  .emblema[data-status="teste"],
+  .emblema[data-status="processando"],
+  .emblema[data-status="alerta"] {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-400/15 dark:text-ouro-300;
+  }
+
+  .emblema-brasa,
+  .emblema[data-status="bloqueado"],
+  .emblema[data-status="falhou"],
+  .emblema[data-status="inadimplente"],
+  .emblema[data-status="erro"] {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .emblema-anil,
+  .emblema[data-status="reembolsada"],
+  .emblema[data-status="info"] {
+    @apply bg-anil-100 text-anil-700 dark:bg-anil-400/15 dark:text-anil-300;
+  }
+
+  .emblema-salvia {
+    @apply bg-salvia-100 text-salvia-800 dark:bg-salvia-400/15 dark:text-salvia-300;
+  }
+
+  .emblema-casca {
+    @apply bg-casca-100 text-casca-800 dark:bg-casca-400/15 dark:text-casca-300;
+  }
+
+  .emblema-neutro,
+  .emblema[data-status="inativo"],
+  .emblema[data-status="cancelada"],
+  .emblema[data-status="desconectada"] {
+    @apply bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .emblema-contorno {
+    @apply border border-neutra-300 bg-transparent text-neutra-700 dark:border-neutra-700 dark:bg-transparent dark:text-neutra-300;
+  }
+
+  .emblema-solido {
+    @apply bg-primaria-800 text-creme dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .emblema[data-papel] {
+    @apply rounded-md;
+  }
+
+  .emblema[data-papel="admin"] {
+    @apply bg-primaria-800 text-creme dark:bg-primaria-300 dark:text-tinta;
+  }
+
+  .emblema[data-papel="gerente"] {
+    @apply bg-destaque-300 text-destaque-950 dark:bg-destaque-400/25 dark:text-destaque-100;
+  }
+
+  .emblema[data-papel="analista"] {
+    @apply bg-primaria-100 text-primaria-800 ring-1 ring-primaria-300 ring-inset dark:bg-primaria-400/15 dark:text-primaria-100 dark:ring-primaria-500/40;
+  }
+
+  .emblema[data-papel="suporte"] {
+    @apply bg-neutra-200 text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  .emblema[data-papel="cliente"] {
+    @apply bg-transparent text-neutra-700 ring-1 ring-neutra-300 ring-inset dark:text-neutra-300 dark:ring-neutra-700;
+  }
+
+  .emblema[data-metodo] {
+    @apply rounded-md bg-transparent px-0 font-medium text-neutra-700 dark:bg-transparent dark:text-neutra-300;
+  }
+
+  .etiqueta {
+    @apply inline-flex h-7 items-center gap-1 rounded-full border border-neutra-300 bg-neutra-50 pr-1 pl-3 text-xs font-medium text-neutra-800 dark:border-neutra-700 dark:bg-neutra-900 dark:text-neutra-200;
+  }
+
+  .etiqueta-remover {
+    @apply grid size-5 place-items-center rounded-full text-neutra-500 hover:bg-neutra-200 hover:text-neutra-900 dark:hover:bg-neutra-800 dark:hover:text-neutra-100;
+  }
+
+  .etiqueta-remover svg {
+    @apply size-3;
+  }
+
+  .contador {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-neutra-200 px-1.5 text-micro font-bold text-neutra-700 tabular-nums dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .contador-destaque {
+    @apply bg-destaque-500 text-tinta;
+  }
+
+  .ponto-status {
+    @apply inline-block size-2 shrink-0 rounded-full bg-neutra-400;
+  }
+
+  .ponto-status[data-status="ativo"],
+  .ponto-status[data-status="conectada"] {
+    @apply bg-oliva-600 dark:bg-oliva-400;
+  }
+
+  .ponto-status[data-status="bloqueado"],
+  .ponto-status[data-status="erro"] {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .ponto-status[data-status="pendente"] {
+    @apply bg-ouro-500;
+  }
+}

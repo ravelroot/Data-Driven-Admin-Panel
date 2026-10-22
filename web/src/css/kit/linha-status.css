@@ -1,0 +1,302 @@
+@layer components {
+  .status-pagina {
+    @apply flex flex-col gap-5;
+  }
+
+  .status-resumo {
+    @apply flex items-center gap-4 rounded-painel p-5 text-creme shadow-elevado;
+    background-color: var(--color-oliva-700);
+  }
+
+  .status-resumo[data-situacao="degradado"] {
+    @apply text-tinta;
+    background-color: var(--color-ouro-400);
+  }
+
+  .status-resumo[data-situacao="fora"] {
+    background-color: var(--color-brasa-600);
+  }
+
+  .status-resumo[data-situacao="manutencao"] {
+    background-color: var(--color-anil-600);
+  }
+
+  .status-resumo-icone {
+    @apply grid size-11 shrink-0 place-items-center rounded-full bg-black/15;
+  }
+
+  .status-resumo-icone svg {
+    @apply size-6;
+    stroke-width: 2.25;
+  }
+
+  .status-resumo-titulo {
+    @apply font-titulo text-xl font-semibold;
+  }
+
+  .status-resumo-texto {
+    @apply text-sm opacity-85;
+  }
+
+  .status-componentes {
+    @apply flex flex-col overflow-hidden rounded-cartao border border-neutra-200 bg-neutra-50 dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .status-componente {
+    @apply flex flex-col gap-3 border-b border-neutra-200 px-5 py-4 last:border-b-0 dark:border-neutra-800;
+  }
+
+  .status-componente-topo {
+    @apply flex items-center justify-between gap-3;
+  }
+
+  .status-componente-nome {
+    @apply flex items-center gap-2 text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .status-componente-nome svg {
+    @apply size-4 text-neutra-500;
+  }
+
+  .status-situacao {
+    @apply inline-flex items-center gap-1.5 text-xs font-semibold;
+  }
+
+  .status-situacao::before {
+    @apply size-2 rounded-full bg-current;
+    content: "";
+  }
+
+  .status-situacao[data-situacao="operacional"] {
+    @apply text-oliva-700 dark:text-oliva-300;
+  }
+
+  .status-situacao[data-situacao="degradado"] {
+    @apply text-ouro-700 dark:text-ouro-300;
+  }
+
+  .status-situacao[data-situacao="fora"] {
+    @apply text-brasa-700 dark:text-brasa-300;
+  }
+
+  .status-situacao[data-situacao="manutencao"] {
+    @apply text-anil-700 dark:text-anil-300;
+  }
+
+  .status-uptime {
+    @apply flex h-8 items-stretch gap-[2px];
+  }
+
+  .status-uptime-dia {
+    @apply min-w-[3px] flex-1 rounded-[2px] bg-oliva-500 transition-transform duration-100 hover:scale-y-110 dark:bg-oliva-400;
+  }
+
+  .status-uptime-dia[data-situacao="degradado"] {
+    @apply bg-ouro-400;
+  }
+
+  .status-uptime-dia[data-situacao="fora"] {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .status-uptime-dia[data-situacao="manutencao"] {
+    @apply bg-anil-500 dark:bg-anil-300;
+  }
+
+  .status-uptime-dia[data-situacao="sem-dados"] {
+    @apply bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .status-uptime-legenda {
+    @apply flex items-center justify-between gap-3 text-xs text-neutra-500 tabular-nums;
+  }
+
+  .status-uptime-legenda strong {
+    @apply font-semibold text-neutra-800 dark:text-neutra-200;
+  }
+
+  .status-grupo {
+    @apply border-b border-neutra-200 last:border-b-0 dark:border-neutra-800;
+  }
+
+  .status-grupo > summary {
+    @apply flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-sm font-semibold text-neutra-950 hover:bg-neutra-100 dark:text-neutra-50 dark:hover:bg-neutra-800/40;
+  }
+
+  .status-grupo > summary::-webkit-details-marker {
+    @apply hidden;
+  }
+
+  .status-grupo .status-componente {
+    @apply pl-9;
+  }
+
+  .status-metricas {
+    @apply grid gap-3 sm:grid-cols-3;
+  }
+
+  .status-metrica {
+    @apply flex flex-col gap-1 rounded-cartao border border-neutra-200 bg-neutra-50 p-4 dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .status-metrica-rotulo {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .status-metrica-valor {
+    @apply font-titulo text-2xl font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .status-metrica-valor small {
+    @apply ml-0.5 font-sans text-sm font-medium text-neutra-500;
+  }
+
+  .status-latencia {
+    @apply flex h-16 items-end gap-[3px];
+  }
+
+  .status-latencia > span {
+    @apply flex-1 rounded-t-[2px] bg-anil-300 dark:bg-anil-500;
+    height: var(--valor, 10%);
+  }
+
+  .status-latencia > span[data-alto="true"] {
+    @apply bg-ouro-400;
+  }
+
+  .incidentes {
+    @apply flex flex-col gap-6;
+  }
+
+  .incidentes-dia {
+    @apply flex flex-col gap-3;
+  }
+
+  .incidentes-data {
+    @apply border-b border-neutra-200 pb-2 text-sm font-semibold text-neutra-900 dark:border-neutra-800 dark:text-neutra-100;
+  }
+
+  .incidentes-nenhum {
+    @apply text-sm text-neutra-500;
+  }
+
+  .incidente {
+    @apply flex flex-col gap-3 rounded-cartao border border-neutra-200 bg-neutra-50 p-4 dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .incidente[data-gravidade="alta"] {
+    @apply border-brasa-300 dark:border-brasa-500/40;
+  }
+
+  .incidente[data-gravidade="media"] {
+    @apply border-ouro-300 dark:border-ouro-500/40;
+  }
+
+  .incidente-titulo {
+    @apply flex items-center gap-2 font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .incidente-atualizacoes {
+    @apply flex flex-col gap-3 border-l-2 border-neutra-200 pl-4 dark:border-neutra-800;
+  }
+
+  .incidente-atualizacao {
+    @apply relative flex flex-col gap-0.5 text-sm text-neutra-700 dark:text-neutra-300;
+  }
+
+  .incidente-atualizacao::before {
+    @apply absolute top-1.5 -left-[1.3rem] size-2.5 rounded-full border-2 border-neutra-50 bg-neutra-400 dark:border-neutra-900 dark:bg-neutra-600;
+    content: "";
+  }
+
+  .incidente-atualizacao[data-etapa="resolvido"]::before {
+    @apply bg-oliva-600 dark:bg-oliva-400;
+  }
+
+  .incidente-atualizacao[data-etapa="investigando"]::before {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .incidente-atualizacao[data-etapa="monitorando"]::before {
+    @apply bg-ouro-500;
+  }
+
+  .incidente-etapa {
+    @apply text-xs font-bold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .incidente-hora {
+    @apply text-xs text-neutra-500 tabular-nums;
+  }
+
+  .manutencao-aviso {
+    @apply flex items-start gap-3 rounded-cartao border border-anil-200 bg-anil-50 p-4 text-sm text-anil-900 dark:border-anil-500/30 dark:bg-anil-500/10 dark:text-anil-100;
+  }
+
+  .manutencao-aviso svg {
+    @apply mt-0.5 size-5 shrink-0 text-anil-600 dark:text-anil-300;
+  }
+
+  .status-inscrever {
+    @apply flex flex-wrap items-center gap-2 rounded-cartao border border-dashed border-neutra-300 p-4 dark:border-neutra-700;
+  }
+
+  .status-inscrever-texto {
+    @apply mr-auto text-sm text-neutra-700 dark:text-neutra-300;
+  }
+}
+
+@utility status-uptime-90 {
+  & > * {
+    flex: 1 1 0;
+  }
+
+  @media (max-width: 40rem) {
+    & > :nth-child(-n + 60) {
+      display: none;
+    }
+  }
+}
+
+@layer components {
+  .status-compacto .status-componente {
+    @apply gap-2 py-3;
+  }
+
+  .status-compacto .status-uptime {
+    @apply h-5;
+  }
+
+  .status-mini {
+    @apply inline-flex items-center gap-2 rounded-full border border-neutra-200 bg-neutra-50 py-1 pr-3 pl-2 text-xs font-semibold text-neutra-800 dark:border-neutra-800 dark:bg-neutra-900 dark:text-neutra-200;
+  }
+
+  .status-mini::before {
+    @apply size-2 rounded-full bg-oliva-600 dark:bg-oliva-400;
+    content: "";
+  }
+
+  .status-mini[data-situacao="degradado"]::before {
+    @apply bg-ouro-500;
+  }
+
+  .status-mini[data-situacao="fora"]::before {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .status-mini[data-situacao="manutencao"]::before {
+    @apply bg-anil-600 dark:bg-anil-300;
+  }
+
+  .status-escala {
+    @apply flex items-center gap-3 text-xs text-neutra-500;
+  }
+
+  .status-escala span {
+    @apply inline-flex items-center gap-1.5;
+  }
+
+  .status-escala i {
+    @apply inline-block size-2.5 rounded-[2px];
+  }
+}

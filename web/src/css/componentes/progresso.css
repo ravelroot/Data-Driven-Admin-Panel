@@ -1,0 +1,127 @@
+@layer components {
+  .barra-progresso {
+    @apply relative h-2 w-full overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .barra-progresso-fina {
+    @apply h-1;
+  }
+
+  .barra-progresso-grossa {
+    @apply h-3;
+  }
+
+  .barra-progresso-valor {
+    @apply block h-full rounded-full bg-primaria-700 transition-[width] duration-700 ease-(--ease-saida) dark:bg-destaque-400;
+    width: var(--valor, 0%);
+  }
+
+  .barra-progresso-valor[data-cor="ouro"] {
+    @apply bg-destaque-500;
+  }
+
+  .barra-progresso-valor[data-cor="salvia"] {
+    @apply bg-salvia-500 dark:bg-salvia-400;
+  }
+
+  .barra-progresso-valor[data-cor="casca"] {
+    @apply bg-casca-600 dark:bg-casca-400;
+  }
+
+  .barra-progresso-valor[data-cor="brasa"] {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .barra-progresso-indeterminada .barra-progresso-valor {
+    @apply w-1/3;
+    animation: progresso-indeterminado 1.2s ease-in-out infinite;
+  }
+
+  .cartao-destaque .barra-progresso {
+    background-color: color-mix(in oklab, var(--color-creme) 14%, transparent);
+  }
+
+  .cartao-destaque .barra-progresso-valor {
+    @apply bg-destaque-400;
+  }
+
+  .medidor {
+    @apply relative inline-grid place-items-center;
+  }
+
+  .medidor svg {
+    @apply -rotate-90;
+  }
+
+  .medidor-trilho {
+    @apply fill-none stroke-neutra-200 dark:stroke-neutra-800;
+  }
+
+  .medidor-valor {
+    @apply fill-none stroke-primaria-700 transition-[stroke-dashoffset] duration-1000 ease-(--ease-saida) dark:stroke-destaque-400;
+    stroke-linecap: round;
+  }
+
+  .cartao-destaque .medidor-trilho {
+    stroke: color-mix(in oklab, var(--color-creme) 14%, transparent);
+  }
+
+  .cartao-destaque .medidor-valor,
+  .cartao-escuro .medidor-valor {
+    @apply stroke-destaque-400;
+  }
+
+  .cartao-escuro .medidor-trilho {
+    stroke: color-mix(in oklab, var(--color-creme) 12%, transparent);
+  }
+
+  .medidor-centro {
+    @apply absolute inset-0 flex flex-col items-center justify-center text-center;
+  }
+
+  .medidor-numero {
+    @apply font-titulo text-3xl font-semibold tabular-nums;
+  }
+
+  .medidor-rotulo {
+    @apply text-xs opacity-75;
+  }
+
+  .passos {
+    @apply flex items-center gap-2;
+  }
+
+  .passo {
+    @apply flex items-center gap-2 text-xs font-semibold text-neutra-500;
+  }
+
+  .passo-numero {
+    @apply grid size-6 place-items-center rounded-full border border-neutra-300 text-micro dark:border-neutra-700;
+  }
+
+  .passo[data-estado="atual"] {
+    @apply text-neutra-950 dark:text-neutra-50;
+  }
+
+  .passo[data-estado="atual"] .passo-numero {
+    @apply border-primaria-800 bg-primaria-800 text-creme dark:border-destaque-400 dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .passo[data-estado="feito"] .passo-numero {
+    @apply border-oliva-600 bg-oliva-100 text-oliva-800 dark:border-oliva-400 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .passo-linha {
+    @apply h-px w-6 bg-neutra-300 dark:bg-neutra-700;
+  }
+}
+
+@keyframes progresso-indeterminado {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(300%);
+  }
+}

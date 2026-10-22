@@ -1,0 +1,257 @@
+@layer components {
+  .equipe {
+    @apply flex min-w-0 flex-col overflow-hidden rounded-cartao border border-neutra-200 bg-neutra-50 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .equipe-cabecalho {
+    @apply flex flex-wrap items-center justify-between gap-3 border-b border-neutra-200 px-5 py-4 dark:border-neutra-800 compacta:px-4 compacta:py-3;
+  }
+
+  .equipe-titulo {
+    @apply flex items-center gap-2 font-titulo text-base font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .equipe-contador {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-neutra-200 px-1.5 font-sans text-micro font-bold text-neutra-700 tabular-nums dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .equipe-lista {
+    @apply flex flex-col;
+  }
+
+  .equipe-membro {
+    @apply grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-5 py-3.5 transition-colors hover:bg-neutra-100/70 sm:grid-cols-[auto_minmax(0,1fr)_9rem_7rem_auto] dark:hover:bg-neutra-800/40 compacta:px-4 compacta:py-2.5;
+  }
+
+  .equipe-membro + .equipe-membro {
+    @apply border-t border-neutra-200/80 dark:border-neutra-800/80;
+  }
+
+  .equipe-membro[data-voce="true"] {
+    @apply bg-primaria-50/50 dark:bg-primaria-500/[0.06];
+  }
+
+  .equipe-membro-textos {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .equipe-membro-nome {
+    @apply flex min-w-0 items-center gap-2 truncate text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .equipe-membro-voce {
+    @apply shrink-0 rounded bg-neutra-200 px-1.5 py-0.5 text-[0.625rem] font-bold text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .equipe-membro-email {
+    @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .equipe-membro-papel {
+    @apply hidden sm:block;
+  }
+
+  .equipe-membro-papel select {
+    @apply h-8 w-full appearance-none rounded-[0.55rem] border border-transparent bg-transparent px-2 text-xs font-semibold text-neutra-800 transition-colors hover:border-neutra-300 focus:border-primaria-700 focus:shadow-anel focus-visible:outline-none disabled:cursor-default disabled:hover:border-transparent dark:text-neutra-200 dark:hover:border-neutra-700 dark:focus:border-destaque-400;
+  }
+
+  .equipe-membro-atividade {
+    @apply hidden text-xs text-neutra-600 tabular-nums sm:block dark:text-neutra-400;
+  }
+
+  .equipe-membro-atividade[data-online="true"] {
+    @apply inline-flex items-center gap-1.5 font-semibold text-oliva-700 dark:text-oliva-300;
+  }
+
+  .equipe-membro-atividade[data-online="true"]::before {
+    @apply size-1.5 rounded-full bg-current;
+    content: "";
+  }
+
+  .equipe-membro-acoes {
+    @apply flex items-center justify-end gap-1;
+  }
+
+  .equipe-papel {
+    @apply inline-flex h-6 items-center gap-1 rounded-md px-2 text-xs font-semibold;
+  }
+
+  .equipe-papel svg {
+    @apply size-3;
+  }
+
+  .equipe-papel[data-papel="dono"] {
+    @apply bg-tinta text-creme dark:bg-creme dark:text-tinta;
+  }
+
+  .equipe-papel[data-papel="admin"] {
+    @apply bg-primaria-800 text-creme dark:bg-primaria-300 dark:text-tinta;
+  }
+
+  .equipe-papel[data-papel="editor"] {
+    @apply bg-destaque-100 text-destaque-900 dark:bg-destaque-500/20 dark:text-destaque-100;
+  }
+
+  .equipe-papel[data-papel="leitor"] {
+    @apply bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .equipe-convidar {
+    @apply flex flex-col gap-3 border-b border-neutra-200 bg-neutra-100/60 px-5 py-4 sm:flex-row sm:items-end dark:border-neutra-800 dark:bg-neutra-950/30;
+  }
+
+  .equipe-convidar-campos {
+    @apply grid flex-1 gap-2 sm:grid-cols-[minmax(0,1fr)_10rem];
+  }
+
+  .equipe-convidar-ajuda {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .convites-pendentes {
+    @apply flex flex-col;
+  }
+
+  .convites-pendentes-titulo {
+    @apply flex items-center justify-between gap-2 border-t border-neutra-200 bg-neutra-100/70 px-5 py-2 text-xs font-semibold text-neutra-600 dark:border-neutra-800 dark:bg-neutra-950/40 dark:text-neutra-400;
+  }
+
+  .convite {
+    @apply flex flex-wrap items-center gap-3 border-t border-neutra-200/80 px-5 py-3 dark:border-neutra-800/80;
+  }
+
+  .convite-icone {
+    @apply grid size-9 shrink-0 place-items-center rounded-full border-2 border-dashed border-neutra-300 text-neutra-500 dark:border-neutra-700;
+  }
+
+  .convite-icone svg {
+    @apply size-4;
+  }
+
+  .convite-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .convite-email {
+    @apply truncate text-sm font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .convite-detalhe {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .convite[data-expirado="true"] .convite-detalhe {
+    @apply font-semibold text-brasa-700 dark:text-brasa-300;
+  }
+
+  .convite-acoes {
+    @apply flex items-center gap-1;
+  }
+
+  .equipe-vazia {
+    @apply flex flex-col items-center gap-2 px-6 py-10 text-center;
+  }
+
+  .equipe-grade {
+    @apply grid gap-3 sm:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .equipe-cartao {
+    @apply flex flex-col items-center gap-3 rounded-cartao border border-neutra-200 bg-neutra-50 p-5 text-center shadow-cartao dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .equipe-cartao-nome {
+    @apply font-titulo text-base font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .equipe-cartao-cargo {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .equipe-cartao-acoes {
+    @apply mt-1 flex w-full gap-2 border-t border-neutra-200 pt-3 dark:border-neutra-800;
+  }
+
+  .equipe-cartao-acoes > * {
+    @apply flex-1;
+  }
+
+  .equipe-assentos {
+    @apply flex items-center gap-3 rounded-controle border border-neutra-200 bg-neutra-50 px-4 py-3 text-sm dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .equipe-assentos-barra {
+    @apply h-2 flex-1 overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .equipe-assentos-barra span {
+    @apply block h-full rounded-full bg-primaria-700 dark:bg-salvia-400;
+    width: var(--valor, 0%);
+  }
+
+  .equipe-assentos strong {
+    @apply font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .equipe-transferir {
+    @apply flex items-center gap-3 rounded-controle border border-brasa-200 bg-brasa-50/70 p-4 text-sm dark:border-brasa-500/30 dark:bg-brasa-500/[0.07];
+  }
+
+  .equipe-transferir-textos {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5;
+  }
+
+  .equipe-transferir-titulo {
+    @apply font-semibold text-brasa-900 dark:text-brasa-100;
+  }
+
+  .equipe-transferir-texto {
+    @apply text-xs text-brasa-800 dark:text-brasa-200;
+  }
+
+  .equipe-filtros {
+    @apply flex flex-wrap items-center gap-2 border-b border-neutra-200 px-5 py-3 dark:border-neutra-800;
+  }
+
+  .equipe-filtros input {
+    @apply h-9 min-w-0 flex-1 rounded-controle border border-neutra-300 bg-white px-3 text-sm text-neutra-950 focus:border-primaria-700 focus:shadow-anel focus-visible:outline-none sm:max-w-xs dark:border-neutra-700 dark:bg-neutra-950/60 dark:text-neutra-50 dark:focus:border-destaque-400;
+  }
+
+  .equipe-permissoes-resumo {
+    @apply flex flex-wrap gap-1;
+  }
+
+  .equipe-permissoes-resumo span {
+    @apply rounded bg-neutra-200 px-1.5 py-0.5 font-mono text-[0.625rem] text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .equipe-membro[data-suspenso="true"] {
+    @apply opacity-60;
+  }
+
+  .equipe-membro[data-suspenso="true"] .equipe-membro-nome::after {
+    @apply rounded bg-brasa-100 px-1.5 py-0.5 text-[0.625rem] font-bold text-brasa-800 dark:bg-brasa-400/15 dark:text-brasa-200;
+    content: "Suspenso";
+  }
+
+  .equipe-grupos {
+    @apply flex flex-col gap-2;
+  }
+
+  .equipe-grupo {
+    @apply flex items-center gap-3 rounded-controle border border-neutra-200 bg-neutra-50 px-4 py-3 dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .equipe-grupo-cor {
+    @apply size-3 shrink-0 rounded-full;
+    background-color: var(--cor, var(--color-primaria-700));
+  }
+
+  .equipe-grupo-nome {
+    @apply min-w-0 flex-1 truncate text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .equipe-grupo-total {
+    @apply text-xs text-neutra-600 tabular-nums dark:text-neutra-400;
+  }
+}

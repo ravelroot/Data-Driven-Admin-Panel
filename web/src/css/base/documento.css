@@ -1,0 +1,115 @@
+@layer base {
+  html {
+    @apply bg-neutra-100 text-neutra-950 antialiased;
+    color-scheme: light;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+    font-synthesis-weight: none;
+    scrollbar-gutter: stable;
+  }
+
+  html.dark {
+    @apply bg-neutra-950 text-neutra-100;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply min-h-dvh font-sans text-base leading-texto;
+    font-feature-settings: "ss01", "ss02", "cv01";
+  }
+
+  body[data-carregando="true"] {
+    @apply cursor-progress;
+  }
+
+  ::selection {
+    @apply bg-destaque-200 text-neutra-950 dark:bg-destaque-700 dark:text-neutra-50;
+  }
+
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-neutra-950 dark:outline-neutra-50;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutra-300) transparent;
+  }
+
+  .dark * {
+    scrollbar-color: var(--color-neutra-700) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    @apply size-2.5;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full border-2 border-solid border-transparent bg-neutra-300 bg-clip-padding dark:bg-neutra-700;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutra-400 dark:bg-neutra-600;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  [data-oculto-ate-carregar] {
+    @apply invisible;
+  }
+
+  body[data-pronto="true"] [data-oculto-ate-carregar] {
+    @apply visible;
+  }
+
+  svg.lucide {
+    @apply shrink-0;
+    stroke-width: 1.75;
+  }
+
+  img {
+    @apply max-w-full;
+  }
+
+  hr {
+    @apply border-neutra-200 dark:border-neutra-800;
+  }
+
+  dialog {
+    @apply text-inherit;
+    color: inherit;
+  }
+
+  dialog::backdrop {
+    background-color: rgb(0 0 0 / 0.42);
+    backdrop-filter: blur(3px);
+  }
+
+  .dark dialog::backdrop {
+    background-color: rgb(0 0 0 / 0.6);
+  }
+
+  .pular-conteudo {
+    @apply fixed top-3 left-3 z-[100] -translate-y-24 rounded-controle bg-neutra-950 px-4 py-2.5 text-sm font-semibold text-neutra-50 transition-transform duration-200 focus:translate-y-0 dark:bg-neutra-50 dark:text-neutra-950;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

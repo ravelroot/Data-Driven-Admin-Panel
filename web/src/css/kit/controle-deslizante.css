@@ -1,0 +1,274 @@
+@layer components {
+  .deslizante {
+    @apply flex w-full flex-col gap-2;
+    --deslizante-trilho: var(--color-neutra-200);
+    --deslizante-preenchido: var(--color-primaria-700);
+    --deslizante-polegar: var(--color-neutra-50);
+    --deslizante-borda: var(--color-primaria-800);
+    --deslizante-altura: 0.375rem;
+    --deslizante-polegar-tamanho: 1.125rem;
+  }
+
+  .dark .deslizante {
+    --deslizante-trilho: var(--color-neutra-800);
+    --deslizante-preenchido: var(--color-destaque-400);
+    --deslizante-polegar: var(--color-neutra-100);
+    --deslizante-borda: var(--color-destaque-400);
+  }
+
+  .deslizante-topo {
+    @apply flex items-center justify-between gap-3 text-sm;
+  }
+
+  .deslizante-rotulo {
+    @apply font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .deslizante-valor {
+    @apply inline-flex h-6 min-w-10 items-center justify-center rounded-md bg-neutra-200 px-2 text-xs font-bold text-neutra-900 tabular-nums dark:bg-neutra-800 dark:text-neutra-100;
+  }
+
+  .deslizante-entrada {
+    @apply h-6 w-full cursor-pointer appearance-none bg-transparent disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .deslizante-entrada:focus-visible {
+    @apply outline-none;
+  }
+
+  .deslizante-entrada::-webkit-slider-runnable-track {
+    height: var(--deslizante-altura);
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--deslizante-preenchido) 0 var(--valor, 50%), var(--deslizante-trilho) var(--valor, 50%) 100%);
+  }
+
+  .deslizante-entrada::-moz-range-track {
+    height: var(--deslizante-altura);
+    border-radius: 999px;
+    background: var(--deslizante-trilho);
+  }
+
+  .deslizante-entrada::-moz-range-progress {
+    height: var(--deslizante-altura);
+    border-radius: 999px;
+    background: var(--deslizante-preenchido);
+  }
+
+  .deslizante-entrada::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: var(--deslizante-polegar-tamanho);
+    height: var(--deslizante-polegar-tamanho);
+    margin-top: calc((var(--deslizante-altura) - var(--deslizante-polegar-tamanho)) / 2);
+    border-radius: 999px;
+    background: var(--deslizante-polegar);
+    border: 2px solid var(--deslizante-borda);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+    transition: transform 150ms var(--ease-mola), box-shadow 150ms;
+  }
+
+  .deslizante-entrada::-moz-range-thumb {
+    width: var(--deslizante-polegar-tamanho);
+    height: var(--deslizante-polegar-tamanho);
+    border-radius: 999px;
+    background: var(--deslizante-polegar);
+    border: 2px solid var(--deslizante-borda);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+  }
+
+  .deslizante-entrada:hover::-webkit-slider-thumb {
+    transform: scale(1.12);
+  }
+
+  .deslizante-entrada:active::-webkit-slider-thumb {
+    transform: scale(1.2);
+  }
+
+  .deslizante-entrada:focus-visible::-webkit-slider-thumb {
+    box-shadow: var(--shadow-anel);
+  }
+
+  .deslizante-entrada:focus-visible::-moz-range-thumb {
+    box-shadow: var(--shadow-anel);
+  }
+
+  .deslizante-marcas {
+    @apply flex justify-between px-[calc(var(--deslizante-polegar-tamanho)/2)];
+  }
+
+  .deslizante-marcas > span {
+    @apply relative flex w-0 flex-col items-center text-micro text-neutra-500 tabular-nums;
+  }
+
+  .deslizante-marcas > span::before {
+    @apply mb-1 h-1.5 w-px bg-neutra-300 dark:bg-neutra-700;
+    content: "";
+  }
+
+  .deslizante-marcas > span[data-ativa="true"] {
+    @apply font-bold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .deslizante-limites {
+    @apply flex justify-between text-xs text-neutra-500 tabular-nums;
+  }
+
+  .deslizante-ajuda {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .deslizante-pequeno {
+    --deslizante-altura: 0.25rem;
+    --deslizante-polegar-tamanho: 0.875rem;
+  }
+
+  .deslizante-grande {
+    --deslizante-altura: 0.625rem;
+    --deslizante-polegar-tamanho: 1.5rem;
+  }
+
+  .deslizante-ouro {
+    --deslizante-preenchido: var(--color-destaque-500);
+    --deslizante-borda: var(--color-destaque-600);
+  }
+
+  .deslizante-perigo {
+    --deslizante-preenchido: var(--color-brasa-600);
+    --deslizante-borda: var(--color-brasa-700);
+  }
+
+  .dark .deslizante-perigo {
+    --deslizante-preenchido: var(--color-brasa-400);
+    --deslizante-borda: var(--color-brasa-400);
+  }
+
+  .deslizante-sucesso {
+    --deslizante-preenchido: var(--color-oliva-600);
+    --deslizante-borda: var(--color-oliva-700);
+  }
+
+  .deslizante[data-invalido="true"] {
+    --deslizante-preenchido: var(--color-brasa-600);
+    --deslizante-borda: var(--color-brasa-600);
+  }
+
+  .deslizante-com-campo {
+    @apply grid grid-cols-[minmax(0,1fr)_5.5rem] items-center gap-3;
+  }
+
+  .deslizante-campo {
+    @apply h-9 w-full rounded-controle border border-neutra-300 bg-white px-2.5 text-right text-sm font-semibold text-neutra-950 tabular-nums focus:border-primaria-700 focus:shadow-anel focus-visible:outline-none dark:border-neutra-700 dark:bg-neutra-950/60 dark:text-neutra-50 dark:focus:border-destaque-400;
+  }
+
+  .deslizante-duplo {
+    @apply relative h-6;
+  }
+
+  .deslizante-duplo-trilho {
+    @apply absolute inset-x-0 top-1/2 -translate-y-1/2 rounded-full;
+    height: var(--deslizante-altura);
+    background: linear-gradient(to right, var(--deslizante-trilho) 0 var(--minimo, 20%), var(--deslizante-preenchido) var(--minimo, 20%) var(--maximo, 80%), var(--deslizante-trilho) var(--maximo, 80%) 100%);
+  }
+
+  .deslizante-duplo .deslizante-entrada {
+    @apply pointer-events-none absolute inset-0;
+  }
+
+  .deslizante-duplo .deslizante-entrada::-webkit-slider-runnable-track {
+    background: transparent;
+  }
+
+  .deslizante-duplo .deslizante-entrada::-moz-range-track,
+  .deslizante-duplo .deslizante-entrada::-moz-range-progress {
+    background: transparent;
+  }
+
+  .deslizante-duplo .deslizante-entrada::-webkit-slider-thumb {
+    pointer-events: auto;
+  }
+
+  .deslizante-duplo .deslizante-entrada::-moz-range-thumb {
+    pointer-events: auto;
+  }
+
+  .deslizante-bolha {
+    @apply pointer-events-none absolute -top-8 -translate-x-1/2 rounded-md bg-neutra-950 px-2 py-1 text-xs font-bold text-neutra-50 tabular-nums opacity-0 shadow-elevado transition-opacity dark:bg-neutra-100 dark:text-neutra-950;
+    left: var(--valor, 50%);
+  }
+
+  .deslizante:focus-within .deslizante-bolha,
+  .deslizante:hover .deslizante-bolha {
+    @apply opacity-100;
+  }
+
+  .deslizante-trilho-area {
+    @apply relative;
+  }
+
+  .deslizante-vertical {
+    @apply h-40 w-6;
+  }
+
+  .deslizante-vertical .deslizante-entrada {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    @apply h-full w-6;
+  }
+
+  .deslizante-vertical .deslizante-entrada::-webkit-slider-runnable-track {
+    width: var(--deslizante-altura);
+    height: 100%;
+    background: linear-gradient(to top, var(--deslizante-preenchido) 0 var(--valor, 50%), var(--deslizante-trilho) var(--valor, 50%) 100%);
+  }
+
+  .deslizante-vertical .deslizante-entrada::-webkit-slider-thumb {
+    margin-top: 0;
+    margin-left: calc((var(--deslizante-altura) - var(--deslizante-polegar-tamanho)) / 2);
+  }
+
+  .deslizante-escala {
+    @apply grid grid-cols-5 gap-1;
+  }
+
+  .deslizante-escala label {
+    @apply cursor-pointer;
+  }
+
+  .deslizante-escala input {
+    @apply sr-only;
+  }
+
+  .deslizante-escala-opcao {
+    @apply flex h-10 items-center justify-center rounded-lg border border-neutra-300 text-sm font-semibold text-neutra-700 transition-colors hover:border-neutra-400 dark:border-neutra-700 dark:text-neutra-300;
+  }
+
+  .deslizante-escala input:checked + .deslizante-escala-opcao {
+    @apply border-primaria-800 bg-primaria-800 text-creme dark:border-destaque-400 dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .deslizante-escala input:focus-visible + .deslizante-escala-opcao {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .deslizante-escala-legenda {
+    @apply mt-1.5 flex justify-between text-xs text-neutra-500;
+  }
+
+  .cartao-destaque .deslizante {
+    --deslizante-trilho: color-mix(in oklab, var(--color-creme) 18%, transparent);
+    --deslizante-preenchido: var(--color-destaque-400);
+    --deslizante-borda: var(--color-destaque-400);
+  }
+
+  .cartao-destaque .deslizante-rotulo {
+    @apply text-creme;
+  }
+
+  .cartao-destaque .deslizante-valor {
+    @apply bg-creme/15 text-creme;
+  }
+}
+
+@utility deslizante-preenchimento {
+  background: linear-gradient(to right, var(--color-primaria-700) 0 var(--valor, 50%), var(--color-neutra-200) var(--valor, 50%) 100%);
+}

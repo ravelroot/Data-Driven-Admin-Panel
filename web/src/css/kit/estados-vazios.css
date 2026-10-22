@@ -1,0 +1,253 @@
+@layer components {
+  .vazio-ilustrado {
+    @apply mx-auto flex max-w-md flex-col items-center gap-3 px-6 py-12 text-center;
+  }
+
+  .vazio-ilustrado-arte {
+    @apply relative mb-3 grid size-36 place-items-center;
+  }
+
+  .vazio-ilustrado-titulo {
+    @apply font-titulo text-xl font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .vazio-ilustrado-texto {
+    @apply max-w-[40ch] text-sm leading-relaxed text-neutra-600 dark:text-neutra-400;
+  }
+
+  .vazio-ilustrado-acoes {
+    @apply mt-2 flex flex-wrap justify-center gap-2;
+  }
+
+  .vazio-ilustrado-sugestoes {
+    @apply mt-4 flex w-full flex-col gap-1.5 border-t border-neutra-200 pt-4 text-left dark:border-neutra-800;
+  }
+
+  .vazio-ilustrado-sugestao {
+    @apply flex items-center gap-2 text-sm text-neutra-700 dark:text-neutra-300;
+  }
+
+  .vazio-ilustrado-sugestao::before {
+    @apply size-1.5 shrink-0 rounded-full bg-destaque-500;
+    content: "";
+  }
+
+  .vazio-ilustrado-compacto {
+    @apply py-6;
+  }
+
+  .vazio-ilustrado-compacto .vazio-ilustrado-arte {
+    @apply mb-1 size-20 scale-[0.6];
+  }
+
+  .forma-caixa {
+    @apply relative h-20 w-28;
+  }
+
+  .forma-caixa::before {
+    @apply absolute inset-x-0 bottom-0 h-14 rounded-b-xl rounded-t-sm bg-neutra-200 ring-1 ring-neutra-300 dark:bg-neutra-800 dark:ring-neutra-700;
+    content: "";
+  }
+
+  .forma-caixa::after {
+    @apply absolute top-1 left-1/2 h-8 w-32 -translate-x-1/2 -rotate-6 rounded-md bg-neutra-300 ring-1 ring-neutra-400/60 dark:bg-neutra-700 dark:ring-neutra-600;
+    content: "";
+  }
+
+  .forma-caixa-folha {
+    @apply absolute -top-6 left-1/2 z-[1] h-12 w-16 -translate-x-1/2 rotate-6 rounded-md bg-creme shadow-elevado ring-1 ring-areia-300 dark:bg-neutra-100;
+  }
+
+  .forma-caixa-folha::before {
+    @apply absolute top-3 right-3 left-3 h-1 rounded-full bg-areia-300;
+    content: "";
+  }
+
+  .forma-caixa-folha::after {
+    @apply absolute top-6 right-6 left-3 h-1 rounded-full bg-areia-300;
+    content: "";
+  }
+
+  .forma-grade-quebrada {
+    @apply grid size-28 grid-cols-3 grid-rows-3 gap-1.5;
+  }
+
+  .forma-grade-quebrada span {
+    @apply rounded-md bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .forma-grade-quebrada span:nth-child(1) {
+    @apply col-span-2 row-span-2 bg-primaria-200 dark:bg-primaria-800;
+  }
+
+  .forma-grade-quebrada span:nth-child(3) {
+    @apply translate-x-2 -translate-y-2 rotate-12 bg-brasa-300 dark:bg-brasa-700;
+  }
+
+  .forma-grade-quebrada span:nth-child(5) {
+    @apply translate-y-2 -rotate-6 border-2 border-dashed border-brasa-400 bg-transparent dark:border-brasa-500;
+  }
+
+  .forma-grade-quebrada span:nth-child(6) {
+    @apply col-span-2 bg-neutra-300 dark:bg-neutra-700;
+  }
+
+  .forma-cadeado {
+    @apply relative mt-8 h-16 w-20 rounded-xl bg-tinta shadow-elevado dark:bg-creme;
+  }
+
+  .forma-cadeado::before {
+    @apply absolute -top-9 left-1/2 h-12 w-12 -translate-x-1/2 rounded-t-full border-[7px] border-b-0 border-neutra-400 dark:border-neutra-500;
+    content: "";
+  }
+
+  .forma-cadeado::after {
+    @apply absolute top-1/2 left-1/2 h-5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-destaque-500;
+    content: "";
+  }
+
+  .forma-lupa {
+    @apply relative size-20 rounded-full border-[9px] border-neutra-300 bg-neutra-100 dark:border-neutra-700 dark:bg-neutra-900;
+  }
+
+  .forma-lupa::before {
+    @apply absolute -right-7 -bottom-6 h-3.5 w-11 rotate-45 rounded-full bg-neutra-400 dark:bg-neutra-600;
+    content: "";
+  }
+
+  .forma-lupa::after {
+    @apply absolute inset-0 m-auto h-1.5 w-7 rounded-full bg-neutra-300 dark:bg-neutra-700;
+    content: "";
+  }
+
+  .forma-nuvem {
+    @apply relative h-14 w-28 rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .forma-nuvem::before {
+    @apply absolute -top-7 left-5 size-14 rounded-full bg-neutra-200 dark:bg-neutra-800;
+    content: "";
+  }
+
+  .forma-nuvem::after {
+    @apply absolute -top-4 right-4 size-11 rounded-full bg-neutra-200 dark:bg-neutra-800;
+    content: "";
+  }
+
+  .forma-nuvem-risco {
+    @apply absolute top-1/2 left-1/2 z-[1] h-1.5 w-36 -translate-x-1/2 -translate-y-1/2 -rotate-[28deg] rounded-full bg-brasa-500 ring-4 ring-neutra-50 dark:bg-brasa-400 dark:ring-neutra-950;
+  }
+
+  .forma-grafico-vazio {
+    @apply flex h-24 w-32 items-end gap-2 border-b-2 border-l-2 border-neutra-300 px-2 pb-1 dark:border-neutra-700;
+  }
+
+  .forma-grafico-vazio span {
+    @apply flex-1 rounded-t-sm border-2 border-dashed border-neutra-300 dark:border-neutra-700;
+  }
+
+  .forma-grafico-vazio span:nth-child(1) {
+    @apply h-1/3;
+  }
+
+  .forma-grafico-vazio span:nth-child(2) {
+    @apply h-2/3;
+  }
+
+  .forma-grafico-vazio span:nth-child(3) {
+    @apply h-1/2;
+  }
+
+  .forma-grafico-vazio span:nth-child(4) {
+    @apply h-5/6 border-solid border-destaque-400 bg-destaque-100 dark:bg-destaque-500/20;
+  }
+
+  .forma-brilho {
+    @apply absolute size-3 rotate-45 rounded-[2px] bg-destaque-400;
+  }
+
+  .forma-brilho[data-posicao="1"] {
+    @apply top-2 right-4;
+  }
+
+  .forma-brilho[data-posicao="2"] {
+    @apply bottom-6 left-2 size-2 bg-primaria-400;
+  }
+
+  .forma-brilho[data-posicao="3"] {
+    @apply top-10 left-6 size-1.5 bg-salvia-400;
+  }
+
+  .vazio-ilustrado[data-tipo="erro"] .vazio-ilustrado-titulo {
+    @apply text-brasa-800 dark:text-brasa-200;
+  }
+
+  .vazio-ilustrado[data-tipo="bloqueado"] .vazio-ilustrado-arte {
+    @apply rounded-full bg-neutra-100 dark:bg-neutra-900;
+  }
+
+  .vazio-ilustrado-moldura {
+    @apply rounded-painel border border-dashed border-neutra-300 bg-neutra-50/60 dark:border-neutra-700 dark:bg-neutra-900/40;
+  }
+
+  .primeiro-uso {
+    @apply grid gap-3 sm:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .primeiro-uso-cartao {
+    @apply relative flex min-w-0 flex-col gap-3 overflow-hidden rounded-cartao border border-neutra-200 bg-neutra-50 p-5 shadow-cartao transition-[border-color,box-shadow] hover:border-neutra-300 hover:shadow-elevado dark:border-neutra-800 dark:bg-neutra-900 dark:hover:border-neutra-700;
+  }
+
+  .primeiro-uso-cartao:has(a:focus-visible, button:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .primeiro-uso-cartao-arte {
+    @apply -mx-5 -mt-5 mb-1 grid h-28 place-items-center bg-neutra-100 dark:bg-neutra-950/50;
+  }
+
+  .primeiro-uso-cartao[data-tom="primaria"] .primeiro-uso-cartao-arte {
+    @apply bg-primaria-800 dark:bg-primaria-900;
+  }
+
+  .primeiro-uso-cartao[data-tom="destaque"] .primeiro-uso-cartao-arte {
+    @apply bg-destaque-400;
+  }
+
+  .primeiro-uso-cartao-icone {
+    @apply grid size-12 place-items-center rounded-cartao bg-neutra-50 text-neutra-900 shadow-elevado dark:bg-neutra-900 dark:text-neutra-100;
+  }
+
+  .primeiro-uso-cartao-icone svg {
+    @apply size-6;
+  }
+
+  .primeiro-uso-cartao-titulo {
+    @apply font-titulo text-base font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .primeiro-uso-cartao-texto {
+    @apply text-sm leading-relaxed text-neutra-600 dark:text-neutra-400;
+  }
+
+  .primeiro-uso-cartao-link {
+    @apply mt-auto inline-flex items-center gap-1 text-sm font-semibold text-primaria-700 after:absolute after:inset-0 hover:underline dark:text-destaque-300;
+  }
+
+  .primeiro-uso-cartao-link svg {
+    @apply size-4;
+  }
+
+  .primeiro-uso-cartao-tempo {
+    @apply absolute top-3 right-3 rounded-full bg-neutra-50/90 px-2 py-0.5 text-micro font-bold text-neutra-700 dark:bg-neutra-900/90 dark:text-neutra-300;
+  }
+
+  .primeiro-uso-cartao[data-feito="true"] {
+    @apply opacity-70;
+  }
+
+  .primeiro-uso-cartao[data-feito="true"] .primeiro-uso-cartao-titulo::after {
+    @apply ml-2 inline-block rounded-full bg-oliva-100 px-2 py-0.5 align-middle font-sans text-micro font-bold text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+    content: "Feito";
+  }
+}

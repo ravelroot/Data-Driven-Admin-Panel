@@ -1,0 +1,490 @@
+@layer components {
+  :root {
+    --grafico-1: #333232;
+    --grafico-2: #6E6C6B;
+    --grafico-3: #A3A09F;
+    --grafico-4: #D6D4D3;
+    --grafico-5: #000000;
+    --grafico-6: #858281;
+    --grafico-7: #3E6474;
+    --grafico-8: #B04A2F;
+  }
+
+  .dark {
+    --grafico-1: #ECEBEA;
+    --grafico-2: #A3A09F;
+    --grafico-3: #858281;
+    --grafico-4: #4D4B4B;
+    --grafico-5: #FFFFFF;
+    --grafico-6: #BAB7B6;
+    --grafico-7: #799FAF;
+    --grafico-8: #DD785D;
+  }
+
+  [data-paleta="bento"] {
+    --grafico-1: #333232;
+    --grafico-2: #6E6C6B;
+    --grafico-3: #A3A09F;
+    --grafico-4: #D6D4D3;
+    --grafico-5: #000000;
+    --grafico-6: #858281;
+    --grafico-7: #3E6474;
+    --grafico-8: #B04A2F;
+  }
+
+  [data-paleta="grafite"] {
+    --grafico-1: #3F4650;
+    --grafico-2: #C9A227;
+    --grafico-3: #7A8591;
+    --grafico-4: #5B6B7B;
+    --grafico-5: #A6ADB5;
+    --grafico-6: #8C7A4E;
+    --grafico-7: #2F6B77;
+    --grafico-8: #B5533C;
+  }
+
+  [data-paleta="oceano"] {
+    --grafico-1: #1F4E5F;
+    --grafico-2: #E07A5F;
+    --grafico-3: #3F8A9A;
+    --grafico-4: #81B29A;
+    --grafico-5: #5A7D8C;
+    --grafico-6: #F2CC8F;
+    --grafico-7: #2E6F8E;
+    --grafico-8: #A8553F;
+  }
+
+  [data-paleta="terracota"] {
+    --grafico-1: #8A3B22;
+    --grafico-2: #C9A66B;
+    --grafico-3: #B7735A;
+    --grafico-4: #6F7A4A;
+    --grafico-5: #D19A7A;
+    --grafico-6: #8C6A4A;
+    --grafico-7: #5B6E7A;
+    --grafico-8: #4E3B2E;
+  }
+
+  [data-paleta="ameixa"] {
+    --grafico-1: #4A2C40;
+    --grafico-2: #C8A15A;
+    --grafico-3: #7B6171;
+    --grafico-4: #A06C8C;
+    --grafico-5: #5E7A6E;
+    --grafico-6: #D3B07A;
+    --grafico-7: #3F5C7A;
+    --grafico-8: #9A4A52;
+  }
+
+  [data-paleta="floresta"] {
+    --grafico-1: #2F5D3A;
+    --grafico-2: #D4A24C;
+    --grafico-3: #5E8C61;
+    --grafico-4: #8FAF7A;
+    --grafico-5: #3E7C6B;
+    --grafico-6: #A88A56;
+    --grafico-7: #6B5B3E;
+    --grafico-8: #B5523B;
+  }
+
+  [data-paleta="ardosia"] {
+    --grafico-1: #3B4A5C;
+    --grafico-2: #D08C4A;
+    --grafico-3: #6A7E95;
+    --grafico-4: #93A3B5;
+    --grafico-5: #4F6D7A;
+    --grafico-6: #B8A07A;
+    --grafico-7: #7A5C6E;
+    --grafico-8: #A84B3C;
+  }
+
+  [data-paleta="vinho"] {
+    --grafico-1: #6B1E2E;
+    --grafico-2: #C9A46A;
+    --grafico-3: #9A4A5A;
+    --grafico-4: #B87C86;
+    --grafico-5: #5C4A5E;
+    --grafico-6: #D6B98C;
+    --grafico-7: #4A6070;
+    --grafico-8: #7A6A4A;
+  }
+
+  [data-paleta="lavanda"] {
+    --grafico-1: #5B4B8A;
+    --grafico-2: #D9A65A;
+    --grafico-3: #8676B5;
+    --grafico-4: #B3A6D6;
+    --grafico-5: #6A8FA8;
+    --grafico-6: #C78FA6;
+    --grafico-7: #4E7A68;
+    --grafico-8: #B05A4A;
+  }
+
+  [data-paleta="cobre"] {
+    --grafico-1: #8C4A2A;
+    --grafico-2: #3E6E74;
+    --grafico-3: #B8734A;
+    --grafico-4: #D9A27A;
+    --grafico-5: #6E5A3E;
+    --grafico-6: #7FA3A6;
+    --grafico-7: #A85A3A;
+    --grafico-8: #4E3A2A;
+  }
+
+  [data-paleta="petroleo"] {
+    --grafico-1: #1E4D52;
+    --grafico-2: #E0A458;
+    --grafico-3: #3E7F84;
+    --grafico-4: #7FB3B0;
+    --grafico-5: #2E5E7A;
+    --grafico-6: #C98A5A;
+    --grafico-7: #5A6E4A;
+    --grafico-8: #A8503C;
+  }
+
+  [data-paleta="girassol"] {
+    --grafico-1: #7A5A12;
+    --grafico-2: #2F5D6E;
+    --grafico-3: #C9A227;
+    --grafico-4: #E3C76A;
+    --grafico-5: #8C6E3A;
+    --grafico-6: #5E8A9A;
+    --grafico-7: #4E6B3A;
+    --grafico-8: #B5533C;
+  }
+
+  [data-paleta="menta"] {
+    --grafico-1: #2E6B5A;
+    --grafico-2: #E08A6A;
+    --grafico-3: #4FA088;
+    --grafico-4: #8FCFB8;
+    --grafico-5: #3E7A8C;
+    --grafico-6: #D9B07A;
+    --grafico-7: #6A7A4A;
+    --grafico-8: #B04F4A;
+  }
+
+  [data-paleta="noite"] {
+    --grafico-1: #2C3E66;
+    --grafico-2: #E0B04A;
+    --grafico-3: #4F6AA0;
+    --grafico-4: #8FA6D0;
+    --grafico-5: #5A4E8A;
+    --grafico-6: #C9A6D6;
+    --grafico-7: #3E7A80;
+    --grafico-8: #B85A4A;
+  }
+
+  [data-paleta="areia"] {
+    --grafico-1: #7A6A4E;
+    --grafico-2: #3E6474;
+    --grafico-3: #A89470;
+    --grafico-4: #CBBDA0;
+    --grafico-5: #8C7A5A;
+    --grafico-6: #6E8A96;
+    --grafico-7: #5E6E4A;
+    --grafico-8: #A8553F;
+  }
+
+  .dark[data-paleta="bento"] {
+    --grafico-1: #ECEBEA;
+    --grafico-2: #A3A09F;
+    --grafico-3: #858281;
+    --grafico-4: #4D4B4B;
+    --grafico-5: #FFFFFF;
+    --grafico-6: #BAB7B6;
+    --grafico-7: #799FAF;
+    --grafico-8: #DD785D;
+  }
+
+  [data-paleta="oliva"] {
+    --grafico-1: #4C5A38;
+    --grafico-2: #BF9A54;
+    --grafico-3: #838767;
+    --grafico-4: #7C6C5B;
+    --grafico-5: #656643;
+    --grafico-6: #AA9E85;
+    --grafico-7: #3E6474;
+    --grafico-8: #B04A2F;
+  }
+
+  .dark[data-paleta="oliva"] {
+    --grafico-1: #909F7C;
+    --grafico-2: #CEAA68;
+    --grafico-3: #989C7D;
+    --grafico-4: #A59584;
+    --grafico-5: #9A9B78;
+    --grafico-6: #B9AE96;
+    --grafico-7: #799FAF;
+    --grafico-8: #DD785D;
+  }
+
+  .dark[data-paleta="grafite"] {
+    --grafico-1: #9199A4;
+    --grafico-2: #D8B247;
+    --grafico-3: #8F9AA5;
+    --grafico-4: #8A9AAB;
+    --grafico-5: #B6BDC4;
+    --grafico-6: #A8976C;
+    --grafico-7: #6BA3AF;
+    --grafico-8: #DA7962;
+  }
+
+  .dark[data-paleta="oceano"] {
+    --grafico-1: #73A0B2;
+    --grafico-2: #EE8C71;
+    --grafico-3: #5FA4B4;
+    --grafico-4: #92C1AA;
+    --grafico-5: #7C9EAD;
+    --grafico-6: #F6D298;
+    --grafico-7: #65A1C0;
+    --grafico-8: #D27F69;
+  }
+
+  .dark[data-paleta="terracota"] {
+    --grafico-1: #D28066;
+    --grafico-2: #D8B67E;
+    --grafico-3: #C8866D;
+    --grafico-4: #939F70;
+    --grafico-5: #E0AA8C;
+    --grafico-6: #B39172;
+    --grafico-7: #889BA8;
+    --grafico-8: #A99485;
+  }
+
+  .dark[data-paleta="ameixa"] {
+    --grafico-1: #AF8CA2;
+    --grafico-2: #D7B16E;
+    --grafico-3: #AA8F9F;
+    --grafico-4: #B986A5;
+    --grafico-5: #84A094;
+    --grafico-6: #E2C08D;
+    --grafico-7: #7E9CBB;
+    --grafico-8: #CF7E84;
+  }
+
+  .dark[data-paleta="floresta"] {
+    --grafico-1: #78A581;
+    --grafico-2: #E3B263;
+    --grafico-3: #79A67B;
+    --grafico-4: #9FBE8B;
+    --grafico-5: #6CA695;
+    --grafico-6: #B09462;
+    --grafico-7: #A69679;
+    --grafico-8: #DB7962;
+  }
+
+  .dark[data-paleta="ardosia"] {
+    --grafico-1: #8A9AAD;
+    --grafico-2: #DE9D5F;
+    --grafico-3: #879AB1;
+    --grafico-4: #A3B3C4;
+    --grafico-5: #809EAB;
+    --grafico-6: #C7B08B;
+    --grafico-7: #AD8EA0;
+    --grafico-8: #D87A6A;
+  }
+
+  .dark[data-paleta="vinho"] {
+    --grafico-1: #D07D87;
+    --grafico-2: #D8B47D;
+    --grafico-3: #CE7D8B;
+    --grafico-4: #C0868F;
+    --grafico-5: #A491A6;
+    --grafico-6: #E5C99E;
+    --grafico-7: #859CAC;
+    --grafico-8: #A69677;
+  }
+
+  .dark[data-paleta="lavanda"] {
+    --grafico-1: #9B8DCE;
+    --grafico-2: #E8B76F;
+    --grafico-3: #9C8DCB;
+    --grafico-4: #C3B6E5;
+    --grafico-5: #7A9EB6;
+    --grafico-6: #D69FB5;
+    --grafico-7: #79A391;
+    --grafico-8: #D37E6D;
+  }
+
+  .dark[data-paleta="cobre"] {
+    --grafico-1: #C98566;
+    --grafico-2: #73A2A8;
+    --grafico-3: #C9865F;
+    --grafico-4: #E8B38C;
+    --grafico-5: #A99579;
+    --grafico-6: #90B2B5;
+    --grafico-7: #CF8262;
+    --grafico-8: #AA9382;
+  }
+
+  .dark[data-paleta="petroleo"] {
+    --grafico-1: #75A1A6;
+    --grafico-2: #EFB56E;
+    --grafico-3: #67A4A9;
+    --grafico-4: #91C2BF;
+    --grafico-5: #719FBC;
+    --grafico-6: #D79A6D;
+    --grafico-7: #8CA07C;
+    --grafico-8: #D57D68;
+  }
+
+  .dark[data-paleta="girassol"] {
+    --grafico-1: #B39356;
+    --grafico-2: #73A0B2;
+    --grafico-3: #D8B247;
+    --grafico-4: #F1D67F;
+    --grafico-5: #B19362;
+    --grafico-6: #76A0AF;
+    --grafico-7: #85A372;
+    --grafico-8: #DA7962;
+  }
+
+  .dark[data-paleta="menta"] {
+    --grafico-1: #6DA694;
+    --grafico-2: #EE9B7C;
+    --grafico-3: #5EA992;
+    --grafico-4: #A2DFC8;
+    --grafico-5: #6AA2B4;
+    --grafico-6: #E8C08D;
+    --grafico-7: #8FA071;
+    --grafico-8: #D97972;
+  }
+
+  .dark[data-paleta="noite"] {
+    --grafico-1: #8398C4;
+    --grafico-2: #EFC163;
+    --grafico-3: #7C98CE;
+    --grafico-4: #9FB6DE;
+    --grafico-5: #998ECC;
+    --grafico-6: #D8B7E5;
+    --grafico-7: #6BA3A9;
+    --grafico-8: #D77B6A;
+  }
+
+  .dark[data-paleta="areia"] {
+    --grafico-1: #A6967A;
+    --grafico-2: #799FAF;
+    --grafico-3: #A99674;
+    --grafico-4: #DBCDB1;
+    --grafico-5: #A79677;
+    --grafico-6: #829DA9;
+    --grafico-7: #8F9F7B;
+    --grafico-8: #D27F69;
+  }
+
+  .legenda-serie-1 {
+    --cor: var(--grafico-1);
+  }
+
+  .legenda-serie-2 {
+    --cor: var(--grafico-2);
+  }
+
+  .legenda-serie-3 {
+    --cor: var(--grafico-3);
+  }
+
+  .legenda-serie-4 {
+    --cor: var(--grafico-4);
+  }
+
+  .legenda-serie-5 {
+    --cor: var(--grafico-5);
+  }
+
+  .legenda-serie-6 {
+    --cor: var(--grafico-6);
+  }
+
+  .legenda-serie-7 {
+    --cor: var(--grafico-7);
+  }
+
+  .legenda-serie-8 {
+    --cor: var(--grafico-8);
+  }
+
+  .barra-serie-1 {
+    background-color: var(--grafico-1);
+  }
+
+  .barra-serie-2 {
+    background-color: var(--grafico-2);
+  }
+
+  .barra-serie-3 {
+    background-color: var(--grafico-3);
+  }
+
+  .barra-serie-4 {
+    background-color: var(--grafico-4);
+  }
+
+  .barra-serie-5 {
+    background-color: var(--grafico-5);
+  }
+
+  .barra-serie-6 {
+    background-color: var(--grafico-6);
+  }
+
+  .barra-serie-7 {
+    background-color: var(--grafico-7);
+  }
+
+  .barra-serie-8 {
+    background-color: var(--grafico-8);
+  }
+
+  .texto-serie-1 {
+    color: var(--grafico-1);
+  }
+
+  .texto-serie-2 {
+    color: var(--grafico-2);
+  }
+
+  .texto-serie-3 {
+    color: var(--grafico-3);
+  }
+
+  .texto-serie-4 {
+    color: var(--grafico-4);
+  }
+
+  .texto-serie-5 {
+    color: var(--grafico-5);
+  }
+
+  .texto-serie-6 {
+    color: var(--grafico-6);
+  }
+
+  .texto-serie-7 {
+    color: var(--grafico-7);
+  }
+
+  .texto-serie-8 {
+    color: var(--grafico-8);
+  }
+
+  .legenda-serie {
+    @apply inline-flex items-center gap-1.5 text-xs text-neutra-700 dark:text-neutra-300;
+  }
+
+  .legenda-serie::before {
+    @apply size-2.5 shrink-0 rounded-[3px];
+    content: "";
+    background-color: var(--cor, var(--grafico-1));
+  }
+
+  .faixa-series {
+    @apply flex h-2 w-full overflow-hidden rounded-full;
+  }
+
+  .faixa-series > span {
+    @apply h-full;
+    flex: var(--peso, 1) 1 0%;
+  }
+}

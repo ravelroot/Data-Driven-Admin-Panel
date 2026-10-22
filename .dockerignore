@@ -1,0 +1,15 @@
+.git
+.github
+.env
+.env.*
+node_modules
+web/node_modules
+api/node_modules
+web/dist
+api/dist
+dados
+docs
+*.pdf
+*.log
+iniciar.cmd
+iniciar.sh

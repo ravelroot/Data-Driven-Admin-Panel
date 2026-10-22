@@ -1,0 +1,172 @@
+@layer components {
+  .barra-lateral {
+    @apply flex h-full flex-col bg-tinta text-neutra-300;
+    --barra-borda: color-mix(in oklab, var(--color-creme) 9%, transparent);
+    --barra-realce: color-mix(in oklab, var(--color-creme) 7%, transparent);
+  }
+
+  .dark .barra-lateral {
+    background-color: color-mix(in oklab, var(--color-neutra-950) 72%, black);
+    --barra-borda: color-mix(in oklab, var(--color-creme) 7%, transparent);
+  }
+
+  [data-paleta]:not([data-paleta="bento"]) .barra-lateral {
+    background-color: var(--color-neutra-950);
+  }
+
+  .barra-marca {
+    @apply flex h-(--spacing-cabecalho) shrink-0 items-center gap-3 px-5 recolhida:lg:justify-center recolhida:lg:px-0;
+  }
+
+  .barra-marca-logo {
+    @apply grid size-9 shrink-0 place-items-center rounded-[0.6rem] bg-creme text-tinta;
+  }
+
+  .barra-marca-logo svg {
+    @apply size-6;
+  }
+
+  .barra-marca-texto {
+    @apply flex min-w-0 flex-col leading-none recolhida:lg:hidden;
+  }
+
+  .barra-marca-nome {
+    @apply font-titulo text-xl font-semibold tracking-tight text-creme;
+    font-variation-settings: "opsz" 48, "wdth" 90;
+  }
+
+  .barra-marca-versao {
+    @apply mt-1 text-micro font-medium text-neutra-500;
+  }
+
+  .barra-recolher {
+    @apply ml-auto hidden size-8 place-items-center rounded-lg text-neutra-400 transition-colors hover:bg-(--barra-realce) hover:text-creme lg:grid recolhida:lg:hidden;
+  }
+
+  .barra-expandir {
+    @apply mx-auto mb-2 hidden size-9 place-items-center rounded-lg text-neutra-400 transition-colors hover:bg-(--barra-realce) hover:text-creme recolhida:lg:grid;
+  }
+
+  .barra-fechar-movel {
+    @apply ml-auto grid size-9 place-items-center rounded-lg text-neutra-400 hover:bg-(--barra-realce) hover:text-creme lg:hidden;
+  }
+
+  .barra-navegacao {
+    @apply flex-1 overflow-y-auto overscroll-contain px-3 pt-2 pb-4 recolhida:lg:px-2.5;
+    scrollbar-color: color-mix(in oklab, var(--color-creme) 18%, transparent) transparent;
+  }
+
+  .barra-grupo + .barra-grupo {
+    @apply mt-6 recolhida:lg:mt-3 recolhida:lg:border-t recolhida:lg:border-(--barra-borda) recolhida:lg:pt-3;
+  }
+
+  .barra-grupo-titulo {
+    @apply mb-1.5 px-3 text-xs font-semibold text-neutra-500 recolhida:lg:sr-only;
+  }
+
+  .barra-lista {
+    @apply flex flex-col gap-0.5;
+  }
+
+  .barra-item {
+    @apply relative flex h-10 items-center gap-3 rounded-[0.7rem] px-3 text-sm font-medium text-neutra-300 transition-colors duration-150 hover:bg-(--barra-realce) hover:text-creme recolhida:lg:justify-center recolhida:lg:px-0;
+  }
+
+  .barra-item[aria-current="page"] {
+    @apply bg-creme text-tinta hover:bg-creme hover:text-tinta;
+  }
+
+  .dark .barra-item[aria-current="page"] {
+    @apply bg-destaque-400 text-tinta;
+  }
+
+  .barra-item-icone {
+    @apply size-[1.125rem] shrink-0;
+  }
+
+  .barra-item[aria-current="page"] .barra-item-icone {
+    @apply text-primaria-800 dark:text-tinta;
+  }
+
+  .barra-item-texto {
+    @apply min-w-0 flex-1 truncate recolhida:lg:sr-only;
+  }
+
+  .barra-item-contador {
+    @apply ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destaque-500 px-1.5 text-micro font-bold text-tinta tabular-nums recolhida:lg:absolute recolhida:lg:top-1 recolhida:lg:right-1 recolhida:lg:h-4 recolhida:lg:min-w-4 recolhida:lg:px-1 recolhida:lg:text-[0.625rem];
+  }
+
+  .barra-item[aria-current="page"] .barra-item-contador {
+    @apply bg-primaria-800 text-creme dark:bg-tinta dark:text-destaque-300;
+  }
+
+  .barra-item-externo {
+    @apply size-3.5 text-neutra-500 recolhida:lg:hidden;
+  }
+
+  .barra-item[data-dica]::after {
+    @apply pointer-events-none absolute top-1/2 left-[calc(100%+0.75rem)] z-50 hidden -translate-y-1/2 rounded-lg bg-neutra-950 px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap text-creme opacity-0 shadow-elevado transition-opacity dark:bg-neutra-100 dark:text-neutra-950;
+    content: attr(data-dica);
+  }
+
+  .casca[data-barra="recolhida"] .barra-item[data-dica]:hover::after,
+  .casca[data-barra="recolhida"] .barra-item[data-dica]:focus-visible::after {
+    @apply lg:block lg:opacity-100;
+  }
+
+  .barra-rodape {
+    @apply shrink-0 border-t border-(--barra-borda) p-3 recolhida:lg:px-2.5;
+  }
+
+  .barra-plano {
+    @apply mb-3 rounded-cartao bg-(--barra-realce) p-4 recolhida:lg:hidden;
+  }
+
+  .barra-plano-titulo {
+    @apply flex items-center gap-2 text-sm font-semibold text-creme;
+  }
+
+  .barra-plano-texto {
+    @apply mt-1 text-xs leading-relaxed text-neutra-400;
+  }
+
+  .barra-plano-progresso {
+    @apply mt-3 h-1.5 overflow-hidden rounded-full bg-(--barra-borda);
+  }
+
+  .barra-plano-progresso > span {
+    @apply block h-full rounded-full bg-destaque-500 transition-[width] duration-700;
+  }
+
+  .barra-plano-legenda {
+    @apply mt-2 flex justify-between text-micro text-neutra-500 tabular-nums;
+  }
+
+  .barra-usuario {
+    @apply flex w-full items-center gap-3 rounded-[0.8rem] p-2 text-left transition-colors hover:bg-(--barra-realce) recolhida:lg:justify-center recolhida:lg:p-1.5;
+  }
+
+  .barra-usuario-texto {
+    @apply flex min-w-0 flex-1 flex-col recolhida:lg:hidden;
+  }
+
+  .barra-usuario-nome {
+    @apply truncate text-sm font-semibold text-creme;
+  }
+
+  .barra-usuario-papel {
+    @apply truncate text-xs text-neutra-400;
+  }
+
+  .barra-usuario-icone {
+    @apply size-4 text-neutra-500 recolhida:lg:hidden;
+  }
+
+  .barra-ao-vivo {
+    @apply mx-3 mb-2 flex items-center gap-2 text-xs text-neutra-400 recolhida:lg:mx-auto recolhida:lg:justify-center;
+  }
+
+  .barra-ao-vivo-texto {
+    @apply recolhida:lg:sr-only;
+  }
+}

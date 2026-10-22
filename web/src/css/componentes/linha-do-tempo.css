@@ -1,0 +1,78 @@
+@layer components {
+  .linha-tempo {
+    @apply relative flex flex-col;
+  }
+
+  .linha-tempo-item {
+    @apply relative flex gap-3 pb-5 last:pb-0;
+  }
+
+  .linha-tempo-item::before {
+    @apply absolute top-9 bottom-1 left-[1.0625rem] w-px bg-neutra-200 dark:bg-neutra-800;
+    content: "";
+  }
+
+  .linha-tempo-item:last-child::before {
+    @apply hidden;
+  }
+
+  .linha-tempo-marcador {
+    @apply relative z-[1] grid size-[2.125rem] shrink-0 place-items-center rounded-full border border-neutra-200 bg-neutra-50 text-neutra-600 dark:border-neutra-800 dark:bg-neutra-900 dark:text-neutra-400;
+  }
+
+  .linha-tempo-marcador svg {
+    @apply size-3.5;
+  }
+
+  .linha-tempo-marcador[data-tom="oliva"] {
+    @apply border-oliva-200 bg-oliva-50 text-oliva-700 dark:border-oliva-500/30 dark:bg-oliva-500/10 dark:text-oliva-300;
+  }
+
+  .linha-tempo-marcador[data-tom="brasa"] {
+    @apply border-brasa-200 bg-brasa-50 text-brasa-700 dark:border-brasa-500/30 dark:bg-brasa-500/10 dark:text-brasa-300;
+  }
+
+  .linha-tempo-marcador[data-tom="ouro"] {
+    @apply border-destaque-200 bg-destaque-50 text-destaque-800 dark:border-destaque-500/30 dark:bg-destaque-500/10 dark:text-destaque-300;
+  }
+
+  .linha-tempo-marcador[data-tom="anil"] {
+    @apply border-anil-200 bg-anil-50 text-anil-700 dark:border-anil-500/30 dark:bg-anil-500/10 dark:text-anil-300;
+  }
+
+  .linha-tempo-marcador .avatar {
+    @apply size-full;
+  }
+
+  .linha-tempo-conteudo {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5 pt-1.5;
+  }
+
+  .linha-tempo-texto {
+    @apply text-sm leading-snug text-neutra-700 dark:text-neutra-300;
+  }
+
+  .linha-tempo-texto strong {
+    @apply font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .linha-tempo-tempo {
+    @apply text-xs text-neutra-500;
+  }
+
+  .linha-tempo-compacta .linha-tempo-item {
+    @apply pb-3.5;
+  }
+
+  .linha-tempo-compacta .linha-tempo-marcador {
+    @apply size-7;
+  }
+
+  .linha-tempo-compacta .linha-tempo-item::before {
+    @apply top-7 left-3.5;
+  }
+
+  .linha-tempo-compacta .linha-tempo-conteudo {
+    @apply pt-0.5;
+  }
+}

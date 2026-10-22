@@ -1,0 +1,238 @@
+@layer components {
+  .arquivos {
+    @apply flex flex-col gap-2;
+  }
+
+  .arquivos-cabecalho {
+    @apply flex items-center justify-between gap-3 text-xs font-semibold text-neutra-600 dark:text-neutra-400;
+  }
+
+  .arquivos-item {
+    @apply relative flex items-center gap-3 overflow-hidden rounded-controle border border-neutra-200 bg-neutra-50 p-3 transition-colors hover:border-neutra-300 dark:border-neutra-800 dark:bg-neutra-900 dark:hover:border-neutra-700 compacta:p-2.5;
+  }
+
+  .arquivos-item[data-selecionado="true"] {
+    @apply border-primaria-600 bg-primaria-50 dark:border-destaque-400 dark:bg-destaque-400/10;
+  }
+
+  .arquivos-item[data-estado="erro"] {
+    @apply border-brasa-300 bg-brasa-50 dark:border-brasa-500/40 dark:bg-brasa-500/10;
+  }
+
+  .arquivos-item[data-estado="enviando"] {
+    @apply border-dashed;
+  }
+
+  .arquivos-icone {
+    @apply relative grid h-11 w-9 shrink-0 place-items-center rounded-md bg-neutra-200 text-[0.5625rem] font-bold tracking-wide text-neutra-700 uppercase dark:bg-neutra-800 dark:text-neutra-300;
+    clip-path: polygon(0 0, 68% 0, 100% 24%, 100% 100%, 0 100%);
+  }
+
+  .arquivos-icone::after {
+    @apply absolute top-0 right-0 size-[32%] rounded-bl-[3px] bg-neutra-300 dark:bg-neutra-700;
+    content: "";
+  }
+
+  .arquivos-icone[data-tipo="pdf"] {
+    @apply bg-brasa-100 text-brasa-800 dark:bg-brasa-500/20 dark:text-brasa-200;
+  }
+
+  .arquivos-icone[data-tipo="pdf"]::after {
+    @apply bg-brasa-300 dark:bg-brasa-600;
+  }
+
+  .arquivos-icone[data-tipo="csv"],
+  .arquivos-icone[data-tipo="xlsx"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-500/20 dark:text-oliva-200;
+  }
+
+  .arquivos-icone[data-tipo="csv"]::after,
+  .arquivos-icone[data-tipo="xlsx"]::after {
+    @apply bg-oliva-300 dark:bg-oliva-600;
+  }
+
+  .arquivos-icone[data-tipo="docx"],
+  .arquivos-icone[data-tipo="txt"] {
+    @apply bg-anil-100 text-anil-800 dark:bg-anil-500/20 dark:text-anil-200;
+  }
+
+  .arquivos-icone[data-tipo="docx"]::after,
+  .arquivos-icone[data-tipo="txt"]::after {
+    @apply bg-anil-300 dark:bg-anil-600;
+  }
+
+  .arquivos-icone[data-tipo="png"],
+  .arquivos-icone[data-tipo="jpg"],
+  .arquivos-icone[data-tipo="svg"] {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-500/20 dark:text-ouro-200;
+  }
+
+  .arquivos-icone[data-tipo="png"]::after,
+  .arquivos-icone[data-tipo="jpg"]::after,
+  .arquivos-icone[data-tipo="svg"]::after {
+    @apply bg-ouro-300 dark:bg-ouro-600;
+  }
+
+  .arquivos-icone[data-tipo="zip"] {
+    @apply bg-casca-100 text-casca-800 dark:bg-casca-500/20 dark:text-casca-200;
+  }
+
+  .arquivos-icone[data-tipo="zip"]::after {
+    @apply bg-casca-300 dark:bg-casca-600;
+  }
+
+  .arquivos-miniatura {
+    @apply size-11 shrink-0 overflow-hidden rounded-md bg-neutra-200 object-cover dark:bg-neutra-800;
+  }
+
+  .arquivos-textos {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5;
+  }
+
+  .arquivos-nome {
+    @apply truncate text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .arquivos-nome a {
+    @apply hover:underline;
+  }
+
+  .arquivos-detalhe {
+    @apply flex flex-wrap items-center gap-x-2 text-xs text-neutra-600 tabular-nums dark:text-neutra-400;
+  }
+
+  .arquivos-detalhe > span + span::before {
+    @apply mr-2 inline-block size-1 rounded-full bg-neutra-400 align-middle dark:bg-neutra-600;
+    content: "";
+  }
+
+  .arquivos-erro {
+    @apply text-xs font-medium text-brasa-700 dark:text-brasa-300;
+  }
+
+  .arquivos-progresso {
+    @apply mt-1.5 flex items-center gap-2;
+  }
+
+  .arquivos-progresso-trilho {
+    @apply h-1.5 flex-1 overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .arquivos-progresso-trilho > span {
+    @apply block h-full rounded-full bg-primaria-700 transition-[width] duration-300 dark:bg-destaque-400;
+    width: var(--valor, 0%);
+  }
+
+  .arquivos-item[data-estado="erro"] .arquivos-progresso-trilho > span {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .arquivos-item[data-estado="concluido"] .arquivos-progresso-trilho > span {
+    @apply bg-oliva-600 dark:bg-oliva-400;
+  }
+
+  .arquivos-progresso-valor {
+    @apply w-9 text-right text-xs font-semibold text-neutra-700 tabular-nums dark:text-neutra-300;
+  }
+
+  .arquivos-situacao {
+    @apply grid size-6 shrink-0 place-items-center rounded-full;
+  }
+
+  .arquivos-situacao svg {
+    @apply size-3.5;
+    stroke-width: 2.5;
+  }
+
+  .arquivos-situacao[data-estado="concluido"] {
+    @apply bg-oliva-100 text-oliva-700 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .arquivos-situacao[data-estado="erro"] {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .arquivos-situacao[data-estado="enviando"] {
+    @apply animate-girar border-2 border-neutra-300 border-t-primaria-700 dark:border-neutra-700 dark:border-t-destaque-400;
+  }
+
+  .arquivos-acoes {
+    @apply flex shrink-0 items-center gap-0.5;
+  }
+
+  .arquivos-acao {
+    @apply grid size-8 place-items-center rounded-lg text-neutra-500 transition-colors hover:bg-neutra-200 hover:text-neutra-900 dark:hover:bg-neutra-800 dark:hover:text-neutra-100;
+  }
+
+  .arquivos-acao svg {
+    @apply size-4;
+  }
+
+  .arquivos-acao-perigo {
+    @apply hover:bg-brasa-100 hover:text-brasa-700 dark:hover:bg-brasa-500/15 dark:hover:text-brasa-300;
+  }
+
+  .arquivos-grade {
+    @apply grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4;
+  }
+
+  .arquivos-cartao {
+    @apply relative flex flex-col overflow-hidden rounded-cartao border border-neutra-200 bg-neutra-50 transition-[border-color,box-shadow] hover:border-neutra-300 hover:shadow-elevado dark:border-neutra-800 dark:bg-neutra-900 dark:hover:border-neutra-700;
+  }
+
+  .arquivos-cartao-previa {
+    @apply grid aspect-[4/3] place-items-center bg-neutra-100 dark:bg-neutra-950/40;
+  }
+
+  .arquivos-cartao-previa .arquivos-icone {
+    @apply h-16 w-13 text-xs;
+  }
+
+  .arquivos-cartao-corpo {
+    @apply flex flex-col gap-0.5 border-t border-neutra-200 p-3 dark:border-neutra-800;
+  }
+
+  .arquivos-cartao-selecao {
+    @apply absolute top-2 left-2 z-[1];
+  }
+
+  .arquivos-cartao:has(input:checked) {
+    @apply border-primaria-700 ring-2 ring-primaria-700/25 dark:border-destaque-400 dark:ring-destaque-400/25;
+  }
+
+  .arquivos-uso {
+    @apply flex flex-col gap-2 rounded-controle bg-neutra-100 p-4 dark:bg-neutra-950/40;
+  }
+
+  .arquivos-uso-barra {
+    @apply flex h-2 overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .arquivos-uso-barra > span {
+    @apply h-full;
+    width: var(--valor, 0%);
+    background-color: var(--cor, var(--color-primaria-700));
+  }
+
+  .arquivos-uso-legenda {
+    @apply flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .arquivos-uso-legenda span {
+    @apply inline-flex items-center gap-1.5;
+  }
+
+  .arquivos-uso-legenda i {
+    @apply inline-block size-2 rounded-sm;
+    background-color: var(--cor, var(--color-primaria-700));
+  }
+
+  .arquivos-vazio {
+    @apply rounded-controle border border-dashed border-neutra-300 px-4 py-8 text-center text-sm text-neutra-500 dark:border-neutra-700;
+  }
+}
+
+@utility arquivos-nome-quebra {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}

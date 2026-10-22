@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Gráficos interativos de receita, tráfego, conversão e retenção com filtros por período.">
+    <title>Analytics | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/js/paginas/analytics.js"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Analytics</h1>
+              <p class="pagina-descricao">Receita, tráfego, conversão e retenção no período que você escolher.</p>
+            </div>
+            <div class="pagina-acoes">
+              <a class="botao botao-secundario" href="/relatorios" data-exportar><i data-icone="arquivo-baixar"></i>Exportar relatório</a>
+            </div>
+          </div>
+
+          <form class="barra-filtros barra-filtros-fixa analytics-filtros" data-filtros aria-label="Filtros do período">
+            <div class="intervalo-datas">
+              <i data-icone="intervalo"></i>
+              <label class="sr-only" for="filtro-inicio">Data inicial</label>
+              <input type="date" id="filtro-inicio" name="inicio" required>
+              <span class="intervalo-datas-separador" aria-hidden="true">até</span>
+              <label class="sr-only" for="filtro-fim">Data final</label>
+              <input type="date" id="filtro-fim" name="fim" required>
+            </div>
+            <div class="predefinicoes" role="group" aria-label="Períodos prontos">
+              <button type="button" data-predefinicao="7">7 dias</button>
+              <button type="button" data-predefinicao="30">30 dias</button>
+              <button type="button" data-predefinicao="90">90 dias</button>
+              <button type="button" data-predefinicao="365">12 meses</button>
+              <button type="button" data-predefinicao="ano">Este ano</button>
+            </div>
+            <span class="barra-ferramentas-espaco"></span>
+            <label class="agrupamento">Agrupar por
+              <select class="selecao" name="agrupar">
+                <option value="dia">Dia</option>
+                <option value="semana">Semana</option>
+                <option value="mes">Mês</option>
+              </select>
+            </label>
+          </form>
+
+          <div class="bento-kpis">
+            <article class="kpi kpi-carregando" data-resumo="receita">
+              <div class="kpi-topo">
+                <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="oliva"><i data-icone="carteira"></i></span>Receita</h2>
+                <span data-kpi-tendencia></span>
+              </div>
+              <p class="kpi-valor" data-kpi-valor>R$ 0</p>
+              <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+            </article>
+            <article class="kpi kpi-carregando" data-resumo="novosUsuarios">
+              <div class="kpi-topo">
+                <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="salvia"><i data-icone="usuario-novo"></i></span>Novos usuários</h2>
+                <span data-kpi-tendencia></span>
+              </div>
+              <p class="kpi-valor" data-kpi-valor>0</p>
+              <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+            </article>
+            <article class="kpi kpi-carregando" data-resumo="visitantes">
+              <div class="kpi-topo">
+                <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="casca"><i data-icone="globo"></i></span>Visitantes</h2>
+                <span data-kpi-tendencia></span>
+              </div>
+              <p class="kpi-valor" data-kpi-valor>0</p>
+              <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+            </article>
+            <article class="kpi kpi-carregando" data-resumo="conversao">
+              <div class="kpi-topo">
+                <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="ouro"><i data-icone="alvo"></i></span>Conversão</h2>
+                <span data-kpi-tendencia></span>
+              </div>
+              <p class="kpi-valor" data-kpi-valor>0%</p>
+              <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+            </article>
+          </div>
+
+          <div class="bento">
+            <section class="cartao bento-dois-tercos bento-alto" aria-labelledby="titulo-receita-analytics">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-receita-analytics">Receita e reembolsos</h2>
+                  <p class="cartao-subtitulo" data-rotulo-agrupamento>Por dia</p>
+                </div>
+                <div class="grupo-botoes" role="group" aria-label="Tipo de gráfico">
+                  <button type="button" class="botao" data-tipo-receita="area" aria-pressed="true">Área</button>
+                  <button type="button" class="botao" data-tipo-receita="bar" aria-pressed="false">Barras</button>
+                </div>
+              </div>
+              <div class="grafico grafico-alto grafico-preenche" data-grafico="receita" data-carregando="true"></div>
+              <dl class="lista-estatisticas mt-4">
+                <div><dt>Transações</dt><dd data-resumo-texto="transacoes">—</dd></div>
+                <div><dt>Ticket médio</dt><dd data-resumo-texto="ticketMedio">—</dd></div>
+                <div><dt>MRR no fim</dt><dd data-resumo-texto="mrr">—</dd></div>
+                <div><dt>Cancelamentos</dt><dd data-resumo-texto="churn">—</dd></div>
+              </dl>
+            </section>
+
+            <section class="cartao bento-terco" aria-labelledby="titulo-funil">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-funil">Funil de conversão</h2>
+                  <p class="cartao-subtitulo">Da visita à assinatura paga</p>
+                </div>
+              </div>
+              <div class="funil" data-funil></div>
+            </section>
+
+            <section class="cartao bento-terco" aria-labelledby="titulo-dispositivos">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-dispositivos">Dispositivos</h2>
+                  <p class="cartao-subtitulo">De onde os visitantes acessam</p>
+                </div>
+              </div>
+              <div class="analytics-dispositivos">
+                <div class="grafico grafico-baixo" data-grafico="dispositivos" data-carregando="true"></div>
+                <div class="analytics-dispositivos-lista" data-dispositivos></div>
+              </div>
+            </section>
+
+            <section class="cartao bento-metade" aria-labelledby="titulo-canais-analytics">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-canais-analytics">Tráfego por canal</h2>
+                  <p class="cartao-subtitulo">Visitantes e conversões</p>
+                </div>
+              </div>
+              <div class="grafico grafico-medio" data-grafico="canais" data-carregando="true"></div>
+            </section>
+
+            <section class="cartao bento-metade" aria-labelledby="titulo-paises">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-paises">Países</h2>
+                  <p class="cartao-subtitulo">Visitantes e receita por país</p>
+                </div>
+              </div>
+              <ul class="lista-ranking" data-paises role="list"></ul>
+            </section>
+
+            <section class="cartao bento-metade" aria-labelledby="titulo-usuarios-analytics">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-usuarios-analytics">Usuários</h2>
+                  <p class="cartao-subtitulo">Novos cadastros e usuários ativos</p>
+                </div>
+                <div class="grafico-legenda">
+                  <span class="legenda-item"><span class="legenda-linha" style="--cor: var(--color-primaria-700); --cor-escura: var(--color-primaria-100)"></span>Novos</span>
+                  <span class="legenda-item"><span class="legenda-linha" style="--cor: var(--color-destaque-500); --cor-escura: var(--color-destaque-400)"></span>Ativos</span>
+                </div>
+              </div>
+              <div class="grafico grafico-medio" data-grafico="usuarios" data-carregando="true"></div>
+            </section>
+
+            <section class="cartao bento-metade" aria-labelledby="titulo-assinaturas-analytics">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-assinaturas-analytics">Assinaturas</h2>
+                  <p class="cartao-subtitulo">Novas assinaturas e cancelamentos</p>
+                </div>
+                <div class="grafico-legenda">
+                  <span class="legenda-item"><span class="legenda-cor" style="--cor: var(--color-primaria-700); --cor-escura: var(--color-primaria-100)"></span>Novas</span>
+                  <span class="legenda-item"><span class="legenda-cor" style="--cor: var(--color-brasa-600); --cor-escura: var(--color-brasa-300)"></span>Cancelamentos</span>
+                </div>
+              </div>
+              <div class="grafico grafico-medio" data-grafico="assinaturas" data-carregando="true"></div>
+            </section>
+
+            <section class="cartao bento-cinco-doze" aria-labelledby="titulo-planos-analytics">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-planos-analytics">Receita por plano</h2>
+                  <p class="cartao-subtitulo">Quanto cada plano trouxe no período</p>
+                </div>
+              </div>
+              <div class="grafico grafico-medio" data-grafico="planos" data-carregando="true"></div>
+            </section>
+
+            <section class="cartao bento-sete-doze" aria-labelledby="titulo-mapa">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-mapa">Horários de compra</h2>
+                  <p class="cartao-subtitulo">Transações pagas por dia da semana e hora</p>
+                </div>
+              </div>
+              <div class="analytics-rolagem">
+                <div class="mapa-calor" data-mapa-calor role="img" aria-label="Mapa de calor das transações por dia e hora"></div>
+              </div>
+              <div class="mapa-calor-legenda" aria-hidden="true">
+                <span>Menos</span>
+                <span class="mapa-calor-celula" data-nivel="0"></span>
+                <span class="mapa-calor-celula" data-nivel="1"></span>
+                <span class="mapa-calor-celula" data-nivel="2"></span>
+                <span class="mapa-calor-celula" data-nivel="3"></span>
+                <span class="mapa-calor-celula" data-nivel="4"></span>
+                <span class="mapa-calor-celula" data-nivel="5"></span>
+                <span>Mais</span>
+              </div>
+            </section>
+
+            <section class="cartao bento-inteiro" aria-labelledby="titulo-coortes">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-coortes">Retenção por coorte</h2>
+                  <p class="cartao-subtitulo">Percentual de clientes que continuam assinando, mês a mês, a partir do mês de cadastro</p>
+                </div>
+              </div>
+              <div class="analytics-rolagem">
+                <table class="tabela-coortes" data-coortes>
+                  <caption class="sr-only">Retenção de clientes por mês de cadastro</caption>
+                </table>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

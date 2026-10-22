@@ -1,0 +1,240 @@
+@layer components {
+  .config-layout {
+    @apply grid gap-5 lg:grid-cols-[14.5rem_minmax(0,1fr)] lg:gap-8;
+  }
+
+  .config-nav {
+    @apply lg:sticky lg:top-[calc(var(--spacing-cabecalho)+1.75rem)] lg:self-start;
+  }
+
+  .config-conteudo {
+    @apply flex min-w-0 flex-col gap-5;
+  }
+
+  .config-secao {
+    @apply cartao-base p-6 shadow-cartao compacta:p-5;
+  }
+
+  .config-secao-cabecalho {
+    @apply mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-neutra-200 pb-5 dark:border-neutra-800;
+  }
+
+  .config-secao-titulo {
+    @apply font-titulo text-lg font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .config-secao-descricao {
+    @apply mt-1 text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .config-linha {
+    @apply grid gap-3 py-4 first:pt-0 last:pb-0 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] md:gap-8;
+  }
+
+  .config-linha + .config-linha {
+    @apply border-t border-neutra-200 dark:border-neutra-800;
+  }
+
+  .config-linha-rotulo {
+    @apply flex flex-col gap-1;
+  }
+
+  .config-linha-titulo {
+    @apply text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .config-linha-texto {
+    @apply text-xs leading-relaxed text-neutra-600 dark:text-neutra-400;
+  }
+
+  .config-rodape {
+    @apply mt-6 flex flex-wrap items-center justify-end gap-2 border-t border-neutra-200 pt-5 dark:border-neutra-800;
+  }
+
+  .perfil-foto {
+    @apply flex items-center gap-4;
+  }
+
+  .tema-opcoes {
+    @apply grid gap-3 sm:grid-cols-3;
+  }
+
+  .tema-opcao {
+    @apply flex cursor-pointer flex-col gap-2.5;
+  }
+
+  .tema-opcao input {
+    @apply sr-only;
+  }
+
+  .tema-previa {
+    @apply relative grid aspect-[16/10] grid-cols-[28%_1fr] overflow-hidden rounded-controle border-2 border-neutra-200 transition-colors dark:border-neutra-800;
+  }
+
+  .tema-opcao:has(:checked) .tema-previa {
+    @apply border-primaria-700 ring-2 ring-primaria-700/20 dark:border-destaque-400 dark:ring-destaque-400/20;
+  }
+
+  .tema-opcao:has(:focus-visible) .tema-previa {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .tema-previa-barra {
+    @apply bg-tinta;
+  }
+
+  .tema-previa-conteudo {
+    @apply grid grid-cols-3 grid-rows-[auto_1fr] gap-1.5 p-2;
+  }
+
+  .tema-previa-conteudo > span {
+    @apply rounded-[4px];
+  }
+
+  .tema-previa-conteudo > span:first-child {
+    @apply col-span-2 row-span-2;
+  }
+
+  .tema-previa[data-tema="claro"] .tema-previa-conteudo {
+    @apply bg-neutra-100;
+  }
+
+  .tema-previa[data-tema="claro"] .tema-previa-conteudo > span {
+    @apply bg-neutra-50 ring-1 ring-neutra-200;
+  }
+
+  .tema-previa[data-tema="claro"] .tema-previa-conteudo > span:first-child {
+    @apply bg-primaria-800 ring-0;
+  }
+
+  .tema-previa[data-tema="escuro"] .tema-previa-conteudo {
+    @apply bg-neutra-950;
+  }
+
+  .tema-previa[data-tema="escuro"] .tema-previa-barra {
+    background-color: color-mix(in oklab, var(--color-neutra-950) 70%, black);
+  }
+
+  .tema-previa[data-tema="escuro"] .tema-previa-conteudo > span {
+    @apply bg-neutra-900 ring-1 ring-neutra-800;
+  }
+
+  .tema-previa[data-tema="escuro"] .tema-previa-conteudo > span:first-child {
+    @apply bg-primaria-900 ring-primaria-700;
+  }
+
+  .tema-previa[data-tema="sistema"] {
+    background: linear-gradient(115deg, var(--color-neutra-100) 50%, var(--color-neutra-950) 50%);
+  }
+
+  .tema-previa[data-tema="sistema"] .tema-previa-conteudo > span {
+    @apply bg-neutra-500/40;
+  }
+
+  .tema-previa[data-tema="sistema"] .tema-previa-conteudo > span:first-child {
+    @apply bg-primaria-700;
+  }
+
+  .tema-opcao-nome {
+    @apply flex items-center gap-2 text-sm font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .tema-opcao-nome svg {
+    @apply size-4 text-neutra-500;
+  }
+
+  .paleta-opcoes {
+    @apply flex flex-wrap gap-3;
+  }
+
+  .paleta-opcao {
+    @apply flex cursor-pointer flex-col items-center gap-2;
+  }
+
+  .paleta-opcao input {
+    @apply sr-only;
+  }
+
+  .paleta-amostra {
+    @apply grid size-14 grid-cols-2 grid-rows-2 overflow-hidden rounded-controle border-2 border-transparent p-0.5 ring-1 ring-neutra-200 transition-[border-color,box-shadow] dark:ring-neutra-800;
+  }
+
+  .paleta-amostra > span:first-child {
+    @apply row-span-2 rounded-l-[0.45rem];
+  }
+
+  .paleta-amostra > span:nth-child(2) {
+    @apply rounded-tr-[0.45rem];
+  }
+
+  .paleta-amostra > span:nth-child(3) {
+    @apply rounded-br-[0.45rem];
+  }
+
+  .paleta-opcao:has(:checked) .paleta-amostra {
+    @apply border-neutra-950 ring-0 dark:border-neutra-50;
+  }
+
+  .paleta-opcao:has(:focus-visible) .paleta-amostra {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .paleta-opcao-nome {
+    @apply text-xs font-semibold text-neutra-700 dark:text-neutra-300;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .sessao-item {
+    @apply flex items-center gap-3 py-3.5;
+  }
+
+  .sessao-item + .sessao-item {
+    @apply border-t border-neutra-200 dark:border-neutra-800;
+  }
+
+  .sessao-icone {
+    @apply grid size-10 shrink-0 place-items-center rounded-controle bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .sessao-icone svg {
+    @apply size-5;
+  }
+
+  .sessao-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .sessao-titulo {
+    @apply flex items-center gap-2 text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .sessao-detalhe {
+    @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .chave-item {
+    @apply flex flex-wrap items-center gap-3 py-3.5;
+  }
+
+  .chave-item + .chave-item {
+    @apply border-t border-neutra-200 dark:border-neutra-800;
+  }
+
+  .chave-prefixo {
+    @apply rounded-md bg-neutra-200 px-2 py-1 font-mono text-xs text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+}

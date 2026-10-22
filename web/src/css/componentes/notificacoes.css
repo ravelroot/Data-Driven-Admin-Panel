@@ -1,0 +1,123 @@
+@layer components {
+  .central-notificacoes {
+    @apply absolute top-[calc(100%+0.5rem)] right-0 z-40 hidden w-[min(25rem,calc(100vw-2rem))] origin-top-right overflow-hidden rounded-painel border border-neutra-200 bg-neutra-50 shadow-flutuante dark:border-neutra-700 dark:bg-neutra-900;
+  }
+
+  .central-notificacoes[data-aberto="true"] {
+    @apply flex animate-escalar flex-col;
+  }
+
+  .central-cabecalho {
+    @apply flex items-center justify-between gap-3 border-b border-neutra-200 px-4 py-3.5 dark:border-neutra-800;
+  }
+
+  .central-titulo {
+    @apply flex items-center gap-2 font-titulo text-base font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .central-lista {
+    @apply max-h-[min(26rem,60vh)] overflow-y-auto overscroll-contain;
+  }
+
+  .central-rodape {
+    @apply border-t border-neutra-200 p-2 dark:border-neutra-800;
+  }
+
+  .central-rodape a {
+    @apply flex h-9 items-center justify-center gap-1.5 rounded-[0.55rem] text-sm font-semibold text-neutra-800 hover:bg-neutra-200 dark:text-neutra-200 dark:hover:bg-neutra-800;
+  }
+
+  .notificacao {
+    @apply relative flex gap-3 px-4 py-3.5 transition-colors hover:bg-neutra-100 dark:hover:bg-neutra-800/50;
+  }
+
+  .notificacao + .notificacao {
+    @apply border-t border-neutra-200/80 dark:border-neutra-800/80;
+  }
+
+  .notificacao[data-lida="false"] {
+    @apply bg-primaria-50 dark:bg-primaria-400/[0.07];
+  }
+
+  .notificacao[data-lida="false"]::before {
+    @apply absolute top-5 left-1.5 size-1.5 rounded-full bg-primaria-800 dark:bg-primaria-100;
+    content: "";
+  }
+
+  .notificacao[data-nova="true"] {
+    @apply animate-destacar;
+  }
+
+  .notificacao-icone {
+    @apply grid size-9 shrink-0 place-items-center rounded-full bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .notificacao-icone svg {
+    @apply size-4;
+  }
+
+  .notificacao-icone[data-tipo="sucesso"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .notificacao-icone[data-tipo="erro"] {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .notificacao-icone[data-tipo="alerta"] {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-400/15 dark:text-ouro-300;
+  }
+
+  .notificacao-icone[data-tipo="info"] {
+    @apply bg-anil-100 text-anil-700 dark:bg-anil-400/15 dark:text-anil-300;
+  }
+
+  .notificacao-conteudo {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5;
+  }
+
+  .notificacao-titulo {
+    @apply text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .notificacao-texto {
+    @apply line-clamp-2 text-sm text-neutra-700 dark:text-neutra-300;
+  }
+
+  .notificacao-meta {
+    @apply mt-1 flex flex-wrap items-center gap-2 text-xs text-neutra-500;
+  }
+
+  .notificacao-link {
+    @apply absolute inset-0 z-0;
+  }
+
+  .notificacao-acoes {
+    @apply relative z-[1] flex shrink-0 items-start gap-0.5 opacity-100 transition-opacity sm:opacity-0;
+  }
+
+  .notificacao:hover .notificacao-acoes,
+  .notificacao:focus-within .notificacao-acoes {
+    @apply opacity-100;
+  }
+
+  .notificacao-grande {
+    @apply rounded-cartao border border-neutra-200 bg-neutra-50 px-5 py-4 dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .notificacao-grande + .notificacao-grande {
+    @apply mt-2 border-t;
+  }
+
+  .notificacao-grande[data-lida="false"] {
+    @apply border-primaria-300 dark:border-primaria-400/40;
+  }
+
+  .notificacao-grande[data-lida="false"]::before {
+    @apply top-6 left-2;
+  }
+
+  .grupo-dia {
+    @apply mt-6 mb-2 text-xs font-semibold text-neutra-500 first:mt-0;
+  }
+}

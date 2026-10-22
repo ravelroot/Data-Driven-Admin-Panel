@@ -1,0 +1,93 @@
+@layer base {
+  input,
+  select,
+  textarea,
+  button {
+    @apply font-sans text-inherit;
+  }
+
+  button,
+  [role="button"],
+  label[for],
+  summary {
+    @apply cursor-pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    @apply cursor-not-allowed;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-neutra-500 opacity-100 dark:text-neutra-500;
+  }
+
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator,
+  input[type="month"]::-webkit-calendar-picker-indicator {
+    @apply cursor-pointer rounded opacity-60 transition-opacity hover:opacity-100;
+  }
+
+  .dark input[type="date"]::-webkit-calendar-picker-indicator,
+  .dark input[type="time"]::-webkit-calendar-picker-indicator,
+  .dark input[type="month"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.92) sepia(0.2);
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-neutra-950);
+    box-shadow: 0 0 0 1000px var(--color-destaque-50) inset;
+    transition: background-color 9999s ease-out;
+  }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-neutra-50);
+    box-shadow: 0 0 0 1000px var(--color-neutra-900) inset;
+  }
+
+  fieldset {
+    @apply m-0 min-w-0 border-0 p-0;
+  }
+
+  legend {
+    @apply p-0;
+  }
+
+  progress {
+    @apply h-2 w-full appearance-none overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  progress::-webkit-progress-bar {
+    @apply bg-transparent;
+  }
+
+  progress::-webkit-progress-value {
+    @apply rounded-full bg-primaria-700 dark:bg-destaque-400;
+  }
+
+  progress::-moz-progress-bar {
+    @apply rounded-full bg-primaria-700 dark:bg-destaque-400;
+  }
+}

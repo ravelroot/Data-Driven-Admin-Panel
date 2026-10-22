@@ -1,0 +1,93 @@
+@layer components {
+  .paleta-comandos {
+    @apply mx-auto mt-[12vh] mb-auto w-[calc(100%-2rem)] max-w-xl overflow-hidden rounded-painel border border-neutra-200 bg-neutra-50 p-0 text-neutra-900 shadow-flutuante dark:border-neutra-700 dark:bg-neutra-900 dark:text-neutra-100;
+  }
+
+  .paleta-comandos:not([open]) {
+    @apply hidden;
+  }
+
+  .paleta-comandos[open] {
+    @apply flex animate-escalar flex-col;
+  }
+
+  .paleta-entrada-caixa {
+    @apply flex items-center gap-3 border-b border-neutra-200 px-4 dark:border-neutra-800;
+  }
+
+  .paleta-entrada-caixa > svg {
+    @apply size-5 shrink-0 text-neutra-500;
+  }
+
+  .paleta-entrada {
+    @apply h-14 min-w-0 flex-1 border-0 bg-transparent text-base text-neutra-950 outline-none dark:text-neutra-50;
+  }
+
+  .paleta-resultados {
+    @apply max-h-[min(26rem,55vh)] overflow-y-auto overscroll-contain p-2;
+  }
+
+  .paleta-grupo + .paleta-grupo {
+    @apply mt-2;
+  }
+
+  .paleta-grupo-titulo {
+    @apply px-3 pt-2 pb-1.5 text-xs font-semibold text-neutra-500;
+  }
+
+  .paleta-item {
+    @apply flex h-12 w-full items-center gap-3 rounded-controle px-3 text-left text-sm transition-colors;
+  }
+
+  .paleta-item[aria-selected="true"] {
+    @apply bg-neutra-200/80 dark:bg-neutra-800;
+  }
+
+  .paleta-item-icone {
+    @apply grid size-8 shrink-0 place-items-center rounded-[0.55rem] bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .paleta-item[aria-selected="true"] .paleta-item-icone {
+    @apply bg-primaria-800 text-creme dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .paleta-item-icone svg {
+    @apply size-4;
+  }
+
+  .paleta-item-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .paleta-item-titulo {
+    @apply truncate font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .paleta-item-detalhe {
+    @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .paleta-item-lado {
+    @apply ml-auto shrink-0 text-xs text-neutra-500 tabular-nums;
+  }
+
+  .paleta-item mark {
+    @apply rounded-sm bg-destaque-200 px-0.5 text-inherit dark:bg-destaque-500/30;
+  }
+
+  .paleta-vazio {
+    @apply flex flex-col items-center gap-2 px-6 py-10 text-center text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .paleta-vazio svg {
+    @apply size-6 text-neutra-400;
+  }
+
+  .paleta-rodape {
+    @apply flex flex-wrap items-center gap-4 border-t border-neutra-200 bg-neutra-100/70 px-4 py-2.5 text-xs text-neutra-600 dark:border-neutra-800 dark:bg-neutra-950/40 dark:text-neutra-400;
+  }
+
+  .paleta-rodape span {
+    @apply inline-flex items-center gap-1.5;
+  }
+}

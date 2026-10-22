@@ -1,0 +1,84 @@
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 12mm;
+  }
+
+  html,
+  html.dark {
+    @apply bg-white text-black;
+    color-scheme: light;
+  }
+
+  .casca {
+    display: block !important;
+  }
+
+  .casca-barra,
+  .cabecalho,
+  .casca-veu,
+  .avisos,
+  .pagina-acoes,
+  .tabela-barra,
+  .tabela-rodape,
+  .gaveta,
+  .modal,
+  .paleta-comandos,
+  .cartao-acoes,
+  .nao-imprimir,
+  [data-nao-imprimir] {
+    display: none !important;
+  }
+
+  .casca-conteudo {
+    @apply max-w-none p-0;
+  }
+
+  .bento {
+    display: block !important;
+  }
+
+  .bento > * {
+    @apply mb-4;
+    break-inside: avoid;
+  }
+
+  .cartao,
+  .cartao-destaque,
+  .cartao-ouro {
+    @apply border border-neutral-300 bg-white text-black shadow-none;
+    break-inside: avoid;
+  }
+
+  .cartao-destaque *,
+  .cartao-ouro * {
+    @apply text-black;
+  }
+
+  .tabela-moldura {
+    @apply overflow-visible border-neutral-300;
+  }
+
+  .tabela thead {
+    display: table-header-group;
+  }
+
+  .tabela tr {
+    break-inside: avoid;
+  }
+
+  .so-impressao {
+    display: block !important;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    @apply text-xs text-neutral-600;
+  }
+}
+
+@layer components {
+  .so-impressao {
+    @apply hidden;
+  }
+}

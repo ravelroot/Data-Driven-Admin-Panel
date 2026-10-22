@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - ".github/atividade.txt"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  interface:
+    name: Interface (Tailwind CSS + Vite)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Testes do núcleo da interface
+        run: npm test -w web
+      - name: Construir as páginas
+        run: npm run build -w web
+      - uses: actions/upload-artifact@v4
+        with:
+          name: interface
+          path: web/dist/
+          retention-days: 7
+
+  api:
+    name: API (TypeScript + PostgreSQL)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: bento
+          POSTGRES_USER: bento
+          POSTGRES_PASSWORD: bento
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U bento"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Checar tipos
+        run: npm run verificar -w api
+      - name: Testes da API (PGlite)
+        run: npm test -w api
+      - name: Compilar a API
+        run: npm run build -w api
+      - name: Subir contra um PostgreSQL de verdade
+        env:
+          DATABASE_URL: postgres://bento:bento@localhost:5432/bento
+          BENTO_SEGREDO_JWT: segredo-de-teste-da-integracao-continua-com-mais-de-32-caracteres
+          BENTO_SIMULADOR: "false"
+        run: |
+          node api/dist/servidor.js &
+          for tentativa in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/api/v1/saude; then break; fi
+            sleep 1
+          done
+          curl -fsS http://localhost:8080/api/v1/saude | grep -q '"banco":"postgresql"'
+          curl -fsS -c cookies.txt -H "Content-Type: application/json" -H "X-Bento: 1" \
+            -d '{"email":"admin@bento.local","senha":"bento123"}' http://localhost:8080/api/v1/auth/entrar > /dev/null
+          curl -fsS -b cookies.txt "http://localhost:8080/api/v1/visao-geral?periodo=30d" | grep -q '"kpis"'
+          curl -fsS -b cookies.txt "http://localhost:8080/api/v1/usuarios?porPagina=5" | grep -q '"itens"'
+
+  docker:
+    name: Imagem Docker
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - name: Construir a imagem
+        run: docker build -t bento:ci .

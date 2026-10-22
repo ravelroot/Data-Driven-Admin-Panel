@@ -1,0 +1,45 @@
+@layer components {
+  .analytics-filtros {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .analytics-filtros .barra-ferramentas-espaco {
+    @apply hidden lg:block;
+  }
+
+  .analytics-kpi-valor {
+    @apply font-titulo text-numero text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .analytics-cabecalho-grafico {
+    @apply flex flex-wrap items-center justify-between gap-3;
+  }
+
+  .analytics-dispositivos {
+    @apply grid flex-1 items-center gap-4;
+  }
+
+  .analytics-dispositivos-lista {
+    @apply grid grid-cols-3 gap-2 text-center;
+  }
+
+  .analytics-dispositivo {
+    @apply flex flex-col items-center gap-1 rounded-controle bg-neutra-100 p-3 dark:bg-neutra-950/40;
+  }
+
+  .analytics-dispositivo svg {
+    @apply size-4 text-neutra-500;
+  }
+
+  .analytics-dispositivo strong {
+    @apply font-titulo text-lg font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .analytics-dispositivo span {
+    @apply text-micro text-neutra-600 dark:text-neutra-400;
+  }
+
+  .analytics-rolagem {
+    @apply -mx-5 overflow-x-auto px-5 compacta:-mx-4 compacta:px-4;
+  }
+}

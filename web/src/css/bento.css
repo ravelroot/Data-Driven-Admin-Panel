@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@import "./tema/variantes.css";
+@import "./tema/cores.css";
+@import "./tema/tipografia.css";
+@import "./tema/medidas.css";
+@import "./tema/paletas.css";
+
+@import "./base/documento.css";
+@import "./base/tipografia.css";
+@import "./base/formularios.css";
+
+@import "./layout/casca.css";
+@import "./layout/bento.css";
+@import "./layout/pagina.css";
+@import "./layout/autenticacao.css";
+
+@import "./componentes/barra-lateral.css";
+@import "./componentes/cabecalho.css";
+@import "./componentes/botoes.css";
+@import "./componentes/cartoes.css";
+@import "./componentes/indicadores.css";
+@import "./componentes/graficos.css";
+@import "./componentes/tabelas.css";
+@import "./componentes/paginacao.css";
+@import "./componentes/formularios.css";
+@import "./componentes/emblemas.css";
+@import "./componentes/avatares.css";
+@import "./componentes/gavetas.css";
+@import "./componentes/modais.css";
+@import "./componentes/menus.css";
+@import "./componentes/abas.css";
+@import "./componentes/avisos.css";
+@import "./componentes/alertas.css";
+@import "./componentes/notificacoes.css";
+@import "./componentes/linha-do-tempo.css";
+@import "./componentes/busca.css";
+@import "./componentes/dicas.css";
+@import "./componentes/progresso.css";
+@import "./componentes/esqueleto.css";
+@import "./componentes/vazio.css";
+@import "./componentes/listas.css";
+@import "./componentes/permissoes.css";
+@import "./componentes/mapa-calor.css";
+@import "./componentes/coortes.css";
+@import "./componentes/funil.css";
+@import "./componentes/integracoes.css";
+@import "./componentes/filtros.css";
+@import "./componentes/calendario.css";
+
+@import "./kit/animacoes.css";
+@import "./kit/acordeao.css";
+@import "./kit/precos.css";
+@import "./kit/fatura.css";
+@import "./kit/kanban.css";
+@import "./kit/calendario-grade.css";
+@import "./kit/controle-deslizante.css";
+@import "./kit/etiquetas-entrada.css";
+@import "./kit/arvore.css";
+@import "./kit/lista-arquivos.css";
+@import "./kit/comentarios.css";
+@import "./kit/passo-a-passo.css";
+@import "./kit/linha-status.css";
+@import "./kit/registro-mudancas.css";
+@import "./kit/cartoes-perfil.css";
+@import "./kit/graficos-css.css";
+@import "./kit/temas-graficos.css";
+@import "./kit/filtros-avancados.css";
+@import "./kit/selecao-avancada.css";
+@import "./kit/banner.css";
+@import "./kit/erros.css";
+@import "./kit/boas-vindas.css";
+@import "./kit/cartao-pagamento.css";
+@import "./kit/uso-plano.css";
+@import "./kit/equipe.css";
+@import "./kit/sobreposicoes.css";
+@import "./kit/formularios-avancados.css";
+@import "./kit/impressao-relatorio.css";
+@import "./kit/modelos-bento.css";
+@import "./kit/estados-vazios.css";
+
+@import "./paginas/visao-geral.css";
+@import "./paginas/analytics.css";
+@import "./paginas/usuarios.css";
+@import "./paginas/notificacoes.css";
+@import "./paginas/relatorios.css";
+@import "./paginas/configuracoes.css";
+@import "./paginas/componentes.css";
+@import "./paginas/entrar.css";
+
+@import "./utilitarios/utilitarios.css";
+@import "./base/impressao.css";
+
+@source "../../*.html";
+@source "../js";

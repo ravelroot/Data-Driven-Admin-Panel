@@ -1,0 +1,273 @@
+@layer components {
+  .fatura {
+    @apply relative mx-auto flex w-full max-w-3xl flex-col gap-8 rounded-painel border border-neutra-200 bg-white p-8 text-sm text-neutra-800 shadow-elevado sm:p-10 dark:border-neutra-800 dark:bg-neutra-900 dark:text-neutra-200;
+  }
+
+  .fatura-compacta {
+    @apply gap-5 p-6 sm:p-6;
+  }
+
+  .fatura-topo {
+    @apply flex flex-wrap items-start justify-between gap-6;
+  }
+
+  .fatura-marca {
+    @apply flex items-center gap-3;
+  }
+
+  .fatura-marca-logo {
+    @apply grid size-11 place-items-center rounded-[0.7rem] bg-tinta text-creme dark:bg-creme dark:text-tinta;
+  }
+
+  .fatura-marca-logo svg {
+    @apply size-7;
+  }
+
+  .fatura-marca-nome {
+    @apply font-titulo text-xl font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .fatura-marca-detalhe {
+    @apply text-xs text-neutra-500;
+  }
+
+  .fatura-identificacao {
+    @apply flex flex-col items-end gap-1 text-right;
+  }
+
+  .fatura-tipo {
+    @apply font-titulo text-3xl font-semibold text-neutra-950 dark:text-neutra-50;
+    letter-spacing: -0.03em;
+  }
+
+  .fatura-numero {
+    @apply font-mono text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .fatura-situacao {
+    @apply mt-1 inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-xs font-bold;
+  }
+
+  .fatura-situacao[data-situacao="paga"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .fatura-situacao[data-situacao="pendente"] {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-400/15 dark:text-ouro-300;
+  }
+
+  .fatura-situacao[data-situacao="vencida"] {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .fatura-situacao[data-situacao="reembolsada"] {
+    @apply bg-anil-100 text-anil-700 dark:bg-anil-400/15 dark:text-anil-300;
+  }
+
+  .fatura-partes {
+    @apply grid gap-6 sm:grid-cols-3;
+  }
+
+  .fatura-parte {
+    @apply flex flex-col gap-1;
+  }
+
+  .fatura-parte-rotulo {
+    @apply mb-1 text-xs font-semibold text-neutra-500;
+  }
+
+  .fatura-parte-nome {
+    @apply font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .fatura-parte-linha {
+    @apply text-neutra-700 dark:text-neutra-300;
+  }
+
+  .fatura-datas {
+    @apply grid grid-cols-2 gap-px overflow-hidden rounded-controle border border-neutra-200 bg-neutra-200 sm:grid-cols-4 dark:border-neutra-800 dark:bg-neutra-800;
+  }
+
+  .fatura-data {
+    @apply flex flex-col gap-0.5 bg-neutra-50 px-4 py-3 dark:bg-neutra-950/40;
+  }
+
+  .fatura-data dt {
+    @apply text-xs text-neutra-500;
+  }
+
+  .fatura-data dd {
+    @apply font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .fatura-itens {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .fatura-itens thead th {
+    @apply border-b-2 border-neutra-950 pb-2 text-left text-xs font-semibold text-neutra-950 dark:border-neutra-200 dark:text-neutra-50;
+  }
+
+  .fatura-itens th.fatura-numerico,
+  .fatura-itens td.fatura-numerico {
+    @apply text-right tabular-nums;
+  }
+
+  .fatura-itens tbody td {
+    @apply border-b border-neutra-200 py-3 align-top text-neutra-800 dark:border-neutra-800 dark:text-neutra-200;
+  }
+
+  .fatura-item-nome {
+    @apply font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .fatura-item-detalhe {
+    @apply mt-0.5 block text-xs text-neutra-500;
+  }
+
+  .fatura-totais {
+    @apply ml-auto flex w-full max-w-xs flex-col gap-2;
+  }
+
+  .fatura-total-linha {
+    @apply flex items-center justify-between gap-4 text-neutra-700 tabular-nums dark:text-neutra-300;
+  }
+
+  .fatura-total-linha[data-tipo="desconto"] {
+    @apply text-oliva-700 dark:text-oliva-300;
+  }
+
+  .fatura-total-final {
+    @apply mt-1 flex items-center justify-between gap-4 border-t-2 border-neutra-950 pt-3 font-titulo text-2xl font-semibold text-neutra-950 tabular-nums dark:border-neutra-200 dark:text-neutra-50;
+  }
+
+  .fatura-pagamento {
+    @apply flex flex-wrap items-center gap-4 rounded-controle bg-neutra-100 p-4 dark:bg-neutra-950/40;
+  }
+
+  .fatura-pagamento-icone {
+    @apply grid size-10 shrink-0 place-items-center rounded-controle bg-white text-neutra-800 shadow-cartao dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  .fatura-pagamento-icone svg {
+    @apply size-5;
+  }
+
+  .fatura-pagamento-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .fatura-pagamento-titulo {
+    @apply font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .fatura-pagamento-detalhe {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .fatura-codigo-barras {
+    @apply flex flex-col gap-2;
+  }
+
+  .fatura-codigo-barras-linhas {
+    @apply h-12 rounded-sm;
+    background-image: repeating-linear-gradient(90deg, var(--color-neutra-950) 0 2px, transparent 2px 4px, var(--color-neutra-950) 4px 5px, transparent 5px 8px, var(--color-neutra-950) 8px 11px, transparent 11px 12px);
+  }
+
+  .dark .fatura-codigo-barras-linhas {
+    background-image: repeating-linear-gradient(90deg, var(--color-neutra-100) 0 2px, transparent 2px 4px, var(--color-neutra-100) 4px 5px, transparent 5px 8px, var(--color-neutra-100) 8px 11px, transparent 11px 12px);
+  }
+
+  .fatura-codigo-barras-numero {
+    @apply font-mono text-xs tracking-wider break-all text-neutra-700 select-all dark:text-neutra-300;
+  }
+
+  .fatura-pix {
+    @apply grid gap-4 rounded-controle border border-dashed border-neutra-300 p-4 sm:grid-cols-[8rem_minmax(0,1fr)] dark:border-neutra-700;
+  }
+
+  .fatura-pix-qr {
+    @apply grid aspect-square place-items-center rounded-md bg-white p-2 ring-1 ring-neutra-200;
+    background-image: linear-gradient(90deg, var(--color-neutra-950) 50%, transparent 50%), linear-gradient(var(--color-neutra-950) 50%, transparent 50%);
+    background-size: 12px 12px;
+    background-blend-mode: difference;
+  }
+
+  .fatura-observacoes {
+    @apply rounded-controle border-l-0 bg-destaque-50 p-4 text-xs leading-relaxed text-destaque-900 dark:bg-destaque-400/10 dark:text-destaque-100;
+  }
+
+  .fatura-rodape {
+    @apply flex flex-wrap items-center justify-between gap-3 border-t border-neutra-200 pt-5 text-xs text-neutra-500 dark:border-neutra-800;
+  }
+
+  .fatura-acoes {
+    @apply flex flex-wrap items-center justify-end gap-2;
+  }
+
+  .fatura-carimbo {
+    @apply pointer-events-none absolute top-24 right-10 rotate-[-14deg] rounded-md border-4 px-4 py-1 font-titulo text-3xl font-bold tracking-wider uppercase opacity-25 select-none;
+  }
+
+  .fatura-carimbo[data-situacao="paga"] {
+    @apply border-oliva-600 text-oliva-600 dark:border-oliva-300 dark:text-oliva-300;
+  }
+
+  .fatura-carimbo[data-situacao="vencida"] {
+    @apply border-brasa-600 text-brasa-600 dark:border-brasa-300 dark:text-brasa-300;
+  }
+
+  .recibo {
+    @apply mx-auto flex w-full max-w-sm flex-col gap-4 rounded-cartao bg-white p-6 font-mono text-xs text-neutra-800 shadow-elevado dark:bg-neutra-900 dark:text-neutra-200;
+    mask-image: radial-gradient(circle at 8px 100%, transparent 6px, black 6.5px);
+    mask-size: 16px 100%;
+    mask-position: bottom;
+  }
+
+  .recibo-cabecalho {
+    @apply flex flex-col items-center gap-1 border-b border-dashed border-neutra-300 pb-4 text-center dark:border-neutra-700;
+  }
+
+  .recibo-titulo {
+    @apply font-sans text-base font-bold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .recibo-linha {
+    @apply flex justify-between gap-3 tabular-nums;
+  }
+
+  .recibo-linha-forte {
+    @apply border-t border-dashed border-neutra-300 pt-3 text-sm font-bold text-neutra-950 dark:border-neutra-700 dark:text-neutra-50;
+  }
+
+  .recibo-rodape {
+    @apply border-t border-dashed border-neutra-300 pt-4 pb-3 text-center text-neutra-500 dark:border-neutra-700;
+  }
+}
+
+@media print {
+  .fatura {
+    @apply max-w-none rounded-none border-0 p-0 shadow-none;
+    background: white;
+    color: black;
+  }
+
+  .fatura-acoes,
+  .fatura-carimbo {
+    display: none !important;
+  }
+
+  .fatura-datas,
+  .fatura-pagamento,
+  .fatura-observacoes {
+    break-inside: avoid;
+  }
+
+  .fatura-itens tr {
+    break-inside: avoid;
+  }
+}
+
+@utility fatura-valor {
+  @apply text-right font-semibold whitespace-nowrap tabular-nums;
+}

@@ -1,0 +1,50 @@
+@layer components {
+  .notificacoes-topo {
+    @apply mb-4 flex flex-wrap items-center justify-between gap-3;
+  }
+
+  .notificacoes-lista {
+    @apply flex flex-col;
+  }
+
+  .preferencias {
+    @apply w-full text-sm;
+  }
+
+  .preferencias th {
+    @apply pb-2 text-left text-xs font-semibold text-neutra-600 dark:text-neutra-400;
+  }
+
+  .preferencias th:not(:first-child),
+  .preferencias td:not(:first-child) {
+    @apply w-16 text-center;
+  }
+
+  .preferencias td {
+    @apply border-t border-neutra-200 py-3 dark:border-neutra-800;
+  }
+
+  .preferencias td:first-child {
+    @apply pr-2 font-medium text-neutra-800 dark:text-neutra-200;
+  }
+
+  .preferencias .interruptor {
+    @apply justify-center;
+  }
+
+  .conexao-estado {
+    @apply flex items-center gap-3;
+  }
+
+  .conexao-estado-textos {
+    @apply flex flex-col;
+  }
+
+  .conexao-estado-titulo {
+    @apply text-sm font-semibold text-creme;
+  }
+
+  .conexao-estado-detalhe {
+    @apply text-xs text-neutra-400;
+  }
+}

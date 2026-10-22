@@ -1,0 +1,54 @@
+@layer components {
+  .mapa-calor {
+    @apply grid gap-[3px] text-micro;
+    grid-template-columns: 2.25rem repeat(24, minmax(0, 1fr));
+  }
+
+  .mapa-calor-rotulo {
+    @apply flex items-center pr-1 text-neutra-500 tabular-nums;
+  }
+
+  .mapa-calor-hora {
+    @apply text-center text-neutra-500 tabular-nums;
+  }
+
+  .mapa-calor-hora:nth-child(even) {
+    @apply invisible sm:visible;
+  }
+
+  .mapa-calor-celula {
+    @apply aspect-square min-h-3 rounded-[3px] bg-neutra-200 transition-transform duration-100 hover:scale-125 hover:ring-2 hover:ring-neutra-950/30 dark:bg-neutra-800 dark:hover:ring-neutra-50/40;
+  }
+
+  .mapa-calor-celula[data-nivel="1"] {
+    @apply bg-primaria-100 dark:bg-primaria-700;
+  }
+
+  .mapa-calor-celula[data-nivel="2"] {
+    @apply bg-primaria-300 dark:bg-primaria-600;
+  }
+
+  .mapa-calor-celula[data-nivel="3"] {
+    @apply bg-primaria-500 dark:bg-primaria-500;
+  }
+
+  .mapa-calor-celula[data-nivel="4"] {
+    @apply bg-primaria-700 dark:bg-primaria-300;
+  }
+
+  .mapa-calor-celula[data-nivel="5"] {
+    @apply bg-primaria-900 dark:bg-primaria-50;
+  }
+
+  .mapa-calor-legenda {
+    @apply mt-3 flex items-center justify-end gap-1.5 text-xs text-neutra-500;
+  }
+
+  .mapa-calor-legenda .mapa-calor-celula {
+    @apply size-3 min-h-0 hover:scale-100 hover:ring-0;
+  }
+
+  .mapa-calor-dica {
+    @apply pointer-events-none fixed z-50 rounded-lg bg-neutra-950 px-2.5 py-1.5 text-xs font-semibold text-neutra-50 shadow-elevado dark:bg-neutra-100 dark:text-neutra-950;
+  }
+}

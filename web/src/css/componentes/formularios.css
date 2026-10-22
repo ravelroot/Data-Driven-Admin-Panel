@@ -1,0 +1,294 @@
+@layer components {
+  .formulario {
+    @apply flex flex-col gap-5;
+  }
+
+  .campo {
+    @apply flex min-w-0 flex-col gap-1.5;
+  }
+
+  .campo-rotulo {
+    @apply flex items-center gap-1 text-sm font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .campo-rotulo-extra {
+    @apply ml-auto text-xs font-medium text-neutra-500;
+  }
+
+  .campo-obrigatorio::after {
+    @apply ml-0.5 text-brasa-600 dark:text-brasa-400;
+    content: "*";
+  }
+
+  .campo-ajuda {
+    @apply text-xs leading-relaxed text-neutra-600 dark:text-neutra-400;
+  }
+
+  .campo-erro {
+    @apply flex items-center gap-1.5 text-xs font-medium text-brasa-700 dark:text-brasa-300;
+  }
+
+  .campo-erro svg {
+    @apply size-3.5;
+  }
+
+  .entrada {
+    @apply block h-10 w-full min-w-0 rounded-controle border border-neutra-300 bg-white px-3 text-sm text-neutra-950 shadow-[inset_0_1px_1px_rgb(0_0_0/0.04)] transition-[border-color,box-shadow,background-color] duration-150 hover:border-neutra-400 focus:border-primaria-700 focus:shadow-anel disabled:cursor-not-allowed disabled:bg-neutra-100 disabled:text-neutra-500 dark:border-neutra-700 dark:bg-neutra-950/60 dark:text-neutra-50 dark:hover:border-neutra-600 dark:focus:border-destaque-400 dark:disabled:bg-neutra-900;
+  }
+
+  .entrada:focus-visible {
+    @apply outline-none;
+  }
+
+  .entrada[aria-invalid="true"],
+  .campo[data-invalido="true"] .entrada {
+    @apply border-brasa-600 focus:border-brasa-600 focus:shadow-[0_0_0_4px_rgb(176_74_47/0.18)] dark:border-brasa-400;
+  }
+
+  .entrada-pequena {
+    @apply h-8 rounded-[0.55rem] px-2.5 text-xs;
+  }
+
+  .entrada-grande {
+    @apply h-12 px-4 text-base;
+  }
+
+  .entrada-mono {
+    @apply font-mono text-xs tracking-tight;
+  }
+
+  .entrada-caixa {
+    @apply relative flex items-center;
+  }
+
+  .entrada-caixa > .entrada {
+    @apply flex-1;
+  }
+
+  .entrada-caixa-icone {
+    @apply pointer-events-none absolute left-3 size-4 text-neutra-500;
+  }
+
+  .entrada-caixa:has(.entrada-caixa-icone) > .entrada {
+    @apply pl-9;
+  }
+
+  .entrada-caixa-acao {
+    @apply absolute right-1 grid size-8 place-items-center rounded-[0.5rem] text-neutra-500 hover:bg-neutra-200 hover:text-neutra-900 dark:hover:bg-neutra-800 dark:hover:text-neutra-100;
+  }
+
+  .entrada-caixa:has(.entrada-caixa-acao) > .entrada {
+    @apply pr-10;
+  }
+
+  .entrada-caixa-prefixo,
+  .entrada-caixa-sufixo {
+    @apply flex h-10 shrink-0 items-center border border-neutra-300 bg-neutra-100 px-3 text-sm text-neutra-600 dark:border-neutra-700 dark:bg-neutra-900 dark:text-neutra-400;
+  }
+
+  .entrada-caixa-prefixo {
+    @apply rounded-l-controle border-r-0;
+  }
+
+  .entrada-caixa-prefixo + .entrada {
+    @apply rounded-l-none;
+  }
+
+  .entrada-caixa-sufixo {
+    @apply rounded-r-controle border-l-0;
+  }
+
+  .entrada-caixa:has(.entrada-caixa-sufixo) > .entrada {
+    @apply rounded-r-none;
+  }
+
+  .selecao {
+    @apply entrada-base appearance-none bg-[length:1rem] bg-[right_0.7rem_center] bg-no-repeat pr-9;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B6969' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  .dark .selecao {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23BAB7B6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+
+  .area-texto {
+    @apply entrada-base h-auto min-h-24 resize-y py-2.5 leading-relaxed;
+  }
+
+  .caixa-marcacao,
+  .radio {
+    @apply relative size-[1.125rem] shrink-0 cursor-pointer appearance-none border border-neutra-400 bg-white transition-[background-color,border-color,box-shadow] duration-150 checked:border-primaria-800 checked:bg-primaria-800 focus-visible:shadow-anel focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutra-600 dark:bg-neutra-950 dark:checked:border-destaque-400 dark:checked:bg-destaque-400;
+  }
+
+  .caixa-marcacao {
+    @apply rounded-[0.35rem];
+  }
+
+  .caixa-marcacao:checked,
+  .caixa-marcacao:indeterminate {
+    @apply bg-center bg-no-repeat;
+    background-size: 0.75rem;
+  }
+
+  .caixa-marcacao:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  }
+
+  .caixa-marcacao:indeterminate {
+    @apply border-primaria-800 bg-primaria-800 dark:border-destaque-400 dark:bg-destaque-400;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='3.5' stroke-linecap='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
+  }
+
+  .dark .caixa-marcacao:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  }
+
+  .dark .caixa-marcacao:indeterminate {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3.5' stroke-linecap='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E");
+  }
+
+  .radio {
+    @apply rounded-full checked:bg-white checked:shadow-[inset_0_0_0_4px_var(--color-primaria-800)] dark:checked:bg-neutra-950 dark:checked:shadow-[inset_0_0_0_4px_var(--color-destaque-400)];
+  }
+
+  .opcao {
+    @apply flex cursor-pointer items-start gap-3 text-sm;
+  }
+
+  .opcao > input {
+    @apply mt-0.5;
+  }
+
+  .opcao-texto {
+    @apply flex min-w-0 flex-col gap-0.5;
+  }
+
+  .opcao-titulo {
+    @apply font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .opcao-descricao {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .interruptor {
+    @apply relative inline-flex shrink-0 cursor-pointer items-center;
+  }
+
+  .interruptor > input {
+    @apply sr-only;
+  }
+
+  .interruptor-trilho {
+    @apply relative h-6 w-11 rounded-full bg-neutra-300 transition-colors duration-200 dark:bg-neutra-700;
+  }
+
+  .interruptor > input:checked + .interruptor-trilho {
+    @apply bg-primaria-800 dark:bg-destaque-400;
+  }
+
+  .interruptor > input:focus-visible + .interruptor-trilho {
+    @apply shadow-anel;
+  }
+
+  .interruptor > input:disabled + .interruptor-trilho {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  .interruptor-trilho::after {
+    @apply absolute top-0.5 left-0.5 size-5 rounded-full bg-white shadow-[0_1px_3px_rgb(0_0_0/0.3)] transition-transform duration-200 ease-(--ease-mola) dark:bg-neutra-100;
+    content: "";
+  }
+
+  .interruptor > input:checked + .interruptor-trilho::after {
+    @apply translate-x-5 dark:bg-tinta;
+  }
+
+  .interruptor-pequeno .interruptor-trilho {
+    @apply h-5 w-9;
+  }
+
+  .interruptor-pequeno .interruptor-trilho::after {
+    @apply size-4;
+  }
+
+  .interruptor-pequeno > input:checked + .interruptor-trilho::after {
+    @apply translate-x-4;
+  }
+
+  .linha-interruptor {
+    @apply flex items-center justify-between gap-4 py-3;
+  }
+
+  .linha-interruptor + .linha-interruptor {
+    @apply border-t border-neutra-200 dark:border-neutra-800;
+  }
+
+  .segmentado {
+    @apply inline-flex items-center gap-0.5 rounded-controle bg-neutra-200/70 p-1 dark:bg-neutra-800/80;
+  }
+
+  .segmentado label {
+    @apply relative cursor-pointer;
+  }
+
+  .segmentado input {
+    @apply sr-only;
+  }
+
+  .segmentado span {
+    @apply flex h-8 items-center gap-1.5 rounded-[0.5rem] px-3 text-xs font-semibold whitespace-nowrap text-neutra-600 transition-colors hover:text-neutra-950 dark:text-neutra-400 dark:hover:text-neutra-100;
+  }
+
+  .segmentado input:checked + span {
+    @apply bg-white text-neutra-950 shadow-cartao dark:bg-neutra-700 dark:text-neutra-50;
+  }
+
+  .segmentado input:focus-visible + span {
+    @apply outline-2 outline-destaque-500;
+  }
+
+  .segmentado span svg {
+    @apply size-3.5;
+  }
+
+  .formulario-acoes {
+    @apply flex flex-wrap items-center justify-end gap-2 pt-2;
+  }
+
+  .forca-senha {
+    @apply mt-1 grid grid-cols-4 gap-1;
+  }
+
+  .forca-senha > span {
+    @apply h-1 rounded-full bg-neutra-200 transition-colors dark:bg-neutra-800;
+  }
+
+  .forca-senha[data-nivel="1"] > span:nth-child(-n + 1) {
+    @apply bg-brasa-500;
+  }
+
+  .forca-senha[data-nivel="2"] > span:nth-child(-n + 2) {
+    @apply bg-ouro-500;
+  }
+
+  .forca-senha[data-nivel="3"] > span:nth-child(-n + 3) {
+    @apply bg-oliva-400;
+  }
+
+  .forca-senha[data-nivel="4"] > span {
+    @apply bg-oliva-600 dark:bg-oliva-400;
+  }
+
+  .arquivo-zona {
+    @apply flex flex-col items-center justify-center gap-2 rounded-cartao border-2 border-dashed border-neutra-300 bg-neutra-100/60 p-6 text-center text-sm text-neutra-600 transition-colors hover:border-primaria-500 hover:bg-primaria-50/50 dark:border-neutra-700 dark:bg-neutra-950/40 dark:text-neutra-400 dark:hover:border-destaque-400 dark:hover:bg-destaque-400/5;
+  }
+
+  .arquivo-zona[data-arrastando="true"] {
+    @apply border-primaria-700 bg-primaria-50 dark:border-destaque-400 dark:bg-destaque-400/10;
+  }
+}
+
+@utility entrada-base {
+  @apply block h-10 w-full min-w-0 rounded-controle border border-neutra-300 bg-white px-3 text-sm text-neutra-950 transition-[border-color,box-shadow] duration-150 hover:border-neutra-400 focus:border-primaria-700 focus:shadow-anel focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-neutra-100 dark:border-neutra-700 dark:bg-neutra-950/60 dark:text-neutra-50 dark:hover:border-neutra-600 dark:focus:border-destaque-400;
+}

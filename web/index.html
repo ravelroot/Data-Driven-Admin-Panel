@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Visão geral do negócio: receita, usuários, assinaturas e crescimento.">
+    <title>Visão geral | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/js/paginas/visao-geral.js"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <p class="saudacao" data-saudacao>&nbsp;</p>
+              <h1 class="pagina-titulo">Visão geral</h1>
+              <p class="pagina-descricao" data-descricao-periodo>Receita, usuários e assinaturas nos últimos 30 dias.</p>
+            </div>
+            <div class="pagina-acoes">
+              <div class="seletor-periodo" role="group" aria-label="Período analisado">
+                <button type="button" data-periodo="7d" aria-pressed="false">7 dias</button>
+                <button type="button" data-periodo="30d" aria-pressed="true">30 dias</button>
+                <button type="button" data-periodo="90d" aria-pressed="false">90 dias</button>
+                <button type="button" data-periodo="12m" aria-pressed="false">12 meses</button>
+              </div>
+              <a class="botao botao-secundario" href="/relatorios" data-permissao="relatorios.ver"><i data-icone="arquivo-baixar"></i>Exportar</a>
+            </div>
+          </div>
+
+          <div class="bento">
+            <section class="cartao-destaque receita-destaque bento-dois-tercos bento-alto" aria-labelledby="titulo-receita">
+              <div class="receita-topo">
+                <div>
+                  <h2 class="receita-rotulo" id="titulo-receita"><i data-icone="carteira"></i>Receita no período</h2>
+                  <p class="receita-valor" data-receita-valor><span class="esqueleto esqueleto-numero"></span></p>
+                  <p class="receita-comparacao"><span data-receita-tendencia></span><span data-receita-comparacao></span></p>
+                </div>
+                <div class="grafico-legenda">
+                  <span class="legenda-item"><span class="legenda-linha" style="--cor: var(--color-destaque-400)"></span>Receita paga</span>
+                  <span class="legenda-item" data-receita-intervalo></span>
+                </div>
+              </div>
+              <div class="receita-grafico grafico" data-grafico-receita data-carregando="true"></div>
+              <dl class="receita-rodape">
+                <div class="kpi-mini"><dt class="kpi-mini-rotulo">MRR</dt><dd class="kpi-mini-valor" data-mini="mrr">—</dd></div>
+                <div class="kpi-mini"><dt class="kpi-mini-rotulo">Ticket médio</dt><dd class="kpi-mini-valor" data-mini="ticketMedio">—</dd></div>
+                <div class="kpi-mini"><dt class="kpi-mini-rotulo">Conversão</dt><dd class="kpi-mini-valor" data-mini="conversao">—</dd></div>
+                <div class="kpi-mini"><dt class="kpi-mini-rotulo">Novos usuários</dt><dd class="kpi-mini-valor" data-mini="novos">—</dd></div>
+              </dl>
+            </section>
+
+            <div class="bento-pilha bento-alto">
+              <article class="kpi kpi-pilha kpi-carregando" data-kpi="usuarios">
+                <div class="kpi-topo">
+                  <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="salvia"><i data-icone="usuarios"></i></span>Usuários ativos</h2>
+                  <span data-kpi-tendencia><span class="tendencia tendencia-neutra">0,0%</span></span>
+                </div>
+                <div class="kpi-meio">
+                  <p class="kpi-valor" data-kpi-valor>0.000</p>
+                </div>
+                <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+                <div class="kpi-grafico kpi-grafico-largo" data-kpi-grafico></div>
+              </article>
+              <article class="kpi kpi-pilha kpi-carregando" data-kpi="assinaturas">
+                <div class="kpi-topo">
+                  <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="oliva"><i data-icone="repetir"></i></span>Assinaturas ativas</h2>
+                  <span data-kpi-tendencia><span class="tendencia tendencia-neutra">0,0%</span></span>
+                </div>
+                <div class="kpi-meio">
+                  <p class="kpi-valor" data-kpi-valor>0.000</p>
+                </div>
+                <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+                <div class="kpi-grafico kpi-grafico-largo" data-kpi-grafico></div>
+              </article>
+            </div>
+
+            <article class="kpi kpi-carregando bento-quarto" data-kpi="crescimento">
+              <div class="kpi-topo">
+                <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="ouro"><i data-icone="tendencia-alta"></i></span>Crescimento do MRR</h2>
+                <span data-kpi-tendencia></span>
+              </div>
+              <div class="kpi-meio">
+                <p class="kpi-valor" data-kpi-valor>0,0%</p>
+                <div class="kpi-grafico" data-kpi-grafico></div>
+              </div>
+              <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+            </article>
+
+            <article class="kpi kpi-carregando bento-quarto" data-kpi="mrr">
+              <div class="kpi-topo">
+                <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="casca"><i data-icone="dinheiro"></i></span>Receita recorrente</h2>
+                <span data-kpi-tendencia></span>
+              </div>
+              <div class="kpi-meio">
+                <p class="kpi-valor" data-kpi-valor>R$ 0</p>
+                <div class="kpi-grafico" data-kpi-grafico></div>
+              </div>
+              <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+            </article>
+
+            <article class="kpi kpi-carregando bento-quarto" data-kpi="churn">
+              <div class="kpi-topo">
+                <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="brasa"><i data-icone="usuario-x"></i></span>Cancelamentos</h2>
+                <span data-kpi-tendencia></span>
+              </div>
+              <div class="kpi-meio">
+                <p class="kpi-valor" data-kpi-valor>0,0%</p>
+                <div class="kpi-grafico" data-kpi-grafico></div>
+              </div>
+              <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
+            </article>
+
+            <article class="cartao-ouro meta-mes bento-quarto" aria-labelledby="titulo-meta">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-meta">Meta do mês</h2>
+                  <p class="cartao-subtitulo" data-meta-mes>&nbsp;</p>
+                </div>
+                <i data-icone="alvo" class="size-5"></i>
+              </div>
+              <p class="meta-mes-valor" data-meta-percentual>—</p>
+              <div class="pilha-pequena">
+                <div class="barra-progresso" role="progressbar" aria-label="Meta do mês" aria-valuemin="0" aria-valuemax="100" data-meta-progresso>
+                  <span class="barra-progresso-valor" data-meta-barra style="--valor: 0%"></span>
+                </div>
+                <p class="meta-mes-legenda"><span data-meta-atingido>&nbsp;</span><span data-meta-valor></span></p>
+              </div>
+            </article>
+
+            <section class="cartao bento-sete-doze" aria-labelledby="titulo-mensal">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-mensal">Receita mês a mês</h2>
+                  <p class="cartao-subtitulo">Últimos 12 meses, com reembolsos e meta</p>
+                </div>
+                <div class="grafico-legenda">
+                  <span class="legenda-item"><span class="legenda-cor" style="--cor: var(--color-primaria-700); --cor-escura: var(--color-primaria-100)"></span>Receita</span>
+                  <span class="legenda-item"><span class="legenda-cor" style="--cor: var(--color-destaque-300); --cor-escura: var(--color-destaque-700)"></span>Reembolsos</span>
+                  <span class="legenda-item"><span class="legenda-tracejada" style="--cor: var(--color-destaque-500); --cor-escura: var(--color-destaque-400)"></span>Meta</span>
+                </div>
+              </div>
+              <div class="grafico grafico-medio" data-grafico-mensal data-carregando="true"></div>
+            </section>
+
+            <section class="cartao bento-cinco-doze" aria-labelledby="titulo-planos">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-planos">Assinaturas por plano</h2>
+                  <p class="cartao-subtitulo">Distribuição das assinaturas ativas</p>
+                </div>
+              </div>
+              <div class="planos-conteudo">
+                <div class="planos-rosca">
+                  <div class="grafico grafico-baixo" data-grafico-planos data-carregando="true"></div>
+                </div>
+                <ul class="lista-planos" data-lista-planos role="list"></ul>
+              </div>
+            </section>
+
+            <section class="cartao cartao-sem-espaco bento-dois-tercos" aria-labelledby="titulo-transacoes">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-transacoes">Transações recentes</h2>
+                  <p class="cartao-subtitulo ao-vivo-rotulo"><span class="ponto-vivo" data-estado="conectando"></span>Novas transações entram aqui na hora</p>
+                </div>
+                <div class="cartao-acoes">
+                  <a class="botao botao-fantasma botao-pequeno" href="/relatorios?tipo=transacoes">Ver relatório<i data-icone="chevron-direita"></i></a>
+                </div>
+              </div>
+              <div class="tabela-moldura">
+                <table class="tabela tabela-curta">
+                  <caption class="sr-only">Transações mais recentes</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Cliente</th>
+                      <th scope="col">Plano</th>
+                      <th scope="col">Método</th>
+                      <th scope="col">Status</th>
+                      <th scope="col" class="celula-numero">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody data-transacoes-recentes>
+                    <tr class="tabela-esqueleto"><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="tabela-esqueleto"><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="tabela-esqueleto"><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr class="tabela-esqueleto"><td></td><td></td><td></td><td></td><td></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="cartao bento-terco bento-alto" aria-labelledby="titulo-atividades">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-atividades">Atividades recentes</h2>
+                  <p class="cartao-subtitulo">O que a equipe fez no painel</p>
+                </div>
+              </div>
+              <ol class="linha-tempo linha-tempo-compacta" data-atividades>
+                <li class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span></li>
+              </ol>
+            </section>
+
+            <section class="cartao bento-dois-tercos" aria-labelledby="titulo-canais">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-canais">Canais de aquisição</h2>
+                  <p class="cartao-subtitulo">Visitantes e conversões no período</p>
+                </div>
+              </div>
+              <ul class="lista-ranking-colunas canais-lista" data-canais role="list"></ul>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

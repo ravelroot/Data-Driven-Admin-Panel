@@ -1,0 +1,98 @@
+@layer components {
+  .pagina-cabecalho {
+    @apply mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between lg:mb-7;
+  }
+
+  .pagina-cabecalho:where([data-densidade="compacta"] *) {
+    @apply mb-4;
+  }
+
+  .pagina-titulos {
+    @apply flex min-w-0 flex-col gap-1.5;
+  }
+
+  .pagina-titulo {
+    @apply text-3xl text-neutra-950 sm:text-4xl dark:text-neutra-50;
+  }
+
+  .pagina-descricao {
+    @apply max-w-[62ch] text-sm text-neutra-600 sm:text-base dark:text-neutra-400;
+  }
+
+  .pagina-acoes {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .pagina-meta {
+    @apply flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .pagina-meta > span {
+    @apply inline-flex items-center gap-1.5;
+  }
+
+  .secao {
+    @apply mt-8 first:mt-0;
+  }
+
+  .secao-cabecalho {
+    @apply mb-3 flex flex-wrap items-end justify-between gap-3;
+  }
+
+  .secao-titulo {
+    @apply text-lg text-neutra-900 dark:text-neutra-100;
+  }
+
+  .secao-descricao {
+    @apply text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .barra-ferramentas {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .barra-ferramentas-espaco {
+    @apply flex-1;
+  }
+
+  .divisor {
+    @apply my-5 h-px w-full border-0 bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .divisor-vertical {
+    @apply mx-1 h-6 w-px self-center bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .grade-campos {
+    @apply grid gap-4 sm:grid-cols-2;
+  }
+
+  .grade-campos-3 {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .grade-campos > .campo-inteiro,
+  .grade-campos-3 > .campo-inteiro {
+    @apply sm:col-span-full;
+  }
+
+  .pilha {
+    @apply flex flex-col gap-4;
+  }
+
+  .pilha-pequena {
+    @apply flex flex-col gap-2;
+  }
+
+  .linha {
+    @apply flex flex-wrap items-center gap-3;
+  }
+
+  .linha-entre {
+    @apply flex flex-wrap items-center justify-between gap-3;
+  }
+
+  .ancora-topo {
+    @apply scroll-mt-24;
+  }
+}

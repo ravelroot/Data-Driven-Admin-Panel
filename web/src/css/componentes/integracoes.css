@@ -1,0 +1,69 @@
+@layer components {
+  .grade-integracoes {
+    @apply grid gap-4 sm:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .integracao {
+    @apply cartao-base gap-4 p-5 shadow-cartao;
+  }
+
+  .integracao[data-ativo="true"] {
+    @apply border-primaria-300 dark:border-primaria-700;
+  }
+
+  .integracao-topo {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .integracao-logo {
+    @apply grid size-11 shrink-0 place-items-center rounded-controle bg-neutra-200 text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  .integracao-logo svg {
+    @apply size-5;
+  }
+
+  .integracao-logo[data-provedor="webhook"] {
+    @apply bg-tinta text-creme dark:bg-creme dark:text-tinta;
+  }
+
+  .integracao-logo[data-provedor="slack"] {
+    @apply bg-casca-100 text-casca-800 dark:bg-casca-500/20 dark:text-casca-200;
+  }
+
+  .integracao-logo[data-provedor="discord"] {
+    @apply bg-neutra-200 text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  .integracao-logo[data-provedor="google-analytics"] {
+    @apply bg-destaque-100 text-destaque-800 dark:bg-destaque-500/20 dark:text-destaque-200;
+  }
+
+  .integracao-logo[data-provedor="stripe"] {
+    @apply bg-primaria-100 text-primaria-800 dark:bg-primaria-500/20 dark:text-primaria-200;
+  }
+
+  .integracao-textos {
+    @apply flex flex-col gap-1;
+  }
+
+  .integracao-nome {
+    @apply flex items-center gap-2 font-titulo text-base font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .integracao-categoria {
+    @apply text-xs text-neutra-500;
+  }
+
+  .integracao-descricao {
+    @apply text-sm leading-relaxed text-neutra-700 dark:text-neutra-300;
+  }
+
+  .integracao-rodape {
+    @apply mt-auto flex items-center justify-between gap-2 border-t border-neutra-200 pt-4 dark:border-neutra-800;
+  }
+
+  .integracao-evento {
+    @apply text-xs text-neutra-500;
+  }
+}

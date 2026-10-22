@@ -1,0 +1,70 @@
+@layer components {
+  .casca {
+    @apply relative grid min-h-dvh grid-cols-1 lg:grid-cols-[var(--spacing-barra)_minmax(0,1fr)];
+    transition: grid-template-columns 280ms var(--ease-saida);
+  }
+
+  .casca[data-barra="recolhida"] {
+    @apply lg:grid-cols-[var(--spacing-barra-recolhida)_minmax(0,1fr)];
+  }
+
+  .casca-barra {
+    @apply fixed inset-y-0 left-0 z-50 w-[min(var(--spacing-barra),86vw)] -translate-x-full transition-transform duration-300 ease-(--ease-saida) lg:sticky lg:top-0 lg:z-30 lg:h-dvh lg:w-auto lg:translate-x-0;
+  }
+
+  .casca[data-menu-movel="aberto"] .casca-barra {
+    @apply translate-x-0 shadow-flutuante lg:shadow-none;
+  }
+
+  .casca-veu {
+    @apply pointer-events-none fixed inset-0 z-40 bg-black/45 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden;
+  }
+
+  .casca[data-menu-movel="aberto"] .casca-veu {
+    @apply pointer-events-auto opacity-100;
+  }
+
+  .casca-principal {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .casca-conteudo {
+    @apply mx-auto w-full max-w-(--spacing-conteudo) flex-1 px-4 pt-5 pb-16 sm:px-6 lg:px-8 lg:pt-7;
+  }
+
+  .casca-conteudo:where([data-densidade="compacta"] *) {
+    @apply pt-4 lg:pt-5;
+  }
+
+  .casca-rodape {
+    @apply mx-auto flex w-full max-w-(--spacing-conteudo) flex-wrap items-center justify-between gap-3 border-t border-neutra-200 px-4 py-5 text-xs text-neutra-600 sm:px-6 lg:px-8 dark:border-neutra-800 dark:text-neutra-400;
+  }
+
+  .casca-rodape a {
+    @apply font-medium hover:text-neutra-900 dark:hover:text-neutra-100;
+  }
+
+  .casca-carregando {
+    @apply fixed inset-x-0 top-0 z-[60] h-0.5 origin-left scale-x-0 bg-destaque-500 transition-transform duration-500;
+  }
+
+  .casca-carregando[data-ativo="true"] {
+    @apply scale-x-75;
+  }
+
+  .casca-carregando[data-concluido="true"] {
+    @apply scale-x-100 opacity-0 transition-[transform,opacity] duration-300;
+  }
+
+  .faixa-sistema {
+    @apply flex items-center justify-center gap-2 bg-destaque-500 px-4 py-2 text-center text-sm font-semibold text-tinta;
+  }
+
+  .faixa-sistema[data-tipo="erro"] {
+    @apply bg-brasa-600 text-creme;
+  }
+
+  .faixa-sistema[data-tipo="offline"] {
+    @apply bg-neutra-800 text-neutra-100;
+  }
+}

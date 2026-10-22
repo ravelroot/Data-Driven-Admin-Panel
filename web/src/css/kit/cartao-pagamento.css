@@ -1,0 +1,275 @@
+@layer components {
+  .cartao-credito {
+    @apply relative isolate flex aspect-[1.586] w-full max-w-sm flex-col justify-between overflow-hidden rounded-painel bg-tinta p-5 text-creme shadow-flutuante select-none sm:p-6;
+  }
+
+  .cartao-credito::before {
+    @apply absolute -top-1/3 -right-1/4 -z-[1] size-[85%] rounded-full bg-primaria-700 opacity-80;
+    content: "";
+  }
+
+  .cartao-credito::after {
+    @apply absolute -bottom-1/2 -left-1/4 -z-[1] size-[75%] rounded-full bg-destaque-500 opacity-25;
+    content: "";
+  }
+
+  .cartao-credito[data-tom="ouro"] {
+    @apply bg-destaque-600 text-tinta;
+  }
+
+  .cartao-credito[data-tom="ouro"]::before {
+    @apply bg-destaque-300;
+  }
+
+  .cartao-credito[data-tom="ouro"]::after {
+    @apply bg-tinta opacity-15;
+  }
+
+  .cartao-credito[data-tom="claro"] {
+    @apply bg-neutra-50 text-neutra-950 ring-1 ring-neutra-200 dark:bg-neutra-800 dark:text-neutra-50 dark:ring-neutra-700;
+  }
+
+  .cartao-credito[data-tom="claro"]::before {
+    @apply bg-primaria-100 dark:bg-primaria-800;
+  }
+
+  .cartao-credito[data-tom="claro"]::after {
+    @apply bg-destaque-200 opacity-60 dark:bg-destaque-700 dark:opacity-40;
+  }
+
+  .cartao-credito-topo {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  .cartao-credito-chip {
+    @apply relative h-8 w-11 rounded-md bg-linear-to-br from-ouro-200 via-ouro-400 to-ouro-600 shadow-[inset_0_0_0_1px_rgb(0_0_0/0.25)];
+  }
+
+  .cartao-credito-chip::before {
+    @apply absolute inset-x-2 top-1/2 h-px -translate-y-1/2 bg-tinta/30;
+    content: "";
+  }
+
+  .cartao-credito-chip::after {
+    @apply absolute inset-y-2 left-1/2 w-px -translate-x-1/2 bg-tinta/30;
+    content: "";
+  }
+
+  .cartao-credito-bandeira {
+    @apply font-titulo text-lg font-semibold tracking-tight opacity-90;
+  }
+
+  .cartao-credito-sem-contato {
+    @apply size-6 opacity-80;
+  }
+
+  .cartao-credito-numero {
+    @apply font-mono text-lg font-medium tracking-[0.18em] tabular-nums sm:text-xl;
+    text-shadow: 0 1px 1px rgb(0 0 0 / 0.2);
+  }
+
+  .cartao-credito-rodape {
+    @apply flex items-end justify-between gap-3;
+  }
+
+  .cartao-credito-campo {
+    @apply flex min-w-0 flex-col gap-0.5;
+  }
+
+  .cartao-credito-rotulo {
+    @apply text-[0.625rem] font-semibold tracking-wide opacity-70;
+  }
+
+  .cartao-credito-valor {
+    @apply truncate font-mono text-sm font-medium tracking-wider;
+  }
+
+  .cartao-credito-pequeno {
+    @apply max-w-60 rounded-cartao p-4;
+  }
+
+  .cartao-credito-pequeno .cartao-credito-numero {
+    @apply text-sm tracking-[0.14em];
+  }
+
+  .cartao-credito-pequeno .cartao-credito-chip {
+    @apply h-6 w-8;
+  }
+
+  .cartao-credito[data-virado="true"] .cartao-credito-numero,
+  .cartao-credito[data-virado="true"] .cartao-credito-rodape {
+    @apply invisible;
+  }
+
+  .cartao-credito-tarja {
+    @apply absolute inset-x-0 top-6 hidden h-10 bg-black/70;
+  }
+
+  .cartao-credito[data-virado="true"] .cartao-credito-tarja {
+    @apply block;
+  }
+
+  .metodos-pagamento {
+    @apply flex flex-col gap-2;
+  }
+
+  .metodo-pagamento {
+    @apply relative flex cursor-pointer items-center gap-3 rounded-controle border border-neutra-200 bg-neutra-50 p-3.5 transition-colors hover:border-neutra-300 has-checked:border-primaria-700 has-checked:bg-primaria-50 dark:border-neutra-800 dark:bg-neutra-900 dark:hover:border-neutra-700 dark:has-checked:border-destaque-400 dark:has-checked:bg-destaque-400/10;
+  }
+
+  .metodo-pagamento:has(:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .metodo-pagamento input {
+    @apply sr-only;
+  }
+
+  .metodo-pagamento-icone {
+    @apply grid h-9 w-12 shrink-0 place-items-center rounded-md bg-neutra-200 text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
+  }
+
+  .metodo-pagamento-icone svg {
+    @apply size-5;
+  }
+
+  .metodo-pagamento-icone[data-tipo="pix"] {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-500/20 dark:text-oliva-200;
+  }
+
+  .metodo-pagamento-icone[data-tipo="boleto"] {
+    @apply bg-casca-100 text-casca-800 dark:bg-casca-500/20 dark:text-casca-200;
+  }
+
+  .metodo-pagamento-icone[data-tipo="cartao"] {
+    @apply bg-tinta text-creme dark:bg-creme dark:text-tinta;
+  }
+
+  .metodo-pagamento-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .metodo-pagamento-nome {
+    @apply flex items-center gap-2 text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .metodo-pagamento-detalhe {
+    @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .metodo-pagamento-radio {
+    @apply relative size-[1.125rem] shrink-0 rounded-full border border-neutra-400 bg-white dark:border-neutra-600 dark:bg-neutra-950;
+  }
+
+  .metodo-pagamento:has(:checked) .metodo-pagamento-radio {
+    @apply border-primaria-800 shadow-[inset_0_0_0_4px_var(--color-primaria-800)] dark:border-destaque-400 dark:shadow-[inset_0_0_0_4px_var(--color-destaque-400)];
+  }
+
+  .metodo-pagamento-padrao {
+    @apply rounded-full bg-neutra-200 px-2 py-0.5 text-micro font-bold text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .metodo-pagamento[data-expirado="true"] .metodo-pagamento-detalhe {
+    @apply font-semibold text-brasa-700 dark:text-brasa-300;
+  }
+
+  .metodo-pagamento-novo {
+    @apply flex items-center justify-center gap-2 rounded-controle border-2 border-dashed border-neutra-300 p-3.5 text-sm font-semibold text-neutra-700 transition-colors hover:border-primaria-500 hover:text-primaria-800 dark:border-neutra-700 dark:text-neutra-300 dark:hover:border-destaque-400 dark:hover:text-destaque-300;
+  }
+
+  .metodo-pagamento-novo svg {
+    @apply size-4;
+  }
+
+  .cobranca {
+    @apply grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem];
+  }
+
+  .cobranca-formulario {
+    @apply flex flex-col gap-4;
+  }
+
+  .cobranca-grade {
+    @apply grid gap-3 sm:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)];
+  }
+
+  .cobranca-entrada-cartao {
+    @apply relative;
+  }
+
+  .cobranca-entrada-cartao input {
+    @apply pr-14 font-mono tracking-wider tabular-nums;
+  }
+
+  .cobranca-bandeira-detectada {
+    @apply pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 rounded bg-neutra-200 px-1.5 py-0.5 text-micro font-bold text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .cobranca-resumo {
+    @apply flex flex-col gap-3 self-start rounded-cartao border border-neutra-200 bg-neutra-100/60 p-5 lg:sticky lg:top-24 dark:border-neutra-800 dark:bg-neutra-950/40;
+  }
+
+  .cobranca-resumo-titulo {
+    @apply font-titulo text-base font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .cobranca-resumo-linha {
+    @apply flex items-center justify-between gap-3 text-sm text-neutra-700 dark:text-neutra-300;
+  }
+
+  .cobranca-resumo-linha strong {
+    @apply font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .cobranca-resumo-linha[data-tipo="desconto"] strong {
+    @apply text-oliva-700 dark:text-oliva-300;
+  }
+
+  .cobranca-resumo-total {
+    @apply flex items-baseline justify-between gap-3 border-t border-neutra-300 pt-3 dark:border-neutra-700;
+  }
+
+  .cobranca-resumo-total span {
+    @apply text-sm font-semibold text-neutra-800 dark:text-neutra-200;
+  }
+
+  .cobranca-resumo-total strong {
+    @apply font-titulo text-2xl font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .cobranca-cupom {
+    @apply flex gap-2;
+  }
+
+  .cobranca-seguranca {
+    @apply flex items-center gap-2 text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .cobranca-seguranca svg {
+    @apply size-4 text-oliva-600 dark:text-oliva-400;
+  }
+
+  .pix-qr {
+    @apply flex flex-col items-center gap-3 rounded-cartao border border-neutra-200 bg-white p-5 text-center dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .pix-qr-codigo {
+    @apply grid size-44 grid-cols-8 grid-rows-8 gap-0.5 rounded-md bg-white p-2 ring-1 ring-neutra-200;
+  }
+
+  .pix-qr-codigo span {
+    @apply rounded-[1px] bg-tinta;
+  }
+
+  .pix-qr-codigo span:nth-child(3n) {
+    @apply bg-transparent;
+  }
+
+  .pix-qr-copia {
+    @apply flex w-full items-center gap-2 rounded-controle bg-neutra-100 p-2 font-mono text-xs text-neutra-700 dark:bg-neutra-950/50 dark:text-neutra-300;
+  }
+
+  .pix-qr-copia span {
+    @apply min-w-0 flex-1 truncate;
+  }
+}

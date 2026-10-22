@@ -1,0 +1,97 @@
+@layer components {
+  .vitrine-layout {
+    @apply grid gap-6 lg:grid-cols-[13.5rem_minmax(0,1fr)] lg:gap-10;
+  }
+
+  .vitrine-nav {
+    @apply hidden lg:sticky lg:top-[calc(var(--spacing-cabecalho)+1.75rem)] lg:block lg:max-h-[calc(100dvh-var(--spacing-cabecalho)-3.5rem)] lg:self-start lg:overflow-y-auto lg:pr-2;
+  }
+
+  .vitrine-nav-grupo + .vitrine-nav-grupo {
+    @apply mt-5;
+  }
+
+  .vitrine-nav-titulo {
+    @apply mb-1.5 px-2.5 text-xs font-semibold text-neutra-500;
+  }
+
+  .vitrine-nav-link {
+    @apply block truncate rounded-[0.5rem] px-2.5 py-1.5 text-sm text-neutra-700 transition-colors hover:bg-neutra-200/70 hover:text-neutra-950 dark:text-neutra-300 dark:hover:bg-neutra-800 dark:hover:text-neutra-50;
+  }
+
+  .vitrine-nav-link[aria-current="true"] {
+    @apply bg-neutra-50 font-semibold text-neutra-950 shadow-cartao ring-1 ring-neutra-200 dark:bg-neutra-900 dark:text-neutra-50 dark:ring-neutra-800;
+  }
+
+  .vitrine-busca {
+    @apply mb-4;
+  }
+
+  .vitrine-conteudo {
+    @apply flex min-w-0 flex-col gap-6;
+  }
+
+  .vitrine-grupo-titulo {
+    @apply mt-4 font-titulo text-2xl font-semibold text-neutra-950 first:mt-0 dark:text-neutra-50;
+  }
+
+  .vitrine-secao {
+    @apply scroll-mt-24 rounded-painel border border-neutra-200/80 bg-neutra-50 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .vitrine-secao[hidden] {
+    @apply hidden;
+  }
+
+  .vitrine-secao > .vitrine-titulo {
+    @apply px-6 pt-5 font-titulo text-lg font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .vitrine-secao > .vitrine-descricao {
+    @apply mt-1 px-6 text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .vitrine-exemplo {
+    @apply mt-4 flex flex-col gap-5 rounded-b-painel border-t border-neutra-200 bg-neutra-100/60 p-6 dark:border-neutra-800 dark:bg-neutra-950/40;
+  }
+
+  .vitrine-linha {
+    @apply flex flex-wrap items-center gap-3;
+  }
+
+  .vitrine-grade {
+    @apply grid gap-4 sm:grid-cols-2 xl:grid-cols-3;
+  }
+
+  .vitrine-grade-2 {
+    @apply grid gap-4 md:grid-cols-2;
+  }
+
+  .vitrine-rotulo {
+    @apply text-xs font-semibold text-neutra-500;
+  }
+
+  .vitrine-cores {
+    @apply grid grid-cols-11 overflow-hidden rounded-controle ring-1 ring-neutra-200 dark:ring-neutra-800;
+  }
+
+  .vitrine-cor {
+    @apply flex h-14 flex-col justify-end p-1.5 text-[0.625rem] font-semibold tabular-nums;
+  }
+
+  .vitrine-cor:nth-child(-n + 5) {
+    @apply text-neutra-950;
+  }
+
+  .vitrine-cor:nth-child(n + 6) {
+    @apply text-neutra-50;
+  }
+
+  .vitrine-cores-nome {
+    @apply mb-1.5 text-sm font-semibold text-neutra-900 dark:text-neutra-100;
+  }
+
+  .vitrine-sem-resultado {
+    @apply rounded-painel border border-dashed border-neutra-300 p-10 text-center text-sm text-neutra-600 dark:border-neutra-700 dark:text-neutra-400;
+  }
+}

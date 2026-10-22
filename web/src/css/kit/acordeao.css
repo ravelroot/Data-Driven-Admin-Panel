@@ -1,0 +1,273 @@
+@layer components {
+  .acordeao {
+    @apply flex flex-col overflow-hidden rounded-cartao border border-neutra-200 bg-neutra-50 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .acordeao-separado {
+    @apply gap-2 overflow-visible border-0 bg-transparent shadow-none dark:bg-transparent;
+  }
+
+  .acordeao-item {
+    @apply relative border-b border-neutra-200 last:border-b-0 dark:border-neutra-800;
+  }
+
+  .acordeao-separado .acordeao-item {
+    @apply rounded-cartao border border-neutra-200 bg-neutra-50 shadow-cartao last:border-b dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .acordeao-item[open] {
+    @apply bg-neutra-50 dark:bg-neutra-900;
+  }
+
+  .acordeao-separado .acordeao-item[open] {
+    @apply border-neutra-300 dark:border-neutra-700;
+  }
+
+  .acordeao-gatilho {
+    @apply flex w-full cursor-pointer list-none items-center gap-3 px-5 py-4 text-left text-sm font-semibold text-neutra-900 transition-colors duration-150 select-none hover:bg-neutra-100 dark:text-neutra-100 dark:hover:bg-neutra-800/60 compacta:px-4 compacta:py-3;
+  }
+
+  .acordeao-gatilho::-webkit-details-marker {
+    @apply hidden;
+  }
+
+  .acordeao-gatilho::marker {
+    content: "";
+  }
+
+  .acordeao-gatilho:focus-visible {
+    @apply outline-2 -outline-offset-2 outline-destaque-500;
+  }
+
+  .acordeao-gatilho[aria-disabled="true"] {
+    @apply pointer-events-none opacity-50;
+  }
+
+  .acordeao-icone {
+    @apply grid size-8 shrink-0 place-items-center rounded-[0.6rem] bg-neutra-200/80 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .acordeao-icone svg {
+    @apply size-4;
+  }
+
+  .acordeao-item[open] .acordeao-icone {
+    @apply bg-primaria-100 text-primaria-800 dark:bg-primaria-500/20 dark:text-primaria-200;
+  }
+
+  .acordeao-titulos {
+    @apply flex min-w-0 flex-1 flex-col gap-0.5;
+  }
+
+  .acordeao-titulo {
+    @apply truncate font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .acordeao-resumo {
+    @apply truncate text-xs font-normal text-neutra-600 dark:text-neutra-400;
+  }
+
+  .acordeao-lado {
+    @apply ml-auto flex shrink-0 items-center gap-2 text-xs font-medium text-neutra-500;
+  }
+
+  .acordeao-seta {
+    @apply size-4 shrink-0 text-neutra-500 transition-transform duration-200 ease-(--ease-saida);
+  }
+
+  .acordeao-item[open] > .acordeao-gatilho .acordeao-seta,
+  .acordeao-gatilho[aria-expanded="true"] .acordeao-seta {
+    @apply rotate-180 text-neutra-900 dark:text-neutra-100;
+  }
+
+  .acordeao-seta-lateral {
+    @apply -rotate-90;
+  }
+
+  .acordeao-item[open] > .acordeao-gatilho .acordeao-seta-lateral {
+    @apply rotate-0;
+  }
+
+  .acordeao-conteudo {
+    @apply px-5 pb-5 text-sm leading-relaxed text-neutra-700 dark:text-neutra-300 compacta:px-4 compacta:pb-4;
+  }
+
+  .acordeao-item[open] > .acordeao-conteudo {
+    @apply movimento:animate-subir;
+  }
+
+  .acordeao-conteudo-recuado {
+    @apply pl-16 compacta:pl-15;
+  }
+
+  .acordeao-conteudo > * + * {
+    @apply mt-3;
+  }
+
+  .acordeao-conteudo a {
+    @apply font-semibold text-primaria-700 underline decoration-primaria-300 underline-offset-2 hover:text-primaria-900 dark:text-destaque-300 dark:decoration-destaque-700;
+  }
+
+  .acordeao-conteudo ul {
+    @apply list-disc space-y-1 pl-5 marker:text-destaque-500;
+  }
+
+  .acordeao-acoes {
+    @apply mt-4 flex flex-wrap items-center gap-2 border-t border-neutra-200 pt-4 dark:border-neutra-800;
+  }
+
+  .acordeao-pequeno .acordeao-gatilho {
+    @apply px-4 py-3 text-xs;
+  }
+
+  .acordeao-pequeno .acordeao-conteudo {
+    @apply px-4 pb-4 text-xs;
+  }
+
+  .acordeao-pequeno .acordeao-icone {
+    @apply size-6 rounded-md;
+  }
+
+  .acordeao-pequeno .acordeao-icone svg {
+    @apply size-3.5;
+  }
+
+  .acordeao-grande .acordeao-gatilho {
+    @apply px-6 py-5 text-base;
+  }
+
+  .acordeao-grande .acordeao-conteudo {
+    @apply px-6 pb-6 text-base;
+  }
+
+  .acordeao-sem-borda {
+    @apply rounded-none border-0 bg-transparent shadow-none dark:bg-transparent;
+  }
+
+  .acordeao-sem-borda .acordeao-gatilho {
+    @apply px-0 hover:bg-transparent dark:hover:bg-transparent;
+  }
+
+  .acordeao-sem-borda .acordeao-conteudo {
+    @apply px-0;
+  }
+
+  .acordeao-item[data-tom="oliva"] .acordeao-icone {
+    @apply bg-oliva-100 text-oliva-800 dark:bg-oliva-400/15 dark:text-oliva-300;
+  }
+
+  .acordeao-item[data-tom="ouro"] .acordeao-icone {
+    @apply bg-ouro-100 text-ouro-800 dark:bg-ouro-400/15 dark:text-ouro-300;
+  }
+
+  .acordeao-item[data-tom="brasa"] .acordeao-icone {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-400/15 dark:text-brasa-300;
+  }
+
+  .acordeao-item[data-tom="anil"] .acordeao-icone {
+    @apply bg-anil-100 text-anil-700 dark:bg-anil-400/15 dark:text-anil-300;
+  }
+
+  .acordeao-item[data-tom="brasa"][open] {
+    @apply bg-brasa-50/40 dark:bg-brasa-500/5;
+  }
+
+  .acordeao-numerado {
+    counter-reset: acordeao;
+  }
+
+  .acordeao-numerado .acordeao-item {
+    counter-increment: acordeao;
+  }
+
+  .acordeao-numerado .acordeao-gatilho::before {
+    @apply grid size-7 shrink-0 place-items-center rounded-full border border-neutra-300 text-xs font-bold text-neutra-600 tabular-nums dark:border-neutra-700 dark:text-neutra-400;
+    content: counter(acordeao);
+  }
+
+  .acordeao-numerado .acordeao-item[open] .acordeao-gatilho::before {
+    @apply border-primaria-800 bg-primaria-800 text-creme dark:border-destaque-400 dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .acordeao-faq .acordeao-gatilho {
+    @apply font-titulo text-base;
+    font-variation-settings: "opsz" 24, "wdth" 96;
+  }
+
+  .acordeao-faq .acordeao-conteudo {
+    @apply max-w-[68ch];
+  }
+
+  .acordeao-filtros .acordeao-gatilho {
+    @apply py-3 text-xs font-semibold text-neutra-700 dark:text-neutra-300;
+  }
+
+  .acordeao-filtros .acordeao-conteudo {
+    @apply flex flex-col gap-2 pb-4;
+  }
+
+  .acordeao-filtros-opcao {
+    @apply flex cursor-pointer items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-sm text-neutra-800 hover:bg-neutra-100 dark:text-neutra-200 dark:hover:bg-neutra-800/60;
+  }
+
+  .acordeao-filtros-opcao span:last-child {
+    @apply text-xs text-neutra-500 tabular-nums;
+  }
+
+  .acordeao-contador {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-neutra-200 px-1.5 text-micro font-bold text-neutra-700 tabular-nums dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .acordeao-item[open] .acordeao-contador {
+    @apply bg-primaria-800 text-creme dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .acordeao-escuro {
+    @apply border-tinta bg-tinta text-neutra-300 dark:border-neutra-800;
+  }
+
+  .acordeao-escuro .acordeao-item {
+    border-color: color-mix(in oklab, var(--color-creme) 9%, transparent);
+  }
+
+  .acordeao-escuro .acordeao-item[open] {
+    background-color: color-mix(in oklab, var(--color-creme) 4%, transparent);
+  }
+
+  .acordeao-escuro .acordeao-gatilho {
+    @apply text-creme;
+  }
+
+  .acordeao-escuro .acordeao-gatilho:hover {
+    background-color: color-mix(in oklab, var(--color-creme) 6%, transparent);
+  }
+
+  .acordeao-escuro .acordeao-titulo {
+    @apply text-creme;
+  }
+
+  .acordeao-escuro .acordeao-resumo,
+  .acordeao-escuro .acordeao-conteudo {
+    @apply text-neutra-400;
+  }
+
+  .acordeao-escuro .acordeao-icone {
+    @apply text-creme;
+    background-color: color-mix(in oklab, var(--color-creme) 9%, transparent);
+  }
+}
+
+@utility acordeao-painel-animado {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 260ms var(--ease-saida);
+
+  &[data-aberto="true"] {
+    grid-template-rows: 1fr;
+  }
+
+  & > * {
+    overflow: hidden;
+    min-height: 0;
+  }
+}

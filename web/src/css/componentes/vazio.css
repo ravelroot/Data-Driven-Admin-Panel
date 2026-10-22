@@ -1,0 +1,61 @@
+@layer components {
+  .vazio {
+    @apply mx-auto flex max-w-sm flex-col items-center gap-3 px-4 py-10 text-center;
+  }
+
+  .vazio-icone {
+    @apply grid size-14 place-items-center rounded-cartao bg-neutra-200/80 text-neutra-600 dark:bg-neutra-800 dark:text-neutra-400;
+  }
+
+  .vazio-icone svg {
+    @apply size-6;
+  }
+
+  .vazio-titulo {
+    @apply font-titulo text-lg font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .vazio-texto {
+    @apply text-sm leading-relaxed text-neutra-600 dark:text-neutra-400;
+  }
+
+  .vazio-acoes {
+    @apply mt-2 flex flex-wrap justify-center gap-2;
+  }
+
+  .vazio-compacto {
+    @apply py-6;
+  }
+
+  .vazio-compacto .vazio-icone {
+    @apply size-10 rounded-controle;
+  }
+
+  .vazio-compacto .vazio-icone svg {
+    @apply size-5;
+  }
+
+  .vazio-erro .vazio-icone {
+    @apply bg-brasa-100 text-brasa-700 dark:bg-brasa-500/15 dark:text-brasa-300;
+  }
+
+  .vazio-pagina {
+    @apply flex min-h-[60vh] items-center justify-center;
+  }
+
+  .vazio-ilustracao {
+    @apply mb-2 grid grid-cols-3 gap-1.5;
+  }
+
+  .vazio-ilustracao > span {
+    @apply size-5 rounded-[0.35rem] bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .vazio-ilustracao > span:nth-child(1) {
+    @apply col-span-2 w-auto bg-primaria-200 dark:bg-primaria-700/50;
+  }
+
+  .vazio-ilustracao > span:nth-child(5) {
+    @apply bg-destaque-300 dark:bg-destaque-500/40;
+  }
+}

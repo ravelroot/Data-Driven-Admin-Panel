@@ -1,0 +1,102 @@
+@layer components {
+  .gaveta {
+    @apply fixed inset-y-0 right-0 left-auto m-0 flex h-dvh max-h-dvh w-full max-w-(--spacing-gaveta) flex-col overflow-hidden border-0 border-l border-neutra-200 bg-neutra-50 p-0 text-neutra-900 shadow-gaveta dark:border-neutra-800 dark:bg-neutra-900 dark:text-neutra-100;
+  }
+
+  .gaveta:not([open]) {
+    @apply hidden;
+  }
+
+  .gaveta[open] {
+    @apply animate-deslizar-direita;
+  }
+
+  .gaveta[data-fechando="true"] {
+    animation: deslizar-direita 220ms var(--ease-entrada) reverse both;
+  }
+
+  .gaveta[open]::backdrop {
+    @apply animate-surgir;
+  }
+
+  .gaveta-larga {
+    @apply max-w-(--spacing-gaveta-larga);
+  }
+
+  .gaveta-estreita {
+    @apply max-w-[24rem];
+  }
+
+  .gaveta-esquerda {
+    @apply right-auto left-0 border-r border-l-0;
+    box-shadow: 24px 0 64px -24px rgb(0 0 0 / 0.45);
+  }
+
+  .gaveta-esquerda[open] {
+    @apply animate-deslizar-esquerda;
+  }
+
+  .gaveta-cabecalho {
+    @apply flex shrink-0 items-start gap-3 border-b border-neutra-200 px-6 py-5 dark:border-neutra-800;
+  }
+
+  .gaveta-titulos {
+    @apply flex min-w-0 flex-1 flex-col gap-1;
+  }
+
+  .gaveta-titulo {
+    @apply font-titulo text-xl font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .gaveta-subtitulo {
+    @apply text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .gaveta-fechar {
+    @apply -mt-1 -mr-2 grid size-9 shrink-0 place-items-center rounded-controle text-neutra-600 transition-colors hover:bg-neutra-200 hover:text-neutra-950 dark:text-neutra-400 dark:hover:bg-neutra-800 dark:hover:text-neutra-50;
+  }
+
+  .gaveta-fechar svg {
+    @apply size-5;
+  }
+
+  .gaveta-abas {
+    @apply shrink-0 border-b border-neutra-200 px-6 dark:border-neutra-800;
+  }
+
+  .gaveta-corpo {
+    @apply flex-1 overflow-y-auto overscroll-contain px-6 py-5;
+  }
+
+  .gaveta-rodape {
+    @apply flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-neutra-200 bg-neutra-100/70 px-6 py-4 dark:border-neutra-800 dark:bg-neutra-950/40;
+  }
+
+  .gaveta-rodape-esquerda {
+    @apply mr-auto flex items-center gap-2;
+  }
+
+  .gaveta-secao {
+    @apply py-5 first:pt-0 last:pb-0;
+  }
+
+  .gaveta-secao + .gaveta-secao {
+    @apply border-t border-neutra-200 dark:border-neutra-800;
+  }
+
+  .gaveta-secao-titulo {
+    @apply mb-3 flex items-center justify-between gap-2 text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .gaveta-carregando {
+    @apply grid flex-1 place-items-center;
+  }
+
+  .giro {
+    @apply inline-block size-6 animate-girar rounded-full border-[2.5px] border-neutra-300 border-t-primaria-700 dark:border-neutra-700 dark:border-t-destaque-400;
+  }
+
+  .giro-pequeno {
+    @apply size-4 border-2;
+  }
+}

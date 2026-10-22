@@ -1,0 +1,66 @@
+@layer components {
+  .funil {
+    @apply flex flex-col gap-2.5;
+  }
+
+  .funil-etapa {
+    @apply grid grid-cols-[6.5rem_minmax(0,1fr)_4.75rem] items-center gap-3 text-sm;
+  }
+
+  .funil-nome {
+    @apply flex min-w-0 flex-col truncate font-medium text-neutra-700 dark:text-neutra-300;
+  }
+
+  .funil-nome small {
+    @apply text-xs font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .funil-trilho {
+    @apply relative h-9 overflow-hidden rounded-[0.55rem] bg-neutra-100 dark:bg-neutra-950/40;
+  }
+
+  .funil-barra {
+    @apply absolute inset-y-0 left-0 flex items-center justify-end rounded-[0.55rem] pr-2.5 text-xs font-bold text-creme tabular-nums transition-[width] duration-700 ease-(--ease-saida);
+    width: var(--valor, 0%);
+    background-color: var(--cor, var(--color-primaria-700));
+  }
+
+  .funil-etapa:nth-child(1) .funil-barra {
+    --cor: var(--color-primaria-800);
+  }
+
+  .funil-etapa:nth-child(2) .funil-barra {
+    --cor: var(--color-primaria-600);
+  }
+
+  .funil-etapa:nth-child(3) .funil-barra {
+    --cor: var(--color-destaque-600);
+  }
+
+  .funil-etapa:nth-child(4) .funil-barra {
+    --cor: var(--color-destaque-500);
+    @apply text-tinta;
+  }
+
+  .dark .funil-etapa:nth-child(1) .funil-barra {
+    --cor: var(--color-primaria-500);
+  }
+
+  .dark .funil-etapa:nth-child(2) .funil-barra {
+    --cor: var(--color-primaria-400);
+    @apply text-tinta;
+  }
+
+  .dark .funil-etapa:nth-child(3) .funil-barra,
+  .dark .funil-etapa:nth-child(4) .funil-barra {
+    @apply text-tinta;
+  }
+
+  .funil-taxa {
+    @apply text-right text-xs font-semibold text-neutra-600 tabular-nums dark:text-neutra-400;
+  }
+
+  .funil-taxa small {
+    @apply block text-micro font-medium text-neutra-500;
+  }
+}

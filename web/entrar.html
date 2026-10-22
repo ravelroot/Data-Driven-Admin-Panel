@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Entre no Bento, o painel administrativo do seu SaaS.">
+    <title>Entrar | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/js/paginas/entrar.js"></script>
+  </head>
+  <body>
+    <div class="autenticacao">
+      <aside class="autenticacao-lado" aria-hidden="true">
+        <div class="entrar-marca">
+          <span class="entrar-marca-logo" data-logo></span>
+          <span class="entrar-marca-nome">Bento</span>
+        </div>
+        <div>
+          <p class="entrar-titulo-lado">Receita, usuários e relatórios do seu SaaS em um só painel.</p>
+          <p class="entrar-texto-lado">Cada card mostra uma parte do negócio. Os números chegam em tempo real e qualquer tabela vira CSV ou PDF.</p>
+          <div class="entrar-mosaico">
+            <div class="entrar-peca">
+              <span class="entrar-peca-rotulo">Visão geral</span>
+              <div class="entrar-peca-barras"><span style="height:35%"></span><span style="height:48%"></span><span style="height:42%"></span><span style="height:60%"></span><span style="height:55%"></span><span style="height:72%"></span><span style="height:68%"></span><span style="height:88%"></span></div>
+            </div>
+            <div class="entrar-peca">
+              <span class="entrar-peca-rotulo">Exportação</span>
+              <span class="entrar-peca-valor">CSV e PDF</span>
+            </div>
+            <div class="entrar-peca">
+              <span class="entrar-peca-rotulo">Alertas</span>
+              <span class="entrar-peca-valor">Ao vivo</span>
+            </div>
+            <div class="entrar-peca">
+              <span class="entrar-peca-rotulo">Acesso</span>
+              <span class="entrar-peca-valor">Por papel</span>
+            </div>
+            <div class="entrar-peca">
+              <span class="entrar-peca-rotulo">Aparência</span>
+              <span class="entrar-peca-valor">Claro, escuro e 16 paletas</span>
+            </div>
+          </div>
+        </div>
+        <p class="entrar-rodape-lado">Copyright (©) 2026 Erik Pimenta. Licença MIT.</p>
+      </aside>
+
+      <main class="autenticacao-principal">
+        <div class="autenticacao-caixa">
+          <div class="autenticacao-topo">
+            <span class="entrar-marca lg:invisible">
+              <span class="barra-marca-logo bg-tinta text-creme dark:bg-creme dark:text-tinta" data-logo></span>
+              <span class="font-titulo text-xl font-semibold">Bento</span>
+            </span>
+            <button type="button" class="cabecalho-acao cabecalho-tema" data-alternar-tema aria-label="Alternar tema claro ou escuro"><i data-icone="lua" class="icone-lua"></i><i data-icone="sol" class="icone-sol"></i></button>
+          </div>
+
+          <h1 class="autenticacao-titulo">Entrar</h1>
+          <p class="autenticacao-texto">Use o e-mail e a senha da sua conta.</p>
+
+          <div class="alerta alerta-erro mt-6" role="alert" data-erro hidden>
+            <i data-icone="alerta"></i>
+            <div class="alerta-textos"><p class="alerta-texto" data-erro-texto></p></div>
+          </div>
+
+          <form class="formulario mt-8" data-entrar novalidate>
+            <label class="campo">
+              <span class="campo-rotulo">E-mail</span>
+              <span class="entrada-caixa">
+                <i data-icone="email" class="entrada-caixa-icone"></i>
+                <input class="entrada entrada-grande" type="email" name="email" required autocomplete="username" placeholder="voce@empresa.com" autofocus>
+              </span>
+            </label>
+            <label class="campo">
+              <span class="campo-rotulo">Senha</span>
+              <span class="entrada-caixa">
+                <i data-icone="cadeado" class="entrada-caixa-icone"></i>
+                <input class="entrada entrada-grande" type="password" name="senha" required autocomplete="current-password" placeholder="Sua senha">
+                <button type="button" class="entrada-caixa-acao" data-mostrar-senha aria-label="Mostrar senha"><i data-icone="olho"></i></button>
+              </span>
+            </label>
+            <label class="opcao">
+              <input type="checkbox" class="caixa-marcacao" name="lembrar" checked>
+              <span class="opcao-texto"><span class="opcao-titulo">Manter conectado</span><span class="opcao-descricao">A sessão dura 30 dias neste navegador.</span></span>
+            </label>
+            <button type="submit" class="botao botao-primario botao-grande botao-bloco" data-botao-entrar><span>Entrar no painel</span><i data-icone="seta-cima-direita"></i></button>
+          </form>
+
+          <section class="contas-demo" data-contas-demo hidden aria-labelledby="titulo-demo">
+            <h2 class="contas-demo-titulo" id="titulo-demo"><i data-icone="brilho"></i>Contas de demonstração</h2>
+            <div class="contas-demo-lista">
+              <button type="button" class="conta-demo" data-conta="admin@bento.local"><strong>Administrador</strong><span>admin@bento.local</span></button>
+              <button type="button" class="conta-demo" data-conta="gerente@bento.local"><strong>Gerente</strong><span>gerente@bento.local</span></button>
+              <button type="button" class="conta-demo" data-conta="analista@bento.local"><strong>Analista</strong><span>analista@bento.local</span></button>
+              <button type="button" class="conta-demo" data-conta="suporte@bento.local"><strong>Suporte</strong><span>suporte@bento.local</span></button>
+            </div>
+            <p class="campo-ajuda mt-3">Senha de todas: <code>bento123</code>. Cada papel vê partes diferentes do painel.</p>
+          </section>
+
+          <p class="autenticacao-rodape">Esqueceu a senha? Peça a um administrador para gerar uma senha temporária em Usuários.</p>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

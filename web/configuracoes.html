@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Perfil, aparência, segurança, chaves de API, integrações e dados da empresa.">
+    <title>Configurações | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/js/paginas/configuracoes.js"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Configurações</h1>
+              <p class="pagina-descricao">Seu perfil, a aparência do painel, a segurança da conta e as conexões com outros serviços.</p>
+            </div>
+          </div>
+
+          <div class="config-layout">
+            <nav class="config-nav" aria-label="Seções das configurações">
+              <div class="abas-vertical" role="tablist" aria-orientation="vertical" data-secoes>
+                <button type="button" class="aba" role="tab" id="aba-perfil" data-aba="perfil" aria-controls="secao-perfil"><i data-icone="usuario"></i>Perfil</button>
+                <button type="button" class="aba" role="tab" id="aba-aparencia" data-aba="aparencia" aria-controls="secao-aparencia"><i data-icone="paleta"></i>Aparência</button>
+                <button type="button" class="aba" role="tab" id="aba-seguranca" data-aba="seguranca" aria-controls="secao-seguranca"><i data-icone="escudo"></i>Segurança</button>
+                <button type="button" class="aba" role="tab" id="aba-chaves" data-aba="chaves" aria-controls="secao-chaves"><i data-icone="chave"></i>Chaves de API</button>
+                <button type="button" class="aba" role="tab" id="aba-integracoes" data-aba="integracoes" aria-controls="secao-integracoes" data-permissao="configuracoes.integracoes"><i data-icone="integracao"></i>Integrações</button>
+                <button type="button" class="aba" role="tab" id="aba-sistema" data-aba="sistema" aria-controls="secao-sistema"><i data-icone="empresa"></i>Empresa</button>
+              </div>
+            </nav>
+
+            <div class="config-conteudo">
+              <section class="config-secao painel-aba" id="secao-perfil" role="tabpanel" aria-labelledby="aba-perfil">
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Perfil</h2>
+                    <p class="config-secao-descricao">Como seu nome aparece para a equipe e nos registros de atividade.</p>
+                  </div>
+                </header>
+                <form class="formulario" data-form-perfil novalidate>
+                  <div class="perfil-foto" data-perfil-foto></div>
+                  <div class="grade-campos">
+                    <label class="campo campo-inteiro">
+                      <span class="campo-rotulo campo-obrigatorio">Nome completo</span>
+                      <input class="entrada" name="nome" required minlength="2" maxlength="120" autocomplete="name">
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo campo-obrigatorio">E-mail</span>
+                      <input class="entrada" type="email" name="email" required maxlength="160" autocomplete="email">
+                    </label>
+                    <label class="campo" data-campo-senha-atual hidden>
+                      <span class="campo-rotulo campo-obrigatorio">Senha atual</span>
+                      <input class="entrada" type="password" name="senhaAtual" autocomplete="current-password">
+                      <span class="campo-ajuda">Para trocar o e-mail, confirme sua senha.</span>
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Cargo</span>
+                      <input class="entrada" name="cargo" maxlength="80" autocomplete="organization-title">
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Telefone</span>
+                      <input class="entrada" type="tel" name="telefone" maxlength="30" autocomplete="tel">
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Empresa</span>
+                      <input class="entrada" name="empresa" maxlength="120" autocomplete="organization">
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Cidade</span>
+                      <input class="entrada" name="cidade" maxlength="80" autocomplete="address-level2">
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">País</span>
+                      <input class="entrada" name="pais" maxlength="80" autocomplete="country-name">
+                    </label>
+                  </div>
+                  <div class="config-rodape">
+                    <button type="submit" class="botao botao-primario" data-salvar><i data-icone="salvar"></i>Salvar perfil</button>
+                  </div>
+                </form>
+              </section>
+
+              <section class="config-secao painel-aba" id="secao-aparencia" role="tabpanel" aria-labelledby="aba-aparencia" hidden>
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Aparência</h2>
+                    <p class="config-secao-descricao">As mudanças valem na hora e ficam salvas neste navegador e na sua conta.</p>
+                  </div>
+                </header>
+                <form data-form-aparencia>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Tema</p>
+                      <p class="config-linha-texto">"Sistema" acompanha o modo claro ou escuro do seu computador.</p>
+                    </div>
+                    <div class="tema-opcoes">
+                      <label class="tema-opcao">
+                        <input type="radio" name="tema" value="claro">
+                        <span class="tema-previa" data-tema="claro" aria-hidden="true"><span class="tema-previa-barra"></span><span class="tema-previa-conteudo"><span></span><span></span><span></span></span></span>
+                        <span class="tema-opcao-nome"><i data-icone="sol"></i>Claro</span>
+                      </label>
+                      <label class="tema-opcao">
+                        <input type="radio" name="tema" value="escuro">
+                        <span class="tema-previa" data-tema="escuro" aria-hidden="true"><span class="tema-previa-barra"></span><span class="tema-previa-conteudo"><span></span><span></span><span></span></span></span>
+                        <span class="tema-opcao-nome"><i data-icone="lua"></i>Escuro</span>
+                      </label>
+                      <label class="tema-opcao">
+                        <input type="radio" name="tema" value="sistema">
+                        <span class="tema-previa" data-tema="sistema" aria-hidden="true"><span class="tema-previa-barra"></span><span class="tema-previa-conteudo"><span></span><span></span><span></span></span></span>
+                        <span class="tema-opcao-nome"><i data-icone="monitor"></i>Sistema</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Paleta de cores</p>
+                      <p class="config-linha-texto">Troca a cor principal, o destaque e os tons neutros do painel.</p>
+                    </div>
+                    <div class="paleta-opcoes">
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="bento"><span class="paleta-amostra" data-paleta="bento"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Bento</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="oliva"><span class="paleta-amostra" data-paleta="oliva"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Oliva</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="grafite"><span class="paleta-amostra" data-paleta="grafite"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Grafite</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="oceano"><span class="paleta-amostra" data-paleta="oceano"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Oceano</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="terracota"><span class="paleta-amostra" data-paleta="terracota"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Terracota</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="ameixa"><span class="paleta-amostra" data-paleta="ameixa"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Ameixa</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="floresta"><span class="paleta-amostra" data-paleta="floresta"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Floresta</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="ardosia"><span class="paleta-amostra" data-paleta="ardosia"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Ardósia</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="vinho"><span class="paleta-amostra" data-paleta="vinho"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Vinho</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="lavanda"><span class="paleta-amostra" data-paleta="lavanda"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Lavanda</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="cobre"><span class="paleta-amostra" data-paleta="cobre"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Cobre</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="petroleo"><span class="paleta-amostra" data-paleta="petroleo"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Petróleo</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="girassol"><span class="paleta-amostra" data-paleta="girassol"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Girassol</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="menta"><span class="paleta-amostra" data-paleta="menta"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Menta</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="noite"><span class="paleta-amostra" data-paleta="noite"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Noite</span></label>
+                      <label class="paleta-opcao"><input type="radio" name="paleta" value="areia"><span class="paleta-amostra" data-paleta="areia"><span></span><span></span><span></span></span><span class="paleta-opcao-nome">Areia</span></label>
+                    </div>
+                  </div>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Densidade</p>
+                      <p class="config-linha-texto">A compacta mostra mais linhas e cards por tela.</p>
+                    </div>
+                    <div>
+                      <div class="segmentado">
+                        <label><input type="radio" name="densidade" value="confortavel"><span><i data-icone="linhas"></i>Confortável</span></label>
+                        <label><input type="radio" name="densidade" value="compacta"><span><i data-icone="lista"></i>Compacta</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Menu lateral</p>
+                      <p class="config-linha-texto">Recolhido, o menu mostra só os ícones em telas grandes.</p>
+                    </div>
+                    <div class="linha">
+                      <label class="interruptor"><input type="checkbox" name="sidebarRecolhida"><span class="interruptor-trilho"></span></label>
+                      <span class="text-sm">Começar com o menu recolhido</span>
+                    </div>
+                  </div>
+                </form>
+              </section>
+
+              <section class="config-secao painel-aba" id="secao-seguranca" role="tabpanel" aria-labelledby="aba-seguranca" hidden>
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Segurança</h2>
+                    <p class="config-secao-descricao">Troque a senha e encerre acessos que você não reconhece.</p>
+                  </div>
+                </header>
+                <div class="config-linha">
+                  <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Senha</p>
+                    <p class="config-linha-texto">Use pelo menos 8 caracteres. Trocar a senha encerra as outras sessões.</p>
+                  </div>
+                  <form class="formulario" data-form-senha novalidate>
+                    <label class="campo">
+                      <span class="campo-rotulo campo-obrigatorio">Senha atual</span>
+                      <span class="entrada-caixa"><input class="entrada" type="password" name="senhaAtual" required autocomplete="current-password"><button type="button" class="entrada-caixa-acao" data-mostrar-senha aria-label="Mostrar senha"><i data-icone="olho"></i></button></span>
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo campo-obrigatorio">Nova senha</span>
+                      <span class="entrada-caixa"><input class="entrada" type="password" name="novaSenha" required minlength="8" maxlength="128" autocomplete="new-password" data-nova-senha><button type="button" class="entrada-caixa-acao" data-mostrar-senha aria-label="Mostrar senha"><i data-icone="olho"></i></button></span>
+                      <span class="forca-senha" data-forca aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+                      <span class="campo-ajuda">Misture maiúsculas, números e símbolos para uma senha mais forte.</span>
+                    </label>
+                    <div class="formulario-acoes justify-start">
+                      <button type="submit" class="botao botao-primario" data-salvar><i data-icone="cadeado"></i>Trocar senha</button>
+                    </div>
+                  </form>
+                </div>
+                <div class="config-linha">
+                  <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Sessões ativas</p>
+                    <p class="config-linha-texto">Navegadores e dispositivos conectados à sua conta.</p>
+                  </div>
+                  <div>
+                    <div data-sessoes><div class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span></div></div>
+                    <button type="button" class="botao botao-perigo-suave botao-pequeno mt-3" data-acao="encerrar-outras"><i data-icone="sair"></i>Encerrar as outras sessões</button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="config-secao painel-aba" id="secao-chaves" role="tabpanel" aria-labelledby="aba-chaves" hidden>
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Chaves de API</h2>
+                    <p class="config-secao-descricao">Para scripts e outros sistemas acessarem a API em seu nome. Envie no cabeçalho <code>Authorization: Bearer bnt_…</code>.</p>
+                  </div>
+                  <button type="button" class="botao botao-primario" data-acao="nova-chave"><i data-icone="adicionar"></i>Nova chave</button>
+                </header>
+                <div data-chaves><div class="esqueleto-linhas"><span class="esqueleto-texto"></span></div></div>
+              </section>
+
+              <section class="config-secao painel-aba" id="secao-integracoes" role="tabpanel" aria-labelledby="aba-integracoes" hidden>
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Integrações</h2>
+                    <p class="config-secao-descricao">Mande eventos do painel para outros serviços: transações pagas, contas criadas ou bloqueadas e relatórios gerados.</p>
+                  </div>
+                </header>
+                <div class="grade-integracoes" data-integracoes></div>
+              </section>
+
+              <section class="config-secao painel-aba" id="secao-sistema" role="tabpanel" aria-labelledby="aba-sistema" hidden>
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Empresa</h2>
+                    <p class="config-secao-descricao">Dados usados nos relatórios, na meta da visão geral e na moeda dos valores.</p>
+                  </div>
+                </header>
+                <form class="formulario" data-form-sistema novalidate>
+                  <div class="grade-campos">
+                    <label class="campo campo-inteiro">
+                      <span class="campo-rotulo campo-obrigatorio">Nome da empresa</span>
+                      <input class="entrada" name="nomeEmpresa" required maxlength="120">
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Moeda</span>
+                      <select class="selecao" name="moeda">
+                        <option value="BRL">Real (BRL)</option>
+                        <option value="USD">Dólar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                      </select>
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Meta de receita mensal</span>
+                      <span class="entrada-caixa"><span class="entrada-caixa-prefixo" data-simbolo-moeda>R$</span><input class="entrada" name="metaMensal" inputmode="decimal" data-moeda required></span>
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Fuso horário</span>
+                      <select class="selecao" name="fuso">
+                        <option value="America/Sao_Paulo">Brasília (UTC−3)</option>
+                        <option value="America/Manaus">Manaus (UTC−4)</option>
+                        <option value="America/Noronha">Fernando de Noronha (UTC−2)</option>
+                        <option value="Europe/Lisbon">Lisboa</option>
+                        <option value="UTC">UTC</option>
+                      </select>
+                    </label>
+                    <label class="campo">
+                      <span class="campo-rotulo">Idioma padrão</span>
+                      <select class="selecao" name="idiomaPadrao">
+                        <option value="pt-BR">Português (Brasil)</option>
+                        <option value="pt-PT">Português (Portugal)</option>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                      </select>
+                    </label>
+                  </div>
+                  <p class="campo-ajuda" data-aviso-sistema hidden>Só administradores alteram estes dados.</p>
+                  <div class="config-rodape">
+                    <button type="submit" class="botao botao-primario" data-salvar data-permissao="configuracoes.sistema"><i data-icone="salvar"></i>Salvar dados da empresa</button>
+                  </div>
+                </form>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

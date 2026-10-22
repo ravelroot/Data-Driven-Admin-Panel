@@ -1,0 +1,81 @@
+@layer components {
+  .usuarios-filtros {
+    @apply mb-4 flex flex-wrap items-center justify-between gap-3;
+  }
+
+  .perfil-cabecalho {
+    @apply flex items-center gap-4;
+  }
+
+  .perfil-textos {
+    @apply flex min-w-0 flex-1 flex-col gap-1;
+  }
+
+  .perfil-nome {
+    @apply truncate font-titulo text-xl font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .perfil-email {
+    @apply truncate text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .perfil-emblemas {
+    @apply mt-1 flex flex-wrap items-center gap-1.5;
+  }
+
+  .perfil-resumo {
+    @apply mt-5 grid grid-cols-3 gap-2;
+  }
+
+  .perfil-resumo > div {
+    @apply flex flex-col gap-0.5 rounded-controle bg-neutra-100 px-3 py-2.5 dark:bg-neutra-950/40;
+  }
+
+  .perfil-resumo dt {
+    @apply text-micro text-neutra-600 dark:text-neutra-400;
+  }
+
+  .perfil-resumo dd {
+    @apply truncate text-sm font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .assinatura-resumo {
+    @apply flex items-center gap-4 rounded-controle border border-neutra-200 p-4 dark:border-neutra-800;
+  }
+
+  .assinatura-resumo-icone {
+    @apply grid size-10 shrink-0 place-items-center rounded-controle bg-destaque-100 text-destaque-800 dark:bg-destaque-400/15 dark:text-destaque-300;
+  }
+
+  .assinatura-resumo-icone svg {
+    @apply size-5;
+  }
+
+  .assinatura-resumo-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .assinatura-resumo-plano {
+    @apply font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .assinatura-resumo-detalhe {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .assinatura-resumo-valor {
+    @apply text-right font-titulo text-lg font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .assinatura-resumo-valor small {
+    @apply block font-sans text-xs font-medium text-neutra-500;
+  }
+
+  .bloqueio-aviso {
+    @apply mb-5;
+  }
+
+  .papeis-grade {
+    @apply grid gap-2 sm:grid-cols-2;
+  }
+}

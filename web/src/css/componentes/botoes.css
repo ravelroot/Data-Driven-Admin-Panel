@@ -1,0 +1,125 @@
+@layer components {
+  .botao {
+    @apply relative inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-controle border border-transparent px-4 text-sm font-semibold whitespace-nowrap transition-[background-color,border-color,color,box-shadow,transform] duration-150 select-none active:translate-y-px disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .botao svg {
+    @apply size-4 shrink-0;
+  }
+
+  .botao-primario {
+    @apply bg-primaria-800 text-creme shadow-cartao hover:bg-primaria-700 dark:bg-destaque-400 dark:text-tinta dark:hover:bg-destaque-300;
+  }
+
+  .botao-destaque {
+    @apply bg-destaque-500 text-tinta hover:bg-destaque-400 dark:bg-destaque-400 dark:hover:bg-destaque-300;
+  }
+
+  .botao-secundario {
+    @apply border-neutra-200 bg-neutra-50 text-neutra-900 shadow-cartao hover:border-neutra-300 hover:bg-white dark:border-neutra-700 dark:bg-neutra-900 dark:text-neutra-100 dark:hover:border-neutra-600 dark:hover:bg-neutra-800;
+  }
+
+  .botao-contorno {
+    @apply border-primaria-700 bg-transparent text-primaria-800 hover:bg-primaria-50 dark:border-destaque-400/70 dark:text-destaque-300 dark:hover:bg-destaque-400/10;
+  }
+
+  .botao-fantasma {
+    @apply bg-transparent text-neutra-700 hover:bg-neutra-200/70 hover:text-neutra-950 dark:text-neutra-300 dark:hover:bg-neutra-800 dark:hover:text-neutra-50;
+  }
+
+  .botao-perigo {
+    @apply bg-brasa-600 text-creme shadow-cartao hover:bg-brasa-700 dark:bg-brasa-500 dark:hover:bg-brasa-400 dark:hover:text-tinta;
+  }
+
+  .botao-perigo-suave {
+    @apply bg-brasa-50 text-brasa-700 hover:bg-brasa-100 dark:bg-brasa-500/15 dark:text-brasa-300 dark:hover:bg-brasa-500/25;
+  }
+
+  .botao-sucesso {
+    @apply bg-oliva-700 text-creme hover:bg-oliva-800 dark:bg-oliva-400 dark:text-tinta dark:hover:bg-oliva-300;
+  }
+
+  .botao-link {
+    @apply h-auto border-0 p-0 text-primaria-700 underline-offset-4 hover:underline active:translate-y-0 dark:text-destaque-300;
+  }
+
+  .botao-claro {
+    @apply bg-creme/10 text-creme hover:bg-creme/20;
+  }
+
+  .botao-pequeno {
+    @apply h-8 gap-1.5 rounded-[0.55rem] px-3 text-xs;
+  }
+
+  .botao-pequeno svg {
+    @apply size-3.5;
+  }
+
+  .botao-grande {
+    @apply h-12 gap-2.5 px-6 text-base;
+  }
+
+  .botao-grande svg {
+    @apply size-5;
+  }
+
+  .botao-bloco {
+    @apply w-full;
+  }
+
+  .botao-icone {
+    @apply w-10 px-0;
+  }
+
+  .botao-icone.botao-pequeno {
+    @apply w-8;
+  }
+
+  .botao-icone.botao-grande {
+    @apply w-12;
+  }
+
+  .botao[data-carregando="true"] {
+    @apply pointer-events-none text-transparent;
+  }
+
+  .botao[data-carregando="true"] > * {
+    @apply invisible;
+  }
+
+  .botao[data-carregando="true"]::after {
+    @apply absolute inset-0 m-auto size-4 animate-girar rounded-full border-2 border-current border-r-transparent;
+    content: "";
+    color: var(--cor-giro, currentColor);
+  }
+
+  .botao-primario[data-carregando="true"]::after {
+    @apply border-creme border-r-transparent dark:border-tinta dark:border-r-transparent;
+  }
+
+  .botao-secundario[data-carregando="true"]::after,
+  .botao-fantasma[data-carregando="true"]::after {
+    @apply border-neutra-700 border-r-transparent dark:border-neutra-200 dark:border-r-transparent;
+  }
+
+  .grupo-botoes {
+    @apply inline-flex items-center rounded-controle border border-neutra-200 bg-neutra-50 p-0.5 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .grupo-botoes > .botao {
+    @apply h-8 rounded-[0.5rem] border-0 bg-transparent px-3 text-xs text-neutra-600 shadow-none hover:text-neutra-950 dark:text-neutra-400 dark:hover:text-neutra-50;
+  }
+
+  .grupo-botoes > .botao[aria-pressed="true"],
+  .grupo-botoes > .botao[aria-selected="true"] {
+    @apply bg-white text-neutra-950 shadow-cartao dark:bg-neutra-700 dark:text-neutra-50;
+  }
+
+  .botao-flutuante {
+    @apply fixed right-5 bottom-5 z-30 size-14 rounded-full bg-primaria-800 p-0 text-creme shadow-flutuante hover:bg-primaria-700 md:hidden dark:bg-destaque-400 dark:text-tinta;
+  }
+
+  .botao-flutuante svg {
+    @apply size-6;
+  }
+}

@@ -1,0 +1,229 @@
+@layer components {
+  .tabela-cartao {
+    @apply flex min-w-0 flex-col overflow-hidden rounded-cartao border border-neutra-200/80 bg-neutra-50 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900 dark:shadow-interno;
+  }
+
+  .tabela-barra {
+    @apply flex flex-wrap items-center gap-2 border-b border-neutra-200 px-4 py-3 sm:px-5 dark:border-neutra-800;
+  }
+
+  .tabela-barra-titulo {
+    @apply mr-auto flex min-w-0 flex-col;
+  }
+
+  .tabela-busca {
+    @apply relative w-full sm:w-72;
+  }
+
+  .tabela-busca .entrada {
+    @apply h-9 pl-9;
+  }
+
+  .tabela-busca-icone {
+    @apply pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutra-500;
+  }
+
+  .tabela-busca-limpar {
+    @apply absolute top-1/2 right-1.5 grid size-6 -translate-y-1/2 place-items-center rounded-md text-neutra-500 hover:bg-neutra-200 hover:text-neutra-900 dark:hover:bg-neutra-800 dark:hover:text-neutra-100;
+  }
+
+  .tabela-selecao-barra {
+    @apply flex flex-wrap items-center gap-2 border-b border-primaria-200 bg-primaria-50 px-4 py-2.5 text-sm sm:px-5 dark:border-destaque-400/30 dark:bg-destaque-400/10;
+  }
+
+  .tabela-selecao-barra strong {
+    @apply mr-2 font-semibold text-primaria-900 tabular-nums dark:text-destaque-200;
+  }
+
+  .tabela-moldura {
+    @apply relative w-full overflow-x-auto overscroll-x-contain;
+  }
+
+  .tabela-moldura[data-carregando="true"] {
+    @apply pointer-events-none;
+  }
+
+  .tabela-moldura[data-carregando="true"] .tabela tbody {
+    @apply opacity-55 transition-opacity;
+  }
+
+  .tabela {
+    @apply w-full min-w-[44rem] border-separate border-spacing-0 text-left text-sm;
+  }
+
+  .tabela-curta {
+    @apply min-w-0;
+  }
+
+  .tabela thead th {
+    @apply sticky top-0 z-[1] h-10 border-b border-neutra-200 bg-neutra-100/90 px-4 text-xs font-semibold whitespace-nowrap text-neutra-600 backdrop-blur first:pl-5 last:pr-5 dark:border-neutra-800 dark:bg-neutra-950/70 dark:text-neutra-400;
+  }
+
+  .tabela-ordenavel {
+    @apply -mx-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-1 transition-colors hover:bg-neutra-200 hover:text-neutra-950 dark:hover:bg-neutra-800 dark:hover:text-neutra-50;
+  }
+
+  .tabela-ordem-icone {
+    @apply size-3.5 text-neutra-400 opacity-0 transition-[opacity,transform] dark:text-neutra-600;
+  }
+
+  .tabela-ordenavel:hover .tabela-ordem-icone {
+    @apply opacity-100;
+  }
+
+  th[aria-sort="ascending"] .tabela-ordenavel,
+  th[aria-sort="descending"] .tabela-ordenavel {
+    @apply text-neutra-950 dark:text-neutra-50;
+  }
+
+  th[aria-sort="ascending"] .tabela-ordem-icone,
+  th[aria-sort="descending"] .tabela-ordem-icone {
+    @apply text-primaria-700 opacity-100 dark:text-destaque-400;
+  }
+
+  th[aria-sort="descending"] .tabela-ordem-icone {
+    @apply rotate-180;
+  }
+
+  .tabela tbody td {
+    @apply h-(--spacing-linha-tabela) border-b border-neutra-200/80 px-4 align-middle text-neutra-800 first:pl-5 last:pr-5 dark:border-neutra-800/80 dark:text-neutra-200 compacta:h-(--spacing-linha-tabela-compacta);
+  }
+
+  .tabela tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .tabela tbody tr {
+    @apply transition-colors duration-100;
+  }
+
+  .tabela tbody tr:hover td {
+    @apply bg-neutra-100/80 dark:bg-neutra-800/40;
+  }
+
+  .tabela tbody tr[data-clicavel="true"] {
+    @apply cursor-pointer;
+  }
+
+  .tabela tbody tr[data-selecionada="true"] td {
+    @apply bg-primaria-50/80 dark:bg-destaque-400/[0.07];
+  }
+
+  .tabela tbody tr[data-nova="true"] td {
+    @apply animate-destacar;
+  }
+
+  .tabela-listrada tbody tr:nth-child(even) td {
+    @apply bg-neutra-100/50 dark:bg-neutra-950/30;
+  }
+
+  .celula-numero {
+    @apply text-right whitespace-nowrap tabular-nums;
+  }
+
+  th.celula-numero {
+    @apply text-right;
+  }
+
+  th.celula-numero .tabela-ordenavel {
+    @apply flex-row-reverse;
+  }
+
+  .celula-moeda {
+    @apply text-right font-semibold whitespace-nowrap text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .celula-moeda[data-negativo="true"] {
+    @apply text-brasa-700 dark:text-brasa-300;
+  }
+
+  .celula-codigo {
+    @apply font-mono text-xs whitespace-nowrap text-neutra-700 dark:text-neutra-300;
+  }
+
+  .celula-secundaria {
+    @apply text-xs whitespace-nowrap text-neutra-600 dark:text-neutra-400;
+  }
+
+  .celula-data {
+    @apply whitespace-nowrap text-neutra-600 tabular-nums dark:text-neutra-400;
+  }
+
+  .celula-selecao {
+    @apply w-11 pr-0!;
+  }
+
+  .celula-acoes {
+    @apply w-12 text-right;
+  }
+
+  .celula-usuario {
+    @apply flex min-w-0 items-center gap-3;
+  }
+
+  .celula-usuario-texto {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .celula-usuario-nome {
+    @apply truncate font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .celula-usuario-email {
+    @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .celula-icone-texto {
+    @apply inline-flex items-center gap-2 whitespace-nowrap;
+  }
+
+  .celula-icone-texto svg {
+    @apply size-4 text-neutra-500;
+  }
+
+  .tabela-vazia td {
+    @apply h-auto! py-14 text-center;
+  }
+
+  .tabela-esqueleto td::after {
+    @apply block h-3 w-3/4 animate-brilho rounded bg-linear-to-r from-neutra-200 via-neutra-100 to-neutra-200 bg-[length:200%_100%] dark:from-neutra-800 dark:via-neutra-700 dark:to-neutra-800;
+    content: "";
+  }
+
+  .tabela-esqueleto td:first-child::after {
+    @apply w-1/2;
+  }
+
+  .tabela-rodape {
+    @apply flex flex-wrap items-center justify-between gap-3 border-t border-neutra-200 px-4 py-3 sm:px-5 dark:border-neutra-800;
+  }
+
+  .tabela-simples {
+    @apply w-full text-sm;
+  }
+
+  .tabela-simples th {
+    @apply pb-2 text-left text-xs font-semibold text-neutra-600 dark:text-neutra-400;
+  }
+
+  .tabela-simples td {
+    @apply border-t border-neutra-200 py-2.5 text-neutra-800 dark:border-neutra-800 dark:text-neutra-200;
+  }
+
+  .tabela-simples td.celula-numero,
+  .tabela-simples th.celula-numero {
+    @apply text-right;
+  }
+
+  .tabela-previa {
+    @apply min-w-[36rem] text-xs;
+  }
+
+  .tabela-previa thead th {
+    @apply h-9 text-micro;
+  }
+
+  .tabela-previa tbody td {
+    @apply h-9;
+  }
+}

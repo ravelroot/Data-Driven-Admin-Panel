@@ -1,0 +1,228 @@
+@layer components {
+  .modelo-bento {
+    @apply grid grid-cols-1 gap-4 xl:gap-5 compacta:gap-3;
+    grid-auto-rows: minmax(8.5rem, auto);
+  }
+
+  .modelo-bento > * {
+    @apply min-w-0;
+  }
+
+  .modelo-bento-celula {
+    @apply flex min-w-0 flex-col rounded-cartao border border-neutra-200/80 bg-neutra-50 p-5 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900 compacta:p-4;
+  }
+
+  .modelo-bento-celula[data-tom="destaque"] {
+    @apply border-transparent bg-primaria-800 text-creme shadow-elevado dark:bg-primaria-900 dark:ring-1 dark:ring-primaria-700/60;
+  }
+
+  .modelo-bento-celula[data-tom="ouro"] {
+    @apply border-transparent bg-destaque-500 text-tinta dark:bg-destaque-400;
+  }
+
+  .modelo-bento-celula[data-tom="escuro"] {
+    @apply border-transparent bg-tinta text-creme dark:ring-1 dark:ring-neutra-800;
+  }
+
+  .modelo-bento-celula[data-tom="vazio"] {
+    @apply border-dashed border-neutra-300 bg-transparent shadow-none dark:border-neutra-700;
+  }
+
+  .modelo-bento-rotulo {
+    @apply text-xs font-semibold opacity-75;
+  }
+
+  .modelo-bento-valor {
+    @apply mt-auto font-titulo text-3xl font-semibold tabular-nums;
+    letter-spacing: -0.03em;
+  }
+
+  .modelo-vendas {
+    grid-template-areas: "destaque" "meta" "funil" "ranking" "pedidos" "canais";
+
+    @variant md {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "destaque destaque"
+        "meta funil"
+        "ranking ranking"
+        "pedidos pedidos"
+        "canais canais";
+    }
+
+    @variant xl {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-areas:
+        "destaque destaque destaque meta"
+        "destaque destaque destaque funil"
+        "ranking ranking pedidos pedidos"
+        "canais canais pedidos pedidos";
+    }
+  }
+
+  .modelo-vendas > [data-area="destaque"] { grid-area: destaque; }
+  .modelo-vendas > [data-area="meta"] { grid-area: meta; }
+  .modelo-vendas > [data-area="funil"] { grid-area: funil; }
+  .modelo-vendas > [data-area="ranking"] { grid-area: ranking; }
+  .modelo-vendas > [data-area="pedidos"] { grid-area: pedidos; }
+  .modelo-vendas > [data-area="canais"] { grid-area: canais; }
+
+  .modelo-produto {
+    grid-template-areas: "ativos" "retencao" "recursos" "nps" "eventos" "versoes";
+
+    @variant md {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "ativos retencao"
+        "recursos recursos"
+        "nps eventos"
+        "versoes versoes";
+    }
+
+    @variant xl {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-areas:
+        "ativos retencao retencao nps"
+        "recursos recursos eventos nps"
+        "recursos recursos eventos versoes";
+    }
+  }
+
+  .modelo-produto > [data-area="ativos"] { grid-area: ativos; }
+  .modelo-produto > [data-area="retencao"] { grid-area: retencao; }
+  .modelo-produto > [data-area="recursos"] { grid-area: recursos; }
+  .modelo-produto > [data-area="nps"] { grid-area: nps; }
+  .modelo-produto > [data-area="eventos"] { grid-area: eventos; }
+  .modelo-produto > [data-area="versoes"] { grid-area: versoes; }
+
+  .modelo-suporte {
+    grid-template-areas: "abertos" "tempo" "satisfacao" "fila" "agentes" "temas";
+
+    @variant md {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-areas:
+        "abertos tempo satisfacao"
+        "fila fila fila"
+        "agentes agentes temas";
+    }
+
+    @variant xl {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-areas:
+        "abertos tempo satisfacao agentes"
+        "fila fila fila agentes"
+        "fila fila fila temas";
+    }
+  }
+
+  .modelo-suporte > [data-area="abertos"] { grid-area: abertos; }
+  .modelo-suporte > [data-area="tempo"] { grid-area: tempo; }
+  .modelo-suporte > [data-area="satisfacao"] { grid-area: satisfacao; }
+  .modelo-suporte > [data-area="fila"] { grid-area: fila; }
+  .modelo-suporte > [data-area="agentes"] { grid-area: agentes; }
+  .modelo-suporte > [data-area="temas"] { grid-area: temas; }
+
+  .modelo-financeiro {
+    grid-template-areas: "caixa" "receitas" "despesas" "margem" "contas" "previsao";
+
+    @variant md {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        "caixa caixa"
+        "receitas despesas"
+        "margem contas"
+        "previsao previsao";
+    }
+
+    @variant xl {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-areas:
+        "caixa caixa receitas despesas"
+        "caixa caixa margem contas"
+        "previsao previsao previsao contas";
+    }
+  }
+
+  .modelo-financeiro > [data-area="caixa"] { grid-area: caixa; }
+  .modelo-financeiro > [data-area="receitas"] { grid-area: receitas; }
+  .modelo-financeiro > [data-area="despesas"] { grid-area: despesas; }
+  .modelo-financeiro > [data-area="margem"] { grid-area: margem; }
+  .modelo-financeiro > [data-area="contas"] { grid-area: contas; }
+  .modelo-financeiro > [data-area="previsao"] { grid-area: previsao; }
+
+  .modelo-marketing {
+    grid-template-areas: "alcance" "conversao" "custo" "campanhas" "origem" "conteudo";
+
+    @variant md {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-areas:
+        "alcance conversao custo"
+        "campanhas campanhas origem"
+        "conteudo conteudo conteudo";
+    }
+
+    @variant xl {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-areas:
+        "alcance alcance conversao custo"
+        "campanhas campanhas campanhas origem"
+        "conteudo conteudo conteudo origem";
+    }
+  }
+
+  .modelo-marketing > [data-area="alcance"] { grid-area: alcance; }
+  .modelo-marketing > [data-area="campanhas"] { grid-area: campanhas; }
+  .modelo-marketing > [data-area="conversao"] { grid-area: conversao; }
+  .modelo-marketing > [data-area="origem"] { grid-area: origem; }
+  .modelo-marketing > [data-area="conteudo"] { grid-area: conteudo; }
+  .modelo-marketing > [data-area="custo"] { grid-area: custo; }
+
+  .modelo-bento-miniatura {
+    @apply grid aspect-[4/3] w-full gap-1 rounded-controle bg-neutra-100 p-1.5 dark:bg-neutra-950/50;
+    grid-auto-rows: 1fr;
+  }
+
+  .modelo-bento-miniatura > span {
+    @apply rounded-[4px] bg-neutra-300 dark:bg-neutra-700;
+  }
+
+  .modelo-bento-miniatura > span:first-child {
+    @apply bg-primaria-700 dark:bg-primaria-500;
+  }
+
+  .modelo-bento-miniatura > span:nth-child(2) {
+    @apply bg-destaque-400;
+  }
+
+  .modelo-bento-miniatura.modelo-vendas,
+  .modelo-bento-miniatura.modelo-produto,
+  .modelo-bento-miniatura.modelo-suporte,
+  .modelo-bento-miniatura.modelo-financeiro,
+  .modelo-bento-miniatura.modelo-marketing {
+    grid-auto-rows: 1fr;
+  }
+
+  .modelos-bento-galeria {
+    @apply grid gap-3 sm:grid-cols-2 xl:grid-cols-5;
+  }
+
+  .modelos-bento-opcao {
+    @apply flex cursor-pointer flex-col gap-2 rounded-cartao border border-neutra-200 bg-neutra-50 p-3 transition-colors hover:border-neutra-300 has-checked:border-primaria-700 has-checked:bg-primaria-50 dark:border-neutra-800 dark:bg-neutra-900 dark:hover:border-neutra-700 dark:has-checked:border-destaque-400 dark:has-checked:bg-destaque-400/10;
+  }
+
+  .modelos-bento-opcao:has(:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-destaque-500;
+  }
+
+  .modelos-bento-opcao input {
+    @apply sr-only;
+  }
+
+  .modelos-bento-opcao-nome {
+    @apply text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .modelos-bento-opcao-texto {
+    @apply text-xs text-neutra-600 dark:text-neutra-400;
+  }
+}

@@ -1,0 +1,284 @@
+@layer components {
+  .perfis-grade {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-5;
+  }
+
+  .perfis-cartao {
+    @apply relative flex min-w-0 flex-col overflow-hidden rounded-cartao border border-neutra-200 bg-neutra-50 shadow-cartao dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .perfis-cartao[data-destaque="true"] {
+    @apply border-primaria-700 ring-1 ring-primaria-700 dark:border-destaque-400 dark:ring-destaque-400;
+  }
+
+  .perfis-capa {
+    @apply h-20 bg-primaria-800 dark:bg-primaria-900;
+    background-image: radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--color-creme) 16%, transparent) 1px, transparent 0);
+    background-size: 14px 14px;
+  }
+
+  .perfis-capa[data-tom="ouro"] {
+    @apply bg-destaque-500 dark:bg-destaque-600;
+  }
+
+  .perfis-capa[data-tom="salvia"] {
+    @apply bg-salvia-400 dark:bg-salvia-700;
+  }
+
+  .perfis-capa[data-tom="casca"] {
+    @apply bg-casca-700 dark:bg-casca-800;
+  }
+
+  .perfis-capa[data-tom="anil"] {
+    @apply bg-anil-600 dark:bg-anil-800;
+  }
+
+  .perfis-corpo {
+    @apply flex flex-1 flex-col items-center gap-1 px-5 pb-5 text-center;
+  }
+
+  .perfis-avatar {
+    @apply relative -mt-9 mb-2 rounded-full ring-4 ring-neutra-50 dark:ring-neutra-900;
+  }
+
+  .perfis-sem-capa .perfis-avatar {
+    @apply mt-6;
+  }
+
+  .perfis-presenca {
+    @apply absolute right-1 bottom-1 size-3.5 rounded-full bg-neutra-400 ring-[3px] ring-neutra-50 dark:ring-neutra-900;
+  }
+
+  .perfis-presenca[data-presenca="online"] {
+    @apply bg-oliva-600 dark:bg-oliva-400;
+  }
+
+  .perfis-presenca[data-presenca="ausente"] {
+    @apply bg-ouro-500;
+  }
+
+  .perfis-presenca[data-presenca="ocupado"] {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .perfis-nome {
+    @apply font-titulo text-lg font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .perfis-cargo {
+    @apply text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .perfis-emblemas {
+    @apply mt-2 flex flex-wrap justify-center gap-1;
+  }
+
+  .perfis-bio {
+    @apply mt-3 line-clamp-3 text-xs leading-relaxed text-neutra-600 dark:text-neutra-400;
+  }
+
+  .perfis-estatisticas {
+    @apply mt-4 grid w-full grid-cols-3 divide-x divide-neutra-200 rounded-controle bg-neutra-100 py-2.5 dark:divide-neutra-800 dark:bg-neutra-950/40;
+  }
+
+  .perfis-estatistica {
+    @apply flex flex-col items-center gap-0.5 px-1;
+  }
+
+  .perfis-estatistica strong {
+    @apply font-titulo text-base font-semibold text-neutra-950 tabular-nums dark:text-neutra-50;
+  }
+
+  .perfis-estatistica span {
+    @apply text-[0.625rem] text-neutra-600 dark:text-neutra-400;
+  }
+
+  .perfis-contatos {
+    @apply mt-4 flex items-center justify-center gap-1;
+  }
+
+  .perfis-contato {
+    @apply grid size-8 place-items-center rounded-lg text-neutra-600 transition-colors hover:bg-neutra-200 hover:text-neutra-950 dark:text-neutra-400 dark:hover:bg-neutra-800 dark:hover:text-neutra-50;
+  }
+
+  .perfis-contato svg {
+    @apply size-4;
+  }
+
+  .perfis-rodape {
+    @apply grid grid-cols-2 border-t border-neutra-200 dark:border-neutra-800;
+  }
+
+  .perfis-rodape > * {
+    @apply flex h-11 items-center justify-center gap-1.5 text-sm font-semibold text-neutra-800 transition-colors hover:bg-neutra-100 dark:text-neutra-200 dark:hover:bg-neutra-800/50;
+  }
+
+  .perfis-rodape > * + * {
+    @apply border-l border-neutra-200 dark:border-neutra-800;
+  }
+
+  .perfis-rodape svg {
+    @apply size-4;
+  }
+
+  .perfis-menu {
+    @apply absolute top-2 right-2 grid size-8 place-items-center rounded-lg bg-black/15 text-creme backdrop-blur-sm hover:bg-black/25;
+  }
+
+  .perfis-menu svg {
+    @apply size-4;
+  }
+
+  .perfis-horizontal {
+    @apply flex-row items-center gap-4 p-4;
+  }
+
+  .perfis-horizontal .perfis-capa {
+    @apply hidden;
+  }
+
+  .perfis-horizontal .perfis-corpo {
+    @apply items-start p-0 text-left;
+  }
+
+  .perfis-horizontal .perfis-avatar {
+    @apply m-0;
+  }
+
+  .perfis-horizontal .perfis-emblemas {
+    @apply justify-start;
+  }
+
+  .perfis-lista {
+    @apply flex flex-col divide-y divide-neutra-200 overflow-hidden rounded-cartao border border-neutra-200 bg-neutra-50 dark:divide-neutra-800 dark:border-neutra-800 dark:bg-neutra-900;
+  }
+
+  .perfis-linha {
+    @apply flex items-center gap-3 px-4 py-3;
+  }
+
+  .perfis-linha-textos {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .perfis-linha-nome {
+    @apply truncate text-sm font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .perfis-linha-detalhe {
+    @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
+  }
+
+  .perfis-convidar {
+    @apply flex min-h-64 flex-col items-center justify-center gap-3 rounded-cartao border-2 border-dashed border-neutra-300 p-6 text-center text-sm text-neutra-600 transition-colors hover:border-primaria-500 hover:bg-primaria-50/50 dark:border-neutra-700 dark:text-neutra-400 dark:hover:border-destaque-400 dark:hover:bg-destaque-400/5;
+  }
+
+  .perfis-convidar-icone {
+    @apply grid size-12 place-items-center rounded-full bg-neutra-200 text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .perfis-convidar-icone svg {
+    @apply size-6;
+  }
+
+  .perfis-perfil-capa {
+    @apply relative h-40 overflow-hidden rounded-painel bg-primaria-800 sm:h-52 dark:bg-primaria-900;
+    background-image: linear-gradient(135deg, transparent 0 55%, color-mix(in oklab, var(--color-destaque-400) 35%, transparent) 55% 70%, transparent 70%);
+  }
+
+  .perfis-perfil-topo {
+    @apply relative -mt-12 flex flex-wrap items-end gap-4 px-6;
+  }
+
+  .perfis-perfil-avatar {
+    @apply rounded-full ring-4 ring-neutra-100 dark:ring-neutra-950;
+  }
+
+  .perfis-perfil-textos {
+    @apply flex min-w-0 flex-1 flex-col pb-1;
+  }
+
+  .perfis-perfil-nome {
+    @apply font-titulo text-2xl font-semibold text-neutra-950 dark:text-neutra-50;
+  }
+
+  .perfis-perfil-detalhe {
+    @apply flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-neutra-600 dark:text-neutra-400;
+  }
+
+  .perfis-perfil-detalhe span {
+    @apply inline-flex items-center gap-1.5;
+  }
+
+  .perfis-perfil-detalhe svg {
+    @apply size-4;
+  }
+
+  .perfis-perfil-acoes {
+    @apply flex items-center gap-2 pb-1;
+  }
+
+  .perfis-compacta .perfis-cartao {
+    @apply text-sm;
+  }
+
+  .perfis-compacta .perfis-capa {
+    @apply h-14;
+  }
+
+  .perfis-compacta .perfis-avatar {
+    @apply -mt-7;
+  }
+
+  .perfis-compacta .perfis-bio,
+  .perfis-compacta .perfis-estatisticas {
+    @apply hidden;
+  }
+}
+
+@utility perfis-anel {
+  box-shadow: 0 0 0 4px var(--color-neutra-50);
+
+  &:where(.dark, .dark *) {
+    box-shadow: 0 0 0 4px var(--color-neutra-900);
+  }
+}
+
+@layer components {
+  .perfis-habilidades {
+    @apply mt-3 flex flex-wrap justify-center gap-1;
+  }
+
+  .perfis-habilidade {
+    @apply inline-flex h-5 items-center rounded-md bg-neutra-200 px-1.5 text-[0.625rem] font-semibold text-neutra-700 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .perfis-carga {
+    @apply mt-3 flex w-full flex-col gap-1 text-left;
+  }
+
+  .perfis-carga-topo {
+    @apply flex justify-between text-[0.6875rem] text-neutra-600 tabular-nums dark:text-neutra-400;
+  }
+
+  .perfis-carga-trilho {
+    @apply h-1.5 overflow-hidden rounded-full bg-neutra-200 dark:bg-neutra-800;
+  }
+
+  .perfis-carga-trilho > span {
+    @apply block h-full rounded-full bg-primaria-700 dark:bg-destaque-400;
+    width: var(--valor, 0%);
+  }
+
+  .perfis-carga[data-nivel="alto"] .perfis-carga-trilho > span {
+    @apply bg-brasa-600 dark:bg-brasa-400;
+  }
+
+  .perfis-fuso {
+    @apply mt-2 inline-flex items-center gap-1 text-xs text-neutra-500;
+  }
+
+  .perfis-fuso svg {
+    @apply size-3.5;
+  }
+}

@@ -1,0 +1,13 @@
+node_modules/
+dados/
+web/dist/
+api/dist/
+.env
+.env.*
+!.env.example
+*.log
+coverage/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

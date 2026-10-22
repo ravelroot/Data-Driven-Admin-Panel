@@ -1,0 +1,101 @@
+@layer components {
+  .bento {
+    @apply grid grid-cols-1 gap-4 md:grid-cols-6 xl:grid-cols-12 xl:gap-5;
+    grid-auto-flow: row dense;
+    grid-auto-rows: minmax(8.5rem, auto);
+  }
+
+  .bento + .bento {
+    @apply mt-4 xl:mt-5;
+  }
+
+  .bento:where([data-densidade="compacta"] *) {
+    @apply gap-3 xl:gap-3.5;
+    grid-auto-rows: minmax(7rem, auto);
+  }
+
+  .bento-solto {
+    grid-auto-rows: auto;
+  }
+
+  .bento > * {
+    @apply min-w-0;
+  }
+
+  .bento-quarto {
+    @apply md:col-span-3 xl:col-span-3;
+  }
+
+  .bento-terco {
+    @apply md:col-span-3 xl:col-span-4;
+  }
+
+  .bento-cinco-doze {
+    @apply md:col-span-6 xl:col-span-5;
+  }
+
+  .bento-metade {
+    @apply md:col-span-6 xl:col-span-6;
+  }
+
+  .bento-sete-doze {
+    @apply md:col-span-6 xl:col-span-7;
+  }
+
+  .bento-dois-tercos {
+    @apply md:col-span-6 xl:col-span-8;
+  }
+
+  .bento-tres-quartos {
+    @apply md:col-span-6 xl:col-span-9;
+  }
+
+  .bento-inteiro {
+    @apply md:col-span-6 xl:col-span-12;
+  }
+
+  .bento-alto {
+    @apply xl:row-span-2;
+  }
+
+  .bento-muito-alto {
+    @apply xl:row-span-3;
+  }
+
+  .bento-alto-medio {
+    @apply md:row-span-2;
+  }
+
+  .bento-pilha {
+    @apply grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 md:col-span-6 xl:col-span-4 xl:grid-cols-1 xl:gap-5;
+  }
+
+  .bento-pilha:where([data-densidade="compacta"] *) {
+    @apply gap-3;
+  }
+
+  .bento-kpis {
+    @apply grid grid-cols-1 gap-4 xs:grid-cols-2 xl:grid-cols-4 xl:gap-5;
+  }
+
+  .bento-kpis + .bento,
+  .bento + .bento-kpis {
+    @apply mt-4 xl:mt-5;
+  }
+
+  .bento-colunas {
+    @apply grid gap-4 md:grid-cols-[minmax(0,1fr)_20rem] xl:grid-cols-[minmax(0,1fr)_24rem] xl:gap-5;
+  }
+
+  .bento-colunas-esquerda {
+    @apply grid gap-4 lg:grid-cols-[17rem_minmax(0,1fr)] xl:gap-5;
+  }
+
+  .bento-mosaico {
+    @apply grid grid-cols-2 gap-2;
+  }
+
+  .bento-mosaico > :first-child {
+    @apply col-span-2;
+  }
+}

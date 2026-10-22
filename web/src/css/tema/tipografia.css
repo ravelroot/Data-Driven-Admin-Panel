@@ -1,0 +1,46 @@
+@theme {
+  --font-sans: "Instrument Sans Variable", "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-titulo: "Bricolage Grotesque Variable", "Bricolage Grotesque", "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.0625rem;
+  --text-lg--line-height: 1.625rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.375rem;
+  --text-4xl--line-height: 2.625rem;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 3.75rem;
+  --text-6xl--line-height: 1;
+  --text-numero: 2.125rem;
+  --text-numero--line-height: 1;
+  --text-numero--letter-spacing: -0.03em;
+  --text-numero--font-weight: 650;
+  --text-numero-grande: 3.25rem;
+  --text-numero-grande--line-height: 1;
+  --text-numero-grande--letter-spacing: -0.04em;
+  --text-numero-grande--font-weight: 650;
+
+  --tracking-apertado: -0.025em;
+  --tracking-titulo: -0.02em;
+  --tracking-leve: 0.01em;
+
+  --leading-compacto: 1.2;
+  --leading-texto: 1.6;
+  --leading-leitura: 1.7;
+
+  --font-weight-titulo: 650;
+}

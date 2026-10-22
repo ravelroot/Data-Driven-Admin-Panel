@@ -1,0 +1,7 @@
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant recolhida (&:where([data-barra="recolhida"], [data-barra="recolhida"] *));
+@custom-variant compacta (&:where([data-densidade="compacta"], [data-densidade="compacta"] *));
+@custom-variant aberta (&:where([data-aberta="true"], [data-aberta="true"] *));
+@custom-variant ativo (&:where([aria-current="page"], [aria-selected="true"], [data-ativo="true"]));
+@custom-variant ordenado (&:where([aria-sort="ascending"], [aria-sort="descending"]));
+@custom-variant movimento (@media (prefers-reduced-motion: no-preference));

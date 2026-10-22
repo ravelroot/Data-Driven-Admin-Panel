@@ -1,0 +1,45 @@
+@layer components {
+  .tabela-coortes {
+    @apply w-full min-w-[36rem] border-separate border-spacing-[3px] text-xs;
+  }
+
+  .tabela-coortes th {
+    @apply px-2 pb-1 text-left font-semibold whitespace-nowrap text-neutra-500;
+  }
+
+  .tabela-coortes th.celula-numero {
+    @apply text-center;
+  }
+
+  .coorte-rotulo {
+    @apply pr-3 font-semibold whitespace-nowrap text-neutra-800 dark:text-neutra-200;
+  }
+
+  .coorte-tamanho {
+    @apply block text-micro font-medium text-neutra-500 tabular-nums;
+  }
+
+  .coorte-celula {
+    @apply h-9 rounded-md bg-neutra-100 text-center font-semibold text-neutra-500 tabular-nums dark:bg-neutra-950/40 dark:text-neutra-600;
+  }
+
+  .coorte-celula[data-nivel="1"] {
+    @apply bg-primaria-50 text-primaria-800 dark:bg-neutra-800 dark:text-neutra-300;
+  }
+
+  .coorte-celula[data-nivel="2"] {
+    @apply bg-primaria-100 text-primaria-900 dark:bg-primaria-600 dark:text-primaria-50;
+  }
+
+  .coorte-celula[data-nivel="3"] {
+    @apply bg-primaria-300 text-primaria-950 dark:bg-primaria-500 dark:text-white;
+  }
+
+  .coorte-celula[data-nivel="4"] {
+    @apply bg-primaria-500 text-white dark:bg-primaria-300 dark:text-black;
+  }
+
+  .coorte-celula[data-nivel="5"] {
+    @apply bg-primaria-800 text-white dark:bg-primaria-100 dark:text-black;
+  }
+}
