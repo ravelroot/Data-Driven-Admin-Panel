@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  Tailwind CSS 4 · HTML5 · JavaScript (módulos ES) · ApexCharts · TypeScript · Node.js 22 · Fastify 5 · Zod · PostgreSQL 18 · PGlite · PDFKit · Vite · Docker Compose · Node Test Runner
+  TypeScript · Tailwind CSS 4 · HTML5 · ApexCharts · Node.js 22 · Fastify 5 · Zod · PostgreSQL 18 · PGlite · PDFKit · Vite · Docker Compose · Node Test Runner
 </p>
 
 ---
@@ -44,7 +44,7 @@
 
 ```mermaid
 flowchart LR
-    UI["Navegador<br/>Tailwind CSS + JavaScript"] -- "HTTP / JSON<br/>cookie de sessão + X-Bento" --> API["api<br/>Node.js 22 + Fastify 5<br/>TypeScript"]
+    UI["Navegador<br/>TypeScript + Tailwind CSS"] -- "HTTP / JSON<br/>cookie de sessão + X-Bento" --> API["api<br/>Node.js 22 + Fastify 5<br/>TypeScript"]
     API -- "Server-Sent Events" --> UI
     API --> BD[("PostgreSQL 18<br/>ou PGlite embutido")]
     API -- "webhooks assinados" --> EXT["Slack, Discord<br/>ou seu endpoint"]
@@ -53,9 +53,9 @@ flowchart LR
 
 | Parte | Linguagem | Responsabilidade |
 |---|---|---|
+| `web/src/ts` | TypeScript | Tipos da API, cliente HTTP, sessão, tema com `localStorage`, tempo real, tabela de dados, gráficos, gavetas, diálogos, busca global e o controlador de cada página |
 | `web/src/css` | Tailwind CSS | Tokens de cor, tipografia e medidas, 16 paletas, modo escuro com a variante `dark:`, layout bento, componentes, kit de interface, páginas e impressão |
 | `web/*.html` | HTML | Estrutura de cada página: visão geral, analytics, usuários, notificações, relatórios, configurações, componentes e entrada |
-| `web/src/js` | JavaScript | Cliente da API, sessão, tema com `localStorage`, tempo real, tabela de dados, gráficos, gavetas, diálogos, busca global e o controlador de cada página |
 | `api/src` | TypeScript | API REST com Fastify: autenticação, permissões, métricas, analytics, usuários, notificações, relatórios, agendador, simulador e integrações |
 | `api/migracoes` | SQL | Esquema, índices e dados de base (papéis, permissões e planos) |
 | `postgres` | — | Fonte da verdade. Sem `DATABASE_URL`, o PGlite roda o mesmo PostgreSQL embutido, sem instalar nada |
@@ -137,7 +137,7 @@ Na inicialização, a API cria essa conta de administrador se o e-mail ainda nã
 npm run dev                       # API em :8080 e Vite em http://localhost:5173
 ```
 
-O Vite recarrega a página a cada mudança no Tailwind CSS, no HTML ou no JavaScript, e encaminha `/api` para a API, que reinicia sozinha quando o TypeScript muda.
+O Vite recarrega a página a cada mudança no TypeScript, no Tailwind CSS ou no HTML, e encaminha `/api` para a API, que reinicia sozinha quando o TypeScript muda.
 
 <p align="center">
   <img src="docs/images/tela-componentes.png" width="49%" alt="Biblioteca de componentes em Tailwind CSS">
@@ -213,11 +213,11 @@ O projeto foi organizado para ser fácil de adaptar:
 | Quero... | Onde mexer |
 |---|---|
 | Trocar as cores padrão | `web/src/css/tema/cores.css` (escalas `primaria`, `destaque` e `neutra`) |
-| Criar uma paleta nova | Um bloco `[data-paleta="nome"]` em `web/src/css/tema/paletas.css` e o nome em `PALETAS` (`web/src/js/nucleo/tema.js`) e na validação da API |
+| Criar uma paleta nova | Um bloco `[data-paleta="nome"]` em `web/src/css/tema/paletas.css` e o nome em `PALETAS` (`web/src/ts/nucleo/tema.ts`) e na validação da API |
 | Mudar fontes, tamanhos e raios | `web/src/css/tema/tipografia.css` e `web/src/css/tema/medidas.css` |
-| Novo item no menu | `NAVEGACAO` em `web/src/js/layout/navegacao.js` |
-| Novo cartão na visão geral | Marcação em `web/index.html` com as classes `.bento-*` e o preenchimento em `web/src/js/paginas/visao-geral.js` |
-| Nova coluna na tabela de usuários | `COLUNAS` em `web/src/js/paginas/usuarios.js` e o campo de ordenação em `api/src/modulos/usuarios` |
+| Novo item no menu | `NAVEGACAO` em `web/src/ts/layout/navegacao.ts` |
+| Novo cartão na visão geral | Marcação em `web/index.html` com as classes `.bento-*` e o preenchimento em `web/src/ts/paginas/visao-geral.ts` |
+| Nova coluna na tabela de usuários | `COLUNAS` em `web/src/ts/paginas/usuarios.ts` e o campo de ordenação em `api/src/modulos/usuarios` |
 | Novo tipo de relatório | `api/src/modulos/relatorios` (colunas, consulta e resumo) |
 | Nova permissão | `api/migracoes` (tabela `permissoes` e `papel_permissoes`) e o `pode("...")` na interface |
 | Novo componente | Um arquivo em `web/src/css/kit/`, o `@import` em `web/src/css/bento.css` e uma seção em `web/componentes.html` |
@@ -226,7 +226,7 @@ O projeto foi organizado para ser fácil de adaptar:
 
 ```bash
 npm test                          # 30 testes da API e 9 do núcleo da interface
-npm run verificar                 # checagem de tipos do TypeScript
+npm run verificar                 # checagem de tipos (strict) da interface e da API
 npm run build                     # gera web/dist e api/dist
 ```
 
@@ -238,10 +238,10 @@ O GitHub Actions roda os testes, checa os tipos, constrói a interface, sobe a A
 web/                        interface
   *.html                    uma página por módulo
   src/css/                  Tailwind CSS: tema, base, layout, componentes, kit, páginas
-  src/js/nucleo/            API, sessão, tema, tempo real, formatação, ícones
-  src/js/componentes/       tabela, gráficos, gavetas, diálogos, avisos, formulários
-  src/js/layout/            menu, cabeçalho, busca global e início das páginas
-  src/js/paginas/           controlador de cada página
+  src/ts/nucleo/            tipos, API, sessão, tema, tempo real, formatação, ícones
+  src/ts/componentes/       tabela, gráficos, gavetas, diálogos, avisos, formulários
+  src/ts/layout/            menu, cabeçalho, busca global e início das páginas
+  src/ts/paginas/           controlador de cada página
   public/                   favicon, logo e script de tema
   tests/                    testes do núcleo
 api/                        API em TypeScript

@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   interface:
-    name: Interface (Tailwind CSS + Vite)
+    name: Interface (TypeScript + Tailwind CSS)
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -27,6 +27,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - name: Checar tipos da interface
+        run: npm run verificar -w web
       - name: Testes do núcleo da interface
         run: npm test -w web
       - name: Construir as páginas

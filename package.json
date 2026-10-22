@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Painel administrativo SaaS em bento grid com Tailwind CSS e API em TypeScript",
+  "description": "Painel administrativo SaaS em bento grid com interface e API em TypeScript e Tailwind CSS",
   "license": "MIT",
   "workspaces": [
     "web",
@@ -20,6 +20,6 @@
     "migrar": "npm run migrar -w api",
     "semear": "npm run semear -w api",
     "admin": "npm run admin -w api",
-    "verificar": "npm run verificar -w api"
+    "verificar": "npm run verificar -w api && npm run verificar -w web"
   }
 }
