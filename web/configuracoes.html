@@ -35,6 +35,7 @@
                 <button type="button" class="aba" role="tab" id="aba-chaves" data-aba="chaves" aria-controls="secao-chaves"><i data-icone="chave"></i>Chaves de API</button>
                 <button type="button" class="aba" role="tab" id="aba-integracoes" data-aba="integracoes" aria-controls="secao-integracoes" data-permissao="configuracoes.integracoes"><i data-icone="integracao"></i>Integrações</button>
                 <button type="button" class="aba" role="tab" id="aba-sistema" data-aba="sistema" aria-controls="secao-sistema"><i data-icone="empresa"></i>Empresa</button>
+                <button type="button" class="aba" role="tab" id="aba-status" data-aba="status" aria-controls="secao-status" data-permissao="configuracoes.sistema"><i data-icone="atividade"></i>Status do sistema</button>
               </div>
             </nav>
 
@@ -280,6 +281,19 @@
                     <button type="submit" class="botao botao-primario" data-salvar data-permissao="configuracoes.sistema"><i data-icone="salvar"></i>Salvar dados da empresa</button>
                   </div>
                 </form>
+              </section>
+
+              <section class="config-secao painel-aba" id="secao-status" role="tabpanel" aria-labelledby="aba-status" data-permissao="configuracoes.sistema" hidden>
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Status do sistema</h2>
+                    <p class="config-secao-descricao">Versão, banco de dados, processo da API, tempo real, volume das tabelas e migrações aplicadas. Atualiza a cada 15 segundos enquanto esta aba estiver aberta.</p>
+                  </div>
+                  <button type="button" class="botao botao-secundario botao-pequeno" data-atualizar-status><i data-icone="atualizar"></i>Atualizar</button>
+                </header>
+                <div data-status-sistema aria-live="polite">
+                  <div class="sistema-grade"><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div></div>
+                </div>
               </section>
             </div>
           </div>

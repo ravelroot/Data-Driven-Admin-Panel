@@ -15,6 +15,10 @@ export interface Barramento {
   parar(): Promise<void>;
   publicar(evento: EventoTempoReal): Promise<void>;
   assinar(ouvinte: (evento: EventoTempoReal) => void): () => void;
+  /** Quantas conexões de tempo real estão ouvindo nesta instância. */
+  assinantes(): number;
+  /** Se o canal LISTEN/NOTIFY (ou o emissor do PGlite) está ativo. */
+  conectado(): boolean;
 }
 
 const CANAL = 'bento_eventos';
@@ -91,6 +95,12 @@ export function criarBarramento(banco: Banco, log: FastifyBaseLogger): Barrament
       return () => {
         emissor.off('evento', ouvinte);
       };
+    },
+    assinantes() {
+      return emissor.listenerCount('evento');
+    },
+    conectado() {
+      return cancelar !== null && !parado;
     },
   };
 }

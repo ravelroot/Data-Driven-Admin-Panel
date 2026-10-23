@@ -1,0 +1,25 @@
+@layer components {
+  .transacoes-resumo {
+    @apply mb-5 px-5 py-4;
+  }
+
+  .transacoes-resumo-grade {
+    @apply grid grid-cols-2 gap-x-6 gap-y-4 lg:grid-cols-4;
+  }
+
+  .transacoes-resumo[aria-busy="true"] .kpi-mini-valor {
+    @apply opacity-50;
+  }
+
+  .transacoes-filtros {
+    @apply mb-4 flex flex-wrap items-center justify-between gap-3;
+  }
+
+  .transacoes-reembolso {
+    @apply rounded-controle border border-anil-200 bg-anil-50 p-4 text-sm dark:border-anil-500/30 dark:bg-anil-500/10;
+  }
+
+  .transacoes-reembolso-motivo {
+    @apply mt-1 break-words text-neutra-800 dark:text-neutra-200;
+  }
+}

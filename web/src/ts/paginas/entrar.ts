@@ -1,6 +1,8 @@
 import "@fontsource-variable/instrument-sans";
 import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/600.css";
 import "../../css/bento.css";
 
 import { $$, carregando, exigir, parametrosUrl } from "../nucleo/dom.ts";
@@ -35,7 +37,8 @@ const MENSAGENS: Record<string, string> = {
 
 const destinoSeguro = (): string => {
   const { voltar } = parametrosUrl();
-  if (voltar && voltar.startsWith("/") && !voltar.startsWith("//") && !voltar.startsWith("/entrar")) return voltar;
+  // "/\site" é tratado pelos navegadores como "//site" (outro domínio): recusa também a barra invertida.
+  if (voltar && voltar.startsWith("/") && !/^\/[/\\]/.test(voltar) && !voltar.startsWith("/entrar")) return voltar;
   return "/";
 };
 

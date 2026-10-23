@@ -82,11 +82,15 @@
 @import "./paginas/visao-geral.css";
 @import "./paginas/analytics.css";
 @import "./paginas/usuarios.css";
+@import "./paginas/transacoes.css";
+@import "./paginas/auditoria.css";
 @import "./paginas/notificacoes.css";
 @import "./paginas/relatorios.css";
 @import "./paginas/configuracoes.css";
 @import "./paginas/componentes.css";
 @import "./paginas/entrar.css";
+
+@import "./identidade.css";
 
 @import "./utilitarios/utilitarios.css";
 @import "./base/impressao.css";

@@ -1,0 +1,21 @@
+@layer components {
+  .auditoria-filtros {
+    @apply mb-4 flex-wrap;
+  }
+
+  .auditoria-data {
+    @apply font-mono text-xs whitespace-nowrap text-neutra-700 tabular-nums dark:text-neutra-300;
+  }
+
+  .auditoria-descricao {
+    @apply block max-w-[28rem] truncate text-neutra-800 dark:text-neutra-200;
+  }
+
+  .auditoria-ip {
+    @apply font-mono text-xs whitespace-nowrap text-neutra-600 dark:text-neutra-400;
+  }
+
+  .auditoria-json {
+    @apply max-h-80 overflow-auto rounded-controle border border-neutra-200 bg-neutra-100 p-3 font-mono text-xs leading-relaxed whitespace-pre-wrap break-words text-neutra-800 dark:border-neutra-800 dark:bg-neutra-950/40 dark:text-neutra-200;
+  }
+}

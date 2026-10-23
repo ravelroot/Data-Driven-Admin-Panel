@@ -88,7 +88,7 @@ const graficoReceita = (dados: Kpi | null | undefined, cores: Cores): ApexOption
   chart: { type: "area", height: "100%", sparkline: { enabled: false } },
   series: [{ name: "Receita", data: dados?.serie ?? [] }],
   colors: [cores.destaqueClaro],
-  stroke: { curve: "smooth", width: 2.5 },
+  stroke: { curve: "straight", width: 1.75 },
   fill: gradienteArea(0.42, 0),
   grid: { show: true, strokeDashArray: 4, padding: { left: 12, right: 12 } },
   markers: { size: 0, hover: { size: 5 } },
@@ -106,7 +106,7 @@ const graficoMensal = (dados: ReceitaMensal | null | undefined, cores: Cores): A
   ],
   colors: [cores.primaria, cores.areia, cores.destaque],
   stroke: { width: [0, 0, 2], curve: "straight", dashArray: [0, 0, 6] },
-  plotOptions: { bar: { columnWidth: "58%", borderRadius: 5, borderRadiusApplication: "end" } },
+  plotOptions: { bar: { columnWidth: "58%", borderRadius: 0, borderRadiusApplication: "end" } },
   markers: { size: 0 },
   xaxis: { categories: dados?.rotulos ?? [] },
   yaxis: { tickAmount: 4, labels: { formatter: eixoMoeda } },
@@ -164,9 +164,9 @@ const estado: Estado = {
 };
 
 const saudacao = (): string => {
-  const hora = new Date().getHours();
-  const parte = hora < 12 ? "Bom dia" : hora < 18 ? "Boa tarde" : "Boa noite";
-  return `${parte}, ${usuarioAtual()?.nome?.split(" ")[0] ?? ""}`;
+  const hoje = new Intl.DateTimeFormat("pt-BR", { weekday: "short", day: "2-digit", month: "short", year: "numeric" }).format(new Date());
+  const nome = usuarioAtual()?.nome?.split(" ")[0];
+  return `${hoje.replace(/\./g, "")}${nome ? ` · ${nome}` : ""}`;
 };
 
 const renderizarPlanos = (planos: PlanoResumo[]): void => {
@@ -295,6 +295,12 @@ const aoVivo = (): void => {
   ouvir<Transacao | null>("tempo-real:transacao", (transacao) => {
     if (!transacao) return;
     const corpo = exigir("[data-transacoes-recentes]");
+    const existente = corpo.querySelector(`tr[data-chave="${CSS.escape(transacao.id)}"]`);
+    if (existente) {
+      existente.outerHTML = String(linhaTransacao(transacao));
+      hidratarIcones(corpo);
+      return;
+    }
     corpo.querySelector(".tabela-vazia")?.remove();
     corpo.insertAdjacentHTML("afterbegin", String(linhaTransacao(transacao, { nova: true })));
     while (corpo.children.length > 6) corpo.lastElementChild?.remove();

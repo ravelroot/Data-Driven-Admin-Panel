@@ -10,6 +10,7 @@ import { iniciarMenus, fecharTodos } from "../componentes/menu-suspenso.ts";
 import { avisar } from "../componentes/aviso.ts";
 import { NAVEGACAO } from "./navegacao.ts";
 import { abrirBusca, iniciarAtalhosBusca } from "./busca-global.ts";
+import { iniciarAtalhosTeclado } from "./atalhos.ts";
 import type { EstadoConexao, Notificacao, Pagina, Pessoa, Referencia, Usuario } from "../nucleo/tipos.ts";
 
 type UsuarioAvatar = (Partial<Pessoa> & { papel?: Referencia }) | null | undefined;
@@ -324,6 +325,7 @@ export const montarCasca = ({ pagina, titulo }: OpcoesCasca): void => {
   iniciarMenus(casca);
   ligarEventos(casca);
   iniciarAtalhosBusca();
+  iniciarAtalhosTeclado();
 
   ouvir<EstadoConexao>("conexao", atualizarConexao);
   ouvir<{ naoLidas: number } | null>("tempo-real:contagem", (dados) => atualizarContadores(dados?.naoLidas));

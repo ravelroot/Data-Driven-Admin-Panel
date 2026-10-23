@@ -15,6 +15,7 @@ import { rotasAnalytics } from './modulos/analytics/rotas.js';
 import { rotasAtividades } from './modulos/atividades/rotas.js';
 import { rotasAuth } from './modulos/auth/rotas.js';
 import { rotasBusca } from './modulos/busca/rotas.js';
+import { rotasSistema } from './modulos/sistema/rotas.js';
 import { rotasConfiguracoes } from './modulos/configuracoes/rotas.js';
 import { rotasIntegracoes } from './modulos/integracoes/rotas.js';
 import { rotasNotificacoes } from './modulos/notificacoes/rotas.js';
@@ -135,6 +136,7 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
       await api.register(rotasIntegracoes);
       await api.register(rotasAtividades);
       await api.register(rotasBusca);
+      await api.register(rotasSistema);
     },
     { prefix: '/api/v1', logLevel: config.log === 'debug' || config.log === 'trace' ? config.log : 'warn' },
   );

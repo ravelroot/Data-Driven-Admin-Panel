@@ -126,11 +126,11 @@ const opcoesBase = (cores: CoresTema): ApexOptions => ({
   legend: { show: false },
   grid: {
     borderColor: cores.grade,
-    strokeDashArray: 4,
+    strokeDashArray: 0,
     padding: { top: -8, right: 8, bottom: -4, left: 8 },
     xaxis: { lines: { show: false } },
   },
-  stroke: { lineCap: "round" },
+  stroke: { lineCap: "butt" },
   states: { hover: { filter: { type: "none" } }, active: { filter: { type: "none" } } },
   tooltip: { theme: cores.escuro ? "dark" : "light", style: { fontSize: "12px", fontFamily: cores.fonte } },
   xaxis: {
@@ -198,7 +198,7 @@ export const eixoMoeda = (valor: number): string => moeda(valor, { compacto: tru
 
 export const eixoNumero = (valor: number): string => numero(valor, { compacto: true });
 
-export const gradienteArea = (opacidadeInicio = 0.32, opacidadeFim = 0.02): ApexFill => ({
+export const gradienteArea = (opacidadeInicio = 0.18, opacidadeFim = 0): ApexFill => ({
   type: "gradient",
   gradient: { shadeIntensity: 0, opacityFrom: opacidadeInicio, opacityTo: opacidadeFim, stops: [0, 95] },
 });

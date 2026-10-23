@@ -1,21 +1,28 @@
 @theme {
   --color-vivo: #6E9A3E;
   --color-vivo-claro: #A3CC72;
-  --radius-controle: 0.625rem;
-  --radius-cartao: 1rem;
-  --radius-painel: 1.25rem;
-  --radius-casca: 1.5rem;
+  --radius-controle: 2px;
+  --radius-cartao: 3px;
+  --radius-painel: 4px;
+  --radius-casca: 6px;
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 6px;
 
-  --shadow-cartao: 0 1px 0 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.06);
-  --shadow-elevado: 0 12px 32px -12px rgb(0 0 0 / 0.28), 0 2px 6px -2px rgb(0 0 0 / 0.12);
-  --shadow-flutuante: 0 24px 64px -16px rgb(0 0 0 / 0.38), 0 4px 12px -4px rgb(0 0 0 / 0.16);
-  --shadow-gaveta: -24px 0 64px -24px rgb(0 0 0 / 0.45);
-  --shadow-anel: 0 0 0 4px color-mix(in oklab, var(--color-primaria-500) 26%, transparent);
+  --shadow-cartao: none;
+  --shadow-elevado: 0 0 0 1px rgb(0 0 0 / 0.10), 5px 5px 0 0 rgb(0 0 0 / 0.08);
+  --shadow-flutuante: 0 0 0 1px rgb(0 0 0 / 0.14), 8px 8px 0 0 rgb(0 0 0 / 0.12);
+  --shadow-gaveta: -1px 0 0 0 rgb(0 0 0 / 0.2), -10px 0 0 0 rgb(0 0 0 / 0.06);
+  --shadow-anel: 0 0 0 2px var(--color-neutra-50), 0 0 0 3px var(--color-primaria-800);
   --shadow-interno: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
 
   --spacing-barra: 17rem;
   --spacing-barra-recolhida: 4.75rem;
-  --spacing-cabecalho: 4.25rem;
+  --spacing-cabecalho: 3.75rem;
   --spacing-gaveta: 30rem;
   --spacing-gaveta-larga: 44rem;
   --spacing-conteudo: 92rem;

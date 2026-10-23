@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const raiz = fileURLToPath(new URL(".", import.meta.url));
-const paginas = ["index", "analytics", "usuarios", "notificacoes", "relatorios", "configuracoes", "componentes", "entrar"];
+const paginas = ["index", "analytics", "usuarios", "transacoes", "auditoria", "notificacoes", "relatorios", "configuracoes", "componentes", "entrar"];
 const portaApi = process.env.BENTO_PORTA || "8080";
 
 const rotasLimpas = (): Plugin => ({

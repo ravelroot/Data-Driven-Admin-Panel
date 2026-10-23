@@ -1,5 +1,12 @@
 import type { Banco } from '../../banco/conexao.js';
-import { CAMPOS_POR_PROVEDOR, ENVIA_EVENTOS, enviarParaProvedor, lerConfigIntegracao, type Provedor } from '../../integracoes.js';
+import {
+  CAMPOS_POR_PROVEDOR,
+  destinoClaramenteInterno,
+  ENVIA_EVENTOS,
+  enviarParaProvedor,
+  lerConfigIntegracao,
+  type Provedor,
+} from '../../integracoes.js';
 import { paraIso } from '../../util/datas.js';
 import { naoEncontrado, validacao } from '../../util/erros.js';
 import { cifrar, mascarar } from '../../util/seguranca.js';
@@ -85,6 +92,10 @@ export async function atualizarIntegracao(
       if (campo.tipo === 'segredo' && (valor === '' || valor.startsWith('••••'))) continue;
       if (valor && campo.padrao && !campo.padrao.test(valor)) {
         throw validacao(`${campo.rotulo} está em formato inválido.`, [{ campo: chave, mensagem: 'Formato inválido.' }]);
+      }
+      const problemaDestino = valor && campo.tipo === 'url' ? destinoClaramenteInterno(valor) : null;
+      if (problemaDestino) {
+        throw validacao(`${campo.rotulo}: ${problemaDestino}`, [{ campo: chave, mensagem: problemaDestino }]);
       }
       valores[chave] = valor;
     }

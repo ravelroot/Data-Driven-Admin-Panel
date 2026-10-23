@@ -116,6 +116,24 @@ async function contarAdminsAtivos(banco: Banco, exceto: string): Promise<number>
   return linhas[0]?.total ?? 0;
 }
 
+/**
+ * Quem não controla permissões (usuarios.permissoes) só pode alterar contas de nível
+ * estritamente inferior ao próprio papel. Sem isso, um papel como "suporte" (que tem
+ * usuarios.editar) redefiniria a senha de um administrador e assumiria a conta dele.
+ */
+async function garantirHierarquia(banco: Banco, ator: Ator, alvo: Usuario): Promise<void> {
+  if (alvo.id === ator.usuario.id || ator.usuario.permissoes.has('usuarios.permissoes')) return;
+  const { linhas } = await banco.consultar<{ codigo: string; nivel: number }>(
+    'select codigo, nivel from papeis where codigo = any($1::text[])',
+    [[ator.usuario.papel, alvo.papel.codigo]],
+  );
+  const nivelAtor = linhas.find((linha) => linha.codigo === ator.usuario.papel)?.nivel ?? -1;
+  const nivelAlvo = linhas.find((linha) => linha.codigo === alvo.papel.codigo)?.nivel ?? Number.POSITIVE_INFINITY;
+  if (nivelAlvo >= nivelAtor) {
+    throw semPermissao('Você não pode alterar contas de nível igual ou superior ao seu.');
+  }
+}
+
 async function protegerUltimoAdmin(banco: Banco, alvo: Usuario, mensagem: string): Promise<void> {
   if (alvo.papel.codigo === 'admin' && alvo.status === 'ativo' && (await contarAdminsAtivos(banco, alvo.id)) === 0) {
     throw conflito(mensagem);
@@ -256,6 +274,7 @@ const COLUNAS_EDITAVEIS: Record<string, string> = {
 export async function atualizarUsuario(app: FastifyInstance, ator: Ator, id: string, dados: DadosAtualizacao) {
   const { banco } = app;
   const atual = await buscarUsuario(banco, id);
+  await garantirHierarquia(banco, ator, atual);
   const atribuicoes: string[] = [];
   const parametros: unknown[] = [id];
   const mudancas: string[] = [];
@@ -286,6 +305,9 @@ export async function atualizarUsuario(app: FastifyInstance, ator: Ator, id: str
   }
   if (dados.status !== undefined && dados.status !== atual.status) {
     if (id === ator.usuario.id) throw conflito('Você não pode alterar o status da própria conta.');
+    if (atual.status === 'bloqueado' && !ator.usuario.permissoes.has('usuarios.bloquear')) {
+      throw semPermissao('Você precisa da permissão usuarios.bloquear para desbloquear uma conta.');
+    }
     if (dados.status !== 'ativo') await protegerUltimoAdmin(banco, atual, 'É preciso manter pelo menos um administrador ativo.');
     definir('status', dados.status);
     atribuicoes.push('bloqueado_em = null', 'motivo_bloqueio = null');
@@ -315,6 +337,7 @@ export async function excluirUsuario(app: FastifyInstance, ator: Ator, id: strin
   const { banco } = app;
   if (id === ator.usuario.id) throw conflito('Você não pode excluir a própria conta.');
   const alvo = await buscarUsuario(banco, id);
+  await garantirHierarquia(banco, ator, alvo);
   await protegerUltimoAdmin(banco, alvo, 'Não é possível excluir o último administrador ativo.');
   await banco.transacao(async (tx) => {
     await tx.consultar('delete from usuarios where id = $1', [id]);
@@ -334,6 +357,7 @@ export async function bloquearUsuario(app: FastifyInstance, ator: Ator, id: stri
   const { banco } = app;
   if (id === ator.usuario.id) throw conflito('Você não pode bloquear a própria conta.');
   const alvo = await buscarUsuario(banco, id);
+  await garantirHierarquia(banco, ator, alvo);
   if (alvo.status === 'bloqueado') return { usuario: alvo };
   await protegerUltimoAdmin(banco, alvo, 'Não é possível bloquear o último administrador ativo.');
   await banco.transacao(async (tx) => {
@@ -372,6 +396,7 @@ export async function bloquearUsuario(app: FastifyInstance, ator: Ator, id: stri
 export async function desbloquearUsuario(app: FastifyInstance, ator: Ator, id: string) {
   const { banco } = app;
   const alvo = await buscarUsuario(banco, id);
+  await garantirHierarquia(banco, ator, alvo);
   if (alvo.status !== 'bloqueado') return { usuario: alvo };
   await banco.transacao(async (tx) => {
     await tx.consultar(
@@ -395,6 +420,7 @@ export async function desbloquearUsuario(app: FastifyInstance, ator: Ator, id: s
 export async function redefinirSenha(app: FastifyInstance, ator: Ator, id: string): Promise<{ senhaTemporaria: string }> {
   const { banco } = app;
   const alvo = await buscarUsuario(banco, id);
+  await garantirHierarquia(banco, ator, alvo);
   const temporaria = senhaTemporaria(12);
   const hash = await gerarHashSenha(temporaria);
   await banco.transacao(async (tx) => {
@@ -509,7 +535,8 @@ export async function acoesEmMassa(
         afetados += 1;
       }
     } catch (erro) {
-      if ((erro as { codigo?: string }).codigo === 'NAO_ENCONTRADO' || (erro as { codigo?: string }).codigo === 'CONFLITO') continue;
+      const codigo = (erro as { codigo?: string }).codigo;
+      if (codigo === 'NAO_ENCONTRADO' || codigo === 'CONFLITO' || codigo === 'SEM_PERMISSAO') continue;
       throw erro;
     }
   }

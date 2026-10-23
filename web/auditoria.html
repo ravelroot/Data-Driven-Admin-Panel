@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Auditoria: registro cronológico das ações da equipe e do sistema, com filtros, detalhes e exportação em CSV.">
+    <title>Auditoria | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/ts/paginas/auditoria.ts"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Auditoria</h1>
+              <p class="pagina-descricao">Veja quem fez o quê e quando: acessos, mudanças em contas, reembolsos, relatórios e configurações.</p>
+            </div>
+            <div class="pagina-acoes">
+              <button type="button" class="botao botao-secundario" data-acao="exportar"><i data-icone="arquivo-planilha"></i>Exportar CSV</button>
+            </div>
+          </div>
+
+          <div class="auditoria-filtros barra-ferramentas">
+            <label class="sr-only" for="filtro-acao">Tipo de ação</label>
+            <select class="filtro-selecao" id="filtro-acao" data-filtro="acao">
+              <option value="">Todas as ações</option>
+            </select>
+            <label class="sr-only" for="filtro-pessoa">Pessoa</label>
+            <select class="filtro-selecao" id="filtro-pessoa" data-filtro="usuario">
+              <option value="">Toda a equipe</option>
+            </select>
+            <div class="intervalo-datas">
+              <i data-icone="intervalo"></i>
+              <label class="sr-only" for="filtro-inicio">Data inicial</label>
+              <input type="date" id="filtro-inicio" data-filtro-data="inicio">
+              <span class="intervalo-datas-separador" aria-hidden="true">até</span>
+              <label class="sr-only" for="filtro-fim">Data final</label>
+              <input type="date" id="filtro-fim" data-filtro-data="fim">
+            </div>
+            <button type="button" class="limpar-filtros" data-acao="limpar" hidden><i data-icone="fechar"></i>Limpar filtros</button>
+          </div>
+
+          <section class="tabela-cartao" aria-labelledby="titulo-tabela-auditoria">
+            <div class="tabela-barra">
+              <div class="tabela-barra-titulo">
+                <h2 class="cartao-titulo" id="titulo-tabela-auditoria">Registro de atividades</h2>
+                <p class="cartao-subtitulo" data-resumo-tabela>Carregando…</p>
+              </div>
+              <div class="tabela-busca">
+                <i data-icone="buscar" class="tabela-busca-icone"></i>
+                <label class="sr-only" for="busca-auditoria">Buscar no registro</label>
+                <input class="entrada" type="search" id="busca-auditoria" placeholder="Buscar na descrição ou pelo nome" autocomplete="off" maxlength="120" data-busca>
+              </div>
+            </div>
+            <div data-tabela></div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

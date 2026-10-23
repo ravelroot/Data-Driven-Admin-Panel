@@ -5,7 +5,7 @@
 <h1 align="center">Bento<br><sub><sup><sup><sub>Copyright (©) 2026 Erik Pimenta</sub></sup></sup></sub></h1>
 
 <p align="center">
-  Painel administrativo para SaaS montado em bento grid: cada bloco mostra uma parte do negócio, da receita e dos usuários às assinaturas e ao crescimento. Modo escuro nativo, gráficos interativos, tabelas com ordenação, busca e paginação, gavetas laterais, notificações em tempo real e relatórios em CSV e PDF, com uma API completa por trás.<br>
+  Painel administrativo para SaaS montado em bento grid: cada bloco mostra uma parte do negócio, da receita e dos usuários às assinaturas e ao crescimento. Modo escuro nativo, gráficos interativos, tabelas com ordenação, busca e paginação, gavetas laterais, transações com reembolso, trilha de auditoria, paleta de comandos com atalhos de teclado, status do sistema, notificações em tempo real e relatórios em CSV e PDF, com uma API completa e testada por trás.<br>
   Pronto para usar, estudar ou adaptar.
 </p>
 
@@ -25,14 +25,18 @@
 
 ## O que o Bento faz
 
+- **Identidade "livro-razão":** visual monocromático com cantos retos, linhas finas, fundo milimetrado, blocos numerados (01, 02…), rótulos e números em IBM Plex Mono com algarismos tabulares, variações com ▲ e ▼ e etiquetas retangulares. Fica tudo em `web/src/css/identidade.css`.
 - **Bento grid:** a grade de 12 colunas encaixa cartões de tamanhos diferentes (um quarto, um terço, metade, dois terços, cartões altos e pilhas) e se reorganiza no tablet e no celular. Há modelos prontos para vendas, produto, suporte, financeiro e marketing.
 - **Menu lateral e cabeçalho:** o menu recolhe para só ícones em telas grandes e vira gaveta no celular. O cabeçalho tem trilha de navegação, busca global (`Ctrl` + `K` ou `/`), indicador de conexão ao vivo, troca de tema, central de notificações e menu da conta.
 - **Visão geral:** receita do período em destaque com gráfico, MRR, ticket médio, conversão, usuários e assinaturas ativas, crescimento, cancelamentos e meta do mês. Cada KPI traz a seta verde ou vermelha com o percentual em relação ao período anterior e um mini gráfico. Transações e cadastros novos entram na tela na hora.
 - **Analytics:** filtros por intervalo de datas, períodos prontos e agrupamento por dia, semana ou mês. Receita e reembolsos, funil de conversão, dispositivos, tráfego por canal, países, usuários novos e ativos, assinaturas e cancelamentos, receita por plano, mapa de calor de horários de compra e retenção por coorte.
+- **Transações:** busca por código, cliente ou e-mail, filtros por status, método, tipo e período (que ficam na URL para compartilhar), resumo do filtro, gaveta com a linha do tempo de cada cobrança, **reembolso com motivo** registrado na auditoria e exportação em CSV.
+- **Auditoria:** a trilha de tudo o que a equipe fez (contas, transações, sessões, relatórios, configurações, integrações e chaves de API), com filtros por pessoa, tipo de ação, período e texto, detalhes de cada registro e exportação em CSV.
+- **Paleta de comandos e atalhos:** `Ctrl` + `K` abre busca e comandos (ir para páginas, cadastrar usuário, exportar transações, enviar aviso, ver o status do sistema, alternar tema, sair). `?` mostra a folha de atalhos e `g` seguido de uma letra navega (`g` `t` abre Transações, `g` `d` abre Auditoria).
 - **Usuários:** cadastro, edição, busca instantânea, filtros por status, papel e plano, colunas ordenáveis, paginação, ações em massa, bloqueio e desbloqueio com motivo, senha temporária, exportação em CSV e controle de permissões por papel com exceções por pessoa.
 - **Notificações:** alertas em tempo real via Server-Sent Events sobre transações, contas, segurança e relatórios, com filtros, marcar como lida, dispensar, preferências por categoria e envio de avisos para a equipe.
 - **Relatórios:** receita, transações, usuários, assinaturas e crescimento, com prévia antes de gerar, exportação em CSV (pronto para Excel) ou PDF paginado, histórico para baixar de novo e envios agendados diários, semanais ou mensais.
-- **Configurações:** perfil, aparência (tema claro, escuro ou do sistema, 16 paletas e densidade), troca de senha, sessões ativas, chaves de API com escopo, integrações com webhook, Slack e Discord e dados da empresa (moeda, fuso e meta mensal).
+- **Configurações:** perfil, aparência (tema claro, escuro ou do sistema, 16 paletas e densidade), troca de senha, sessões ativas, chaves de API com escopo, integrações com webhook, Slack e Discord, dados da empresa (moeda, fuso e meta mensal) e **status do sistema** (versão, banco e latência, tempo no ar, memória, conexões em tempo real, volume das tabelas e migrações aplicadas).
 - **Componentes:** uma página com toda a biblioteca em Tailwind CSS, de botões e formulários a kanban, calendário, fatura, preços, página de status, construtor de filtros e páginas de erro, para copiar e adaptar.
 
 <p align="center">
@@ -69,15 +73,20 @@ O navegador abre uma conexão em `GET /api/v1/notificacoes/fluxo` e recebe os ev
 | Papel | O que pode |
 |---|---|
 | Administrador | Tudo |
-| Gerente | Tudo, menos dados da empresa, excluir usuários e alterar permissões |
-| Analista | Visão geral, analytics, transações, ver usuários e relatórios |
-| Suporte | Visão geral, ver, editar e bloquear usuários, transações |
+| Gerente | Tudo, menos dados da empresa, status do sistema, excluir usuários e alterar permissões |
+| Analista | Visão geral, analytics, ver transações, ver usuários e relatórios |
+| Suporte | Visão geral, ver, editar e bloquear usuários, ver transações |
 | Cliente | Não acessa o painel |
 
 As permissões efetivas de cada pessoa são as do papel, mais as concedidas e menos as negadas na aba **Permissões** do usuário. A API confere tudo de novo em cada rota.
 
 <p align="center">
-  <img src="docs/images/tela-usuarios.png" width="49%" alt="Lista de usuários com a gaveta de detalhes aberta">
+  <img src="docs/images/tela-transacoes.png" width="49%" alt="Transações com filtros, resumo do período e a gaveta de detalhe com reembolso">
+  <img src="docs/images/tela-auditoria.png" width="49%" alt="Trilha de auditoria com filtros por pessoa, ação e período">
+</p>
+
+<p align="center">
+  <img src="docs/images/tela-usuarios.png" width="49%" alt="Lista de usuários com filtros por status, papel e plano">
   <img src="docs/images/tela-relatorios.png" width="49%" alt="Relatórios com prévia, histórico e envios agendados">
 </p>
 
@@ -140,6 +149,11 @@ npm run dev                       # API em :8080 e Vite em http://localhost:5173
 O Vite recarrega a página a cada mudança no TypeScript, no Tailwind CSS ou no HTML, e encaminha `/api` para a API, que reinicia sozinha quando o TypeScript muda.
 
 <p align="center">
+  <img src="docs/images/tela-atalhos.png" width="49%" alt="Folha de atalhos de teclado aberta com a tecla ?">
+  <img src="docs/images/tela-sistema.png" width="49%" alt="Status do sistema com banco, processo, tempo real, tabelas e migrações">
+</p>
+
+<p align="center">
   <img src="docs/images/tela-componentes.png" width="49%" alt="Biblioteca de componentes em Tailwind CSS">
   <img src="docs/images/tela-configuracoes.png" width="49%" alt="Aparência com tema e 16 paletas">
 </p>
@@ -179,7 +193,10 @@ curl -H "Authorization: Bearer bnt_SUA_CHAVE" "http://localhost:8080/api/v1/tran
 | `POST /api/v1/configuracoes/seguranca/senha` · `GET/DELETE /seguranca/sessoes` | Senha e sessões |
 | `GET/POST/DELETE /api/v1/configuracoes/chaves-api` | Chaves de API com escopo de leitura ou escrita |
 | `GET/PATCH /api/v1/integracoes` · `POST /{id}/testar` | Webhook, Slack, Discord, Google Analytics e Stripe |
-| `GET /api/v1/atividades` · `GET /api/v1/busca` | Registro de atividades e busca global |
+| `GET /api/v1/transacoes/resumo` · `POST /{id}/reembolsar` | Resumo do filtro (pagas, reembolsadas, taxa de falha) e reembolso de uma transação paga, com motivo |
+| `GET /api/v1/atividades` · `/exportar` · `/pessoas` | Trilha de auditoria com filtros por pessoa, ação, período e texto, CSV e a equipe para o filtro |
+| `GET /api/v1/sistema/status` | Versão, banco, processo, tempo real, volume das tabelas e migrações |
+| `GET /api/v1/busca` | Busca global |
 
 Pedidos que alteram dados com o cookie de sessão precisam do cabeçalho `X-Bento: 1` (o painel cuida disso). Chaves de API dispensam o cabeçalho. Todas as rotas, com exemplos e esquemas, estão em `/api/v1/docs`.
 
@@ -199,6 +216,7 @@ As principais variáveis do `.env` (a lista completa está no manual):
 | `BENTO_SIMULADOR` | `true` | Gera transações e cadastros de exemplo para o tempo real |
 | `BENTO_FUSO` | `America/Sao_Paulo` | Fuso das agregações e do agendador |
 | `BENTO_ADMIN_EMAIL` / `BENTO_ADMIN_SENHA` / `BENTO_ADMIN_NOME` | vazio | Cria a primeira conta de administrador ao iniciar, se o e-mail ainda não existir |
+| `BENTO_INTEGRACOES_REDE_INTERNA` | vazio | `1` libera webhooks para endereços da rede interna (bloqueados por padrão contra SSRF) |
 | `BENTO_DB_NOME` / `BENTO_DB_USUARIO` / `BENTO_DB_SENHA` | `bento` / `bento` / — | PostgreSQL do Docker Compose |
 
 <p align="center">
@@ -215,7 +233,10 @@ O projeto foi organizado para ser fácil de adaptar:
 | Trocar as cores padrão | `web/src/css/tema/cores.css` (escalas `primaria`, `destaque` e `neutra`) |
 | Criar uma paleta nova | Um bloco `[data-paleta="nome"]` em `web/src/css/tema/paletas.css` e o nome em `PALETAS` (`web/src/ts/nucleo/tema.ts`) e na validação da API |
 | Mudar fontes, tamanhos e raios | `web/src/css/tema/tipografia.css` e `web/src/css/tema/medidas.css` |
+| Mudar a identidade visual | `web/src/css/identidade.css` (raios, linhas, fundo milimetrado, rótulos em mono e blocos numerados) |
 | Novo item no menu | `NAVEGACAO` em `web/src/ts/layout/navegacao.ts` |
+| Novo comando na paleta | `ACOES_RAPIDAS` em `web/src/ts/layout/navegacao.ts` |
+| Novo atalho de teclado | `IR_PARA` em `web/src/ts/layout/atalhos.ts` |
 | Novo cartão na visão geral | Marcação em `web/index.html` com as classes `.bento-*` e o preenchimento em `web/src/ts/paginas/visao-geral.ts` |
 | Nova coluna na tabela de usuários | `COLUNAS` em `web/src/ts/paginas/usuarios.ts` e o campo de ordenação em `api/src/modulos/usuarios` |
 | Novo tipo de relatório | `api/src/modulos/relatorios` (colunas, consulta e resumo) |
@@ -225,10 +246,25 @@ O projeto foi organizado para ser fácil de adaptar:
 ## Desenvolvimento e testes
 
 ```bash
-npm test                          # 30 testes da API e 9 do núcleo da interface
+npm test                          # 58 testes da API e 13 da interface
 npm run verificar                 # checagem de tipos (strict) da interface e da API
 npm run build                     # gera web/dist e api/dist
 ```
+
+### Segurança e qualidade
+
+A versão 1.1.0 passou por uma auditoria de segurança, com 20 testes automatizados em `api/test/seguranca.test.ts`. O que foi corrigido:
+
+| Gravidade | O que era | Como ficou |
+|---|---|---|
+| Crítica | O papel Suporte podia redefinir a senha do administrador e entrar como ele | Quem não controla permissões só altera contas de nível menor que o seu (editar, senha, bloqueio, exclusão e ações em massa) |
+| Alta | Webhooks aceitavam qualquer endereço (SSRF) | Localhost, IPs internos, metadados de nuvem e redes privadas são recusados ao salvar e ao enviar, sem seguir redirecionamentos |
+| Média | Textos começando com `=`, `+`, `-` ou `@` viravam fórmula no Excel | As células de texto do CSV são neutralizadas |
+| Média | Qualquer analista apagava relatórios e agendamentos de outras pessoas | Só o autor ou quem configura o sistema |
+| Baixa | O bloqueio por tentativas revelava quais e-mails existiam | E-mails inexistentes recebem a mesma resposta e o mesmo bloqueio |
+| Baixa | Links de avisos e o `?voltar=` do login aceitavam outro domínio | Só caminhos internos |
+
+Os testes também conferem sessão obrigatória, JWT forjado, permissões por papel, proteção CSRF (`X-Bento`), chaves de API só leitura, 11 tentativas de injeção SQL, cookies `httpOnly` e `SameSite`, cabeçalhos de segurança (CSP, `nosniff`, `X-Frame-Options`, `Referrer-Policy`), rate limit, mass assignment, IDOR e path traversal. O `npm audit` não aponta nenhuma vulnerabilidade.
 
 O GitHub Actions roda os testes, checa os tipos, constrói a interface, sobe a API contra um PostgreSQL de verdade e constrói a imagem Docker a cada push.
 
@@ -240,16 +276,16 @@ web/                        interface
   src/css/                  Tailwind CSS: tema, base, layout, componentes, kit, páginas
   src/ts/nucleo/            tipos, API, sessão, tema, tempo real, formatação, ícones
   src/ts/componentes/       tabela, gráficos, gavetas, diálogos, avisos, formulários
-  src/ts/layout/            menu, cabeçalho, busca global e início das páginas
+  src/ts/layout/            menu, cabeçalho, paleta de comandos, atalhos e início das páginas
   src/ts/paginas/           controlador de cada página
   public/                   favicon, logo e script de tema
-  tests/                    testes do núcleo
+  tests/                    testes do núcleo e da navegação
 api/                        API em TypeScript
-  src/modulos/              auth, visão geral, analytics, usuários, transações, notificações, relatórios, configurações, integrações
+  src/modulos/              auth, visão geral, analytics, usuários, transações, auditoria, notificações, relatórios, configurações, integrações, sistema
   src/banco/                conexão (PostgreSQL ou PGlite), migrações e dados de demonstração
   src/relatorios/           geração de CSV e PDF
   migracoes/                esquema do banco
-  test/                     testes da API
+  test/                     testes da API, de segurança, de transações e de auditoria
 scripts/                    servidor de desenvolvimento e criação do .env no Windows
 docs/                       manuais em PDF e imagens do README
 .github/workflows/          CI

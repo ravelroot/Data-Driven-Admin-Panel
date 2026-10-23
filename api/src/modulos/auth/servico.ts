@@ -21,6 +21,34 @@ const LIMITE_TENTATIVAS = 5;
 const MINUTOS_BLOQUEIO = 15;
 let hashFicticio: string | null = null;
 
+/**
+ * Tentativas contra e-mails que não existem. Sem isso, só contas reais chegavam ao bloqueio temporário
+ * ("Muitas tentativas..."), e a diferença de resposta revelava quais e-mails estão cadastrados.
+ */
+const MAX_EMAILS_DESCONHECIDOS = 10_000;
+const tentativasDesconhecidas = new Map<string, { tentativas: number; bloqueadoAte: number }>();
+
+function bloqueioDesconhecido(email: string): number | null {
+  const registro = tentativasDesconhecidas.get(email);
+  if (!registro || registro.bloqueadoAte <= Date.now()) return null;
+  return registro.bloqueadoAte;
+}
+
+function registrarFalhaDesconhecida(email: string): void {
+  const registro = tentativasDesconhecidas.get(email) ?? { tentativas: 0, bloqueadoAte: 0 };
+  registro.tentativas += 1;
+  if (registro.tentativas >= LIMITE_TENTATIVAS) {
+    registro.tentativas = 0;
+    registro.bloqueadoAte = Date.now() + MINUTOS_BLOQUEIO * 60_000;
+  }
+  tentativasDesconhecidas.delete(email);
+  tentativasDesconhecidas.set(email, registro);
+  if (tentativasDesconhecidas.size > MAX_EMAILS_DESCONHECIDOS) {
+    const maisAntigo = tentativasDesconhecidas.keys().next().value;
+    if (maisAntigo !== undefined) tentativasDesconhecidas.delete(maisAntigo);
+  }
+}
+
 export async function gerarHashSenha(senha: string): Promise<string> {
   return bcrypt.hash(senha, CUSTO_BCRYPT);
 }
@@ -91,8 +119,14 @@ export async function entrar(
     [dados.email],
   );
   const conta = linhas[0];
-  if (conta?.bloqueio_temporario_ate && new Date(conta.bloqueio_temporario_ate).getTime() > Date.now()) {
-    const minutos = Math.ceil((new Date(conta.bloqueio_temporario_ate).getTime() - Date.now()) / 60_000);
+  const emailNormalizado = dados.email.trim().toLowerCase();
+  const bloqueadoAte = conta?.bloqueio_temporario_ate
+    ? new Date(conta.bloqueio_temporario_ate).getTime()
+    : conta
+      ? null
+      : bloqueioDesconhecido(emailNormalizado);
+  if (bloqueadoAte && bloqueadoAte > Date.now()) {
+    const minutos = Math.ceil((bloqueadoAte - Date.now()) / 60_000);
     throw new ErroApi('LIMITE', `Muitas tentativas sem sucesso. Tente de novo em ${minutos} min.`);
   }
   const senhaCorreta = await conferirSenha(dados.senha, conta?.senha_hash ?? null);
@@ -124,6 +158,8 @@ export async function entrar(
       } else {
         await banco.consultar('update usuarios set tentativas_falhas = $2 where id = $1', [conta.id, tentativas]);
       }
+    } else {
+      registrarFalhaDesconhecida(emailNormalizado);
     }
     throw new ErroApi('CREDENCIAIS', 'E-mail ou senha incorretos.');
   }

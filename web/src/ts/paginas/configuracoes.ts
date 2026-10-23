@@ -437,7 +437,107 @@ const secaoSistema = async (): Promise<void> => {
   });
 };
 
-const SECOES: Record<string, () => Promise<void>> = { perfil: secaoPerfil, aparencia: secaoAparencia, seguranca: secaoSeguranca, chaves: secaoChaves, integracoes: secaoIntegracoes, sistema: secaoSistema };
+
+interface StatusSistema {
+  versao: string;
+  agora: string;
+  fuso: string;
+  simulador: boolean;
+  node: string;
+  plataforma: string;
+  processo: { pid: number; tempoNoArSegundos: number; memoriaBytes: number; heapUsadoBytes: number };
+  banco: { tipo: "postgresql" | "pglite"; versao: string; latenciaMs: number; tamanhoBytes: number };
+  tempoReal: { conexoes: number; canalAtivo: boolean };
+  tabelas: Array<{ nome: string; registros: number }>;
+  migracoes: Array<{ nome: string; aplicadaEm: string }>;
+}
+
+const bytes = (valor: number): string => {
+  if (!valor) return "—";
+  const unidades = ["B", "KB", "MB", "GB"];
+  let indice = 0;
+  let atual = valor;
+  while (atual >= 1024 && indice < unidades.length - 1) {
+    atual /= 1024;
+    indice += 1;
+  }
+  return `${atual.toLocaleString("pt-BR", { maximumFractionDigits: indice ? 1 : 0 })} ${unidades[indice]}`;
+};
+
+const duracao = (segundos: number): string => {
+  const dias = Math.floor(segundos / 86_400);
+  const horas = Math.floor((segundos % 86_400) / 3_600);
+  const minutos = Math.floor((segundos % 3_600) / 60);
+  if (dias) return `${dias}d ${horas}h`;
+  if (horas) return `${horas}h ${minutos}min`;
+  return `${minutos}min ${segundos % 60}s`;
+};
+
+const NOMES_TABELAS: Record<string, string> = {
+  usuarios: "Usuários",
+  assinaturas: "Assinaturas",
+  transacoes: "Transações",
+  notificacoes: "Notificações",
+  relatorios: "Relatórios gerados",
+  relatorios_agendados: "Relatórios agendados",
+  sessoes: "Sessões",
+  chaves_api: "Chaves de API",
+  auditoria: "Registros de auditoria",
+};
+
+let temporizadorStatus: number | undefined;
+
+const secaoStatus = async (): Promise<void> => {
+  const alvo = exigir("[data-status-sistema]");
+  const desenhar = (status: StatusSistema): void => {
+    const celulas: Array<[string, string]> = [
+      ["Versão", status.versao],
+      ["Banco", status.banco.tipo === "pglite" ? "PGlite" : "PostgreSQL"],
+      ["Latência do banco", `${status.banco.latenciaMs.toLocaleString("pt-BR")} ms`],
+      ["Tamanho do banco", bytes(status.banco.tamanhoBytes)],
+      ["Tempo no ar", duracao(status.processo.tempoNoArSegundos)],
+      ["Memória (RSS)", bytes(status.processo.memoriaBytes)],
+      ["Tempo real", `${status.tempoReal.conexoes} ${status.tempoReal.conexoes === 1 ? "conexão" : "conexões"}`],
+      ["Node.js", status.node],
+    ];
+    renderizar(
+      alvo,
+      html`
+        <div class="sistema-grade">
+          ${celulas.map(([rotulo, valor]) => html`<div class="sistema-celula"><span class="sistema-rotulo">${rotulo}</span><span class="sistema-valor" title="${valor}">${valor}</span></div>`)}
+        </div>
+        <div class="grade-campos mt-2 items-start">
+          <table class="sistema-tabela">
+            <thead><tr><th>Tabela</th><th>Registros</th></tr></thead>
+            <tbody>${status.tabelas.map((tabela) => html`<tr><td>${NOMES_TABELAS[tabela.nome] ?? tabela.nome}</td><td>${tabela.registros.toLocaleString("pt-BR")}</td></tr>`)}</tbody>
+          </table>
+          <table class="sistema-tabela">
+            <thead><tr><th>Migração</th><th>Aplicada em</th></tr></thead>
+            <tbody>${status.migracoes.map((migracao) => html`<tr><td>${migracao.nome}</td><td>${new Date(migracao.aplicadaEm).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</td></tr>`)}</tbody>
+          </table>
+        </div>
+        <p class="mt-4 font-mono text-[0.625rem] uppercase tracking-[0.08em] text-neutra-500">
+          ${status.banco.versao} · ${status.plataforma} · pid ${status.processo.pid} · fuso ${status.fuso} · simulador ${status.simulador ? "ligado" : "desligado"} · canal ${status.tempoReal.canalAtivo ? "ativo" : "local"} · lido às ${new Date(status.agora).toLocaleTimeString("pt-BR")}
+        </p>
+      `,
+    );
+  };
+  const carregar = async (): Promise<void> => {
+    try {
+      desenhar(await api.obter<StatusSistema>("/sistema/status"));
+    } catch (erro) {
+      avisar({ tipo: "erro", titulo: "Não foi possível ler o status", texto: mensagemDeErro(erro) });
+    }
+  };
+  $("[data-atualizar-status]")?.addEventListener("click", () => void carregar());
+  await carregar();
+  window.clearInterval(temporizadorStatus);
+  temporizadorStatus = window.setInterval(() => {
+    if (!exigir("#secao-status").hidden && document.visibilityState === "visible") void carregar();
+  }, 15_000);
+};
+
+const SECOES: Record<string, () => Promise<void>> = { perfil: secaoPerfil, aparencia: secaoAparencia, seguranca: secaoSeguranca, chaves: secaoChaves, integracoes: secaoIntegracoes, sistema: secaoSistema, status: secaoStatus };
 
 const abrirSecao = async (nome: string): Promise<void> => {
   atualizarUrl({ secao: nome === "perfil" ? null : nome });

@@ -30,7 +30,8 @@ const corpoEnviar = z.object({
   mensagem: z.string().trim().min(2).max(1000),
   tipo: z.enum(['info', 'sucesso', 'alerta', 'erro']).default('info'),
   destinatario: z.union([z.literal('todos'), esquemaUuid]).default('todos'),
-  link: opcional(z.string().trim().max(300).regex(/^(\/|https?:\/\/)/, 'Use um caminho interno (/...) ou uma URL.')),
+  // "//site" e "/\site" são URLs relativas ao protocolo: levariam a outro domínio (redirecionamento aberto).
+  link: opcional(z.string().trim().max(300).regex(/^(\/(?![/\\])|https?:\/\/)/, 'Use um caminho interno (/...) ou uma URL.')),
 });
 
 const corpoPreferencias = z
@@ -168,6 +169,7 @@ export async function rotasNotificacoes(app: FastifyInstance): Promise<void> {
             return;
           }
           if (evento.tipo === 'transacao' && !pessoa.permissoes.has('transacoes.ver') && !pessoa.permissoes.has('painel.ver')) return;
+          if (evento.tipo === 'usuario' && !pessoa.permissoes.has('usuarios.ver')) return;
           enviar(evento.tipo, evento.dados);
         })().catch((erro) => requisicao.log.warn({ erro }, 'Falha ao entregar evento SSE'));
       };

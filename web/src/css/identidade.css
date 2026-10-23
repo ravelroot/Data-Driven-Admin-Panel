@@ -1,0 +1,717 @@
+/*
+  Identidade "livro-razão" (1.1.0)
+  Monocromático, cantos retos, linhas finas, rótulos e números em mono
+  com algarismos tabulares e blocos numerados como as folhas de um livro contábil.
+  Este arquivo vem por último no bento.css e só ajusta a aparência:
+  a estrutura e as classes continuam as mesmas.
+*/
+
+@layer components {
+  /* ---------- Fundo milimetrado ---------- */
+  .casca-principal {
+    --grade-linha: color-mix(in oklab, var(--color-tinta) 4.5%, transparent);
+    background-color: var(--color-neutra-100);
+    background-image:
+      linear-gradient(to right, var(--grade-linha) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grade-linha) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+  }
+
+  .dark .casca-principal {
+    --grade-linha: color-mix(in oklab, var(--color-creme) 3.5%, transparent);
+    background-color: var(--color-neutra-950);
+  }
+
+  .casca-conteudo {
+    counter-reset: bloco;
+  }
+
+  /* ---------- Rótulos em mono ---------- */
+  .rotulo-mono,
+  .barra-grupo-titulo,
+  .saudacao,
+  .cartao-titulo,
+  .kpi-rotulo,
+  .kpi-mini-rotulo,
+  .receita-rotulo,
+  .tabela th,
+  .tabela-simples th,
+  .emblema,
+  .barra-marca-versao,
+  .casca-rodape {
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+
+  /* ---------- Menu lateral ---------- */
+  .barra-lateral {
+    counter-reset: item-menu;
+    border-right: 1px solid color-mix(in oklab, var(--color-creme) 10%, transparent);
+  }
+
+  .barra-marca {
+    border-bottom: 1px solid var(--barra-borda);
+  }
+
+  .barra-marca-logo {
+    border-radius: 2px;
+  }
+
+  .barra-marca-nome {
+    font-variation-settings: "opsz" 48, "wdth" 78;
+    letter-spacing: -0.035em;
+    @apply text-2xl;
+  }
+
+  .barra-marca-versao {
+    @apply text-[0.625rem] uppercase;
+  }
+
+  .barra-grupo-titulo {
+    @apply mb-1 text-[0.625rem] font-medium uppercase text-neutra-500;
+  }
+
+  .barra-grupo-titulo::after {
+    content: "";
+    @apply ml-2 inline-block h-px w-8 align-middle;
+    background: var(--barra-borda);
+  }
+
+  .barra-grupo + .barra-grupo {
+    @apply mt-5;
+  }
+
+  .barra-item {
+    border-radius: 0;
+    @apply h-9 gap-2.5 pl-3;
+  }
+
+  .barra-item::before {
+    counter-increment: item-menu;
+    content: counter(item-menu, decimal-leading-zero);
+    @apply w-5 shrink-0 font-mono text-[0.625rem] tabular-nums text-neutra-600 recolhida:lg:hidden;
+  }
+
+  .barra-item[aria-current="page"],
+  .dark .barra-item[aria-current="page"] {
+    @apply bg-(--barra-realce) text-creme hover:bg-(--barra-realce) hover:text-creme;
+    box-shadow: inset 2px 0 0 0 var(--color-creme);
+  }
+
+  .barra-item[aria-current="page"]::before {
+    @apply text-neutra-300;
+  }
+
+  .barra-item[aria-current="page"] .barra-item-icone {
+    @apply text-creme;
+  }
+
+  .barra-item-contador,
+  .barra-item[aria-current="page"] .barra-item-contador {
+    border-radius: 1px;
+    @apply bg-transparent font-mono text-[0.625rem] font-medium text-neutra-300 ring-1 ring-neutra-600;
+  }
+
+  .barra-item-externo {
+    @apply text-neutra-600;
+  }
+
+  .barra-usuario,
+  .barra-recolher,
+  .barra-expandir,
+  .barra-fechar-movel {
+    border-radius: 2px;
+  }
+
+  .barra-item[data-dica]::after {
+    border-radius: 1px;
+  }
+
+  /* ---------- Cabeçalho ---------- */
+  .cabecalho {
+    @apply border-b border-neutra-300 bg-neutra-50/92 backdrop-blur-sm dark:border-neutra-800 dark:bg-neutra-950/92;
+  }
+
+  .trilha-item {
+    @apply font-mono text-xs uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .cabecalho-busca {
+    border-radius: 2px;
+    @apply shadow-none;
+  }
+
+  .cabecalho-busca-atalho kbd,
+  kbd {
+    border-radius: 1px;
+    font-family: var(--font-mono);
+  }
+
+  .cabecalho-acao,
+  .cabecalho-perfil,
+  .cabecalho-ao-vivo {
+    border-radius: 2px;
+  }
+
+  .cabecalho-ao-vivo {
+    @apply font-mono text-[0.6875rem] uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .cabecalho-acao-indicador {
+    border-radius: 1px;
+    @apply font-mono;
+  }
+
+  /* ---------- Cabeçalho da página ---------- */
+  .pagina-cabecalho {
+    @apply border-b border-neutra-300 pb-5 dark:border-neutra-800;
+  }
+
+  .pagina-titulo {
+    font-variation-settings: "opsz" 96, "wdth" 75;
+    letter-spacing: -0.045em;
+    font-weight: 600;
+    @apply text-4xl sm:text-5xl;
+  }
+
+  .saudacao,
+  .pagina-sobrescrito {
+    @apply text-[0.6875rem] uppercase text-neutra-600 dark:text-neutra-400;
+  }
+
+  .pagina-descricao {
+    @apply text-sm;
+  }
+
+  .secao-titulo {
+    font-variation-settings: "opsz" 48, "wdth" 82;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---------- Cartões e blocos numerados ---------- */
+  .cartao,
+  .kpi,
+  .tabela-cartao {
+    @apply border-neutra-300 shadow-none dark:border-neutra-800 dark:shadow-none;
+  }
+
+  .cartao-titulo,
+  .kpi-rotulo {
+    @apply text-[0.6875rem] font-medium uppercase text-neutra-700 dark:text-neutra-300;
+    font-variation-settings: normal;
+  }
+
+  .cartao-titulo::before,
+  .kpi-rotulo::before,
+  .receita-rotulo::before {
+    counter-increment: bloco;
+    content: counter(bloco, decimal-leading-zero);
+    @apply mr-2 inline-block border-r border-current pr-2 font-normal opacity-55;
+  }
+
+  .cartao-cabecalho {
+    @apply -mx-5 -mt-5 mb-4 border-b border-neutra-200 px-5 py-3 compacta:-mx-4 compacta:-mt-4 compacta:px-4 compacta:py-2.5 dark:border-neutra-800;
+  }
+
+  .cartao-sem-espaco > .cartao-cabecalho {
+    @apply mx-0 mt-0 px-5 pt-3 compacta:px-4 compacta:pt-2.5;
+  }
+
+  .cartao-destaque .cartao-cabecalho,
+  .cartao-escuro .cartao-cabecalho,
+  .cartao-ouro .cartao-cabecalho {
+    border-color: color-mix(in oklab, currentColor 18%, transparent);
+  }
+
+  .cartao-subtitulo {
+    @apply text-xs;
+  }
+
+  .cartao-destaque,
+  .cartao-escuro,
+  .cartao-ouro {
+    @apply shadow-none;
+  }
+
+  .cartao-destaque {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--color-creme) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--color-creme) 5%, transparent) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .cartao-interativo {
+    @apply hover:border-neutra-900 hover:shadow-none dark:hover:border-neutra-300;
+  }
+
+  /* ---------- Indicadores ---------- */
+  .kpi-icone {
+    @apply hidden;
+  }
+
+  .kpi-valor,
+  .kpi-valor-grande,
+  .cartao-numero,
+  .cartao-numero-grande,
+  .kpi-mini-valor,
+  .receita-valor,
+  .celula-numero,
+  .celula-moeda,
+  .celula-data {
+    font-family: var(--font-mono);
+    font-variation-settings: normal;
+    font-feature-settings: "tnum" 1, "zero" 1;
+  }
+
+  .kpi-valor,
+  .cartao-numero {
+    @apply text-[1.875rem] font-medium;
+    letter-spacing: -0.06em;
+  }
+
+  .kpi-valor-grande,
+  .cartao-numero-grande {
+    @apply font-medium;
+    letter-spacing: -0.065em;
+  }
+
+  .receita-valor {
+    @apply font-medium;
+    letter-spacing: -0.07em;
+  }
+
+  .kpi-mini-valor {
+    @apply text-lg font-medium;
+    letter-spacing: -0.04em;
+  }
+
+  .kpi-mini-rotulo {
+    @apply text-[0.625rem] uppercase;
+  }
+
+  .tendencia {
+    @apply rounded-none bg-transparent px-0 py-0 font-mono text-xs font-medium dark:bg-transparent;
+  }
+
+  .tendencia svg {
+    @apply hidden;
+  }
+
+  .tendencia::before {
+    @apply mr-0.5 text-[0.625rem];
+  }
+
+  .tendencia-alta::before {
+    content: "▲";
+  }
+
+  .tendencia-baixa::before {
+    content: "▼";
+  }
+
+  .tendencia-neutra::before {
+    content: "■";
+  }
+
+  .tendencia-alta,
+  .tendencia-invertida.tendencia-baixa {
+    @apply bg-transparent text-[#3E6B2A] dark:bg-transparent dark:text-[#9CC787];
+  }
+
+  .tendencia-baixa,
+  .tendencia-invertida.tendencia-alta {
+    @apply bg-transparent text-[#9B2F1E] dark:bg-transparent dark:text-[#E89A87];
+  }
+
+  .tendencia-neutra {
+    @apply bg-transparent text-neutra-600 dark:bg-transparent dark:text-neutra-400;
+  }
+
+  .cartao-destaque .tendencia-alta {
+    @apply bg-transparent text-[#B9DDA6];
+  }
+
+  .cartao-destaque .tendencia-baixa {
+    @apply bg-transparent text-[#F2B3A3];
+  }
+
+  .receita-rotulo {
+    @apply text-[0.6875rem] font-medium uppercase;
+  }
+
+  .receita-rotulo svg {
+    @apply hidden;
+  }
+
+  /* ---------- Etiquetas ---------- */
+  .emblema {
+    border-radius: 1px;
+    @apply h-[1.375rem] gap-1.5 border border-current/25 bg-transparent px-1.5 text-[0.625rem] font-medium uppercase dark:bg-transparent;
+  }
+
+  .emblema-pequeno {
+    @apply h-[1.125rem] px-1 text-[0.5625rem];
+  }
+
+  .emblema::before {
+    border-radius: 0;
+    @apply size-1.5;
+  }
+
+  .emblema-oliva,
+  .emblema[data-status="ativo"],
+  .emblema[data-status="paga"],
+  .emblema[data-status="ativa"],
+  .emblema[data-status="pronto"],
+  .emblema[data-status="conectada"],
+  .emblema[data-status="sucesso"] {
+    @apply bg-transparent text-[#3E6B2A] dark:bg-transparent dark:text-[#9CC787];
+  }
+
+  .emblema-ouro,
+  .emblema[data-status="pendente"],
+  .emblema[data-status="teste"],
+  .emblema[data-status="processando"],
+  .emblema[data-status="alerta"] {
+    @apply bg-transparent text-[#7A5A12] dark:bg-transparent dark:text-[#E2C288];
+  }
+
+  .emblema-brasa,
+  .emblema[data-status="bloqueado"],
+  .emblema[data-status="falhou"],
+  .emblema[data-status="inadimplente"],
+  .emblema[data-status="erro"] {
+    @apply bg-transparent text-[#9B2F1E] dark:bg-transparent dark:text-[#E89A87];
+  }
+
+  .emblema-anil,
+  .emblema[data-status="reembolsada"],
+  .emblema[data-status="info"] {
+    @apply bg-transparent text-[#2B4C5A] dark:bg-transparent dark:text-[#99B3BF];
+  }
+
+  .emblema-neutro,
+  .emblema-salvia,
+  .emblema-casca,
+  .emblema[data-status="inativo"],
+  .emblema[data-status="cancelada"],
+  .emblema[data-status="desconectada"] {
+    @apply bg-transparent text-neutra-700 dark:bg-transparent dark:text-neutra-300;
+  }
+
+  /* ---------- Botões e controles ---------- */
+  .botao {
+    border-radius: 2px;
+    @apply h-9 shadow-none;
+  }
+
+  .botao-pequeno {
+    @apply h-8;
+  }
+
+  .botao-grande {
+    @apply h-11;
+  }
+
+  .botao-primario,
+  .botao-secundario,
+  .botao-contorno {
+    @apply shadow-none;
+  }
+
+  .botao-primario {
+    @apply bg-tinta text-creme hover:bg-primaria-700 dark:bg-creme dark:text-tinta dark:hover:bg-neutra-200;
+  }
+
+  .botao-secundario {
+    @apply border-neutra-400 bg-transparent hover:border-tinta hover:bg-neutra-50 dark:border-neutra-600 dark:bg-transparent dark:hover:border-neutra-300 dark:hover:bg-neutra-900;
+  }
+
+  .seletor-periodo {
+    border-radius: 2px;
+    @apply gap-0 p-0 shadow-none border-neutra-400 dark:border-neutra-600 bg-transparent dark:bg-transparent;
+  }
+
+  .seletor-periodo button {
+    border-radius: 0;
+    @apply h-9 border-r border-neutra-300 px-3 font-mono text-[0.6875rem] uppercase last:border-r-0 dark:border-neutra-700;
+    letter-spacing: 0.04em;
+  }
+
+  .seletor-periodo button[aria-pressed="true"] {
+    @apply bg-tinta text-creme dark:bg-creme dark:text-tinta;
+  }
+
+  .abas-pilula {
+    border-radius: 2px;
+    @apply gap-0 bg-transparent p-0 ring-1 ring-neutra-400 dark:bg-transparent dark:ring-neutra-600;
+  }
+
+  .abas-pilula .aba {
+    border-radius: 0;
+  }
+
+  .abas-pilula .aba[aria-selected="true"] {
+    @apply bg-tinta text-creme shadow-none dark:bg-creme dark:text-tinta;
+  }
+
+  .aba[aria-selected="true"]::after,
+  .aba[aria-current="page"]::after {
+    border-radius: 0;
+  }
+
+  .chip-filtro {
+    border-radius: 2px;
+    @apply font-mono text-[0.6875rem] uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .avatar {
+    border-radius: 2px;
+    @apply font-mono text-[0.6875rem] font-medium;
+  }
+
+  /* ---------- Tabelas ---------- */
+  .tabela th,
+  .tabela-simples th {
+    @apply text-[0.625rem] font-medium uppercase text-neutra-600 dark:text-neutra-400;
+  }
+
+  .tabela tbody tr:hover > td {
+    background-image: linear-gradient(to right, var(--color-tinta) 2px, transparent 2px);
+    background-repeat: no-repeat;
+  }
+
+  .dark .tabela tbody tr:hover > td {
+    background-image: none;
+  }
+
+  .tabela tbody tr:hover > td:first-child {
+    box-shadow: inset 2px 0 0 0 var(--color-tinta);
+  }
+
+  .dark .tabela tbody tr:hover > td:first-child {
+    box-shadow: inset 2px 0 0 0 var(--color-creme);
+  }
+
+  .tabela tbody tr:hover > td:not(:first-child) {
+    background-image: none;
+  }
+
+  .celula-codigo {
+    @apply font-mono text-xs;
+  }
+
+  /* ---------- Camadas flutuantes ---------- */
+  .gaveta,
+  .modal,
+  .menu-suspenso,
+  .dica,
+  .aviso {
+    border-radius: 2px;
+  }
+
+  /* ---------- Rodapé ---------- */
+  .casca-rodape {
+    @apply text-[0.625rem] uppercase;
+  }
+
+  /* ---------- Folha de atalhos ---------- */
+  .atalhos-grade {
+    @apply grid gap-x-8 gap-y-1 sm:grid-cols-2;
+  }
+
+  .atalhos-grupo-titulo {
+    @apply mt-4 mb-1 border-b border-neutra-300 pb-1 font-mono text-[0.625rem] uppercase text-neutra-600 first:mt-0 dark:border-neutra-700 dark:text-neutra-400;
+    letter-spacing: 0.08em;
+  }
+
+  .atalho-linha {
+    @apply flex items-center justify-between gap-4 py-1.5 text-sm text-neutra-800 dark:text-neutra-200;
+  }
+
+  .atalho-teclas {
+    @apply flex shrink-0 items-center gap-1 font-mono text-[0.6875rem] text-neutra-500;
+  }
+
+  .atalho-teclas kbd {
+    @apply inline-grid h-6 min-w-6 place-items-center border border-neutra-400 bg-neutra-50 px-1.5 text-[0.6875rem] text-neutra-900 dark:border-neutra-600 dark:bg-neutra-900 dark:text-neutra-100;
+  }
+
+  .atalho-pendente {
+    @apply pointer-events-none fixed bottom-5 left-1/2 z-[70] -translate-x-1/2 border border-tinta bg-creme px-3 py-1.5 font-mono text-xs text-tinta shadow-flutuante dark:border-creme dark:bg-neutra-950 dark:text-creme;
+    border-radius: 2px;
+  }
+
+  /* ---------- Status do sistema ---------- */
+  .sistema-grade {
+    @apply grid grid-cols-2 border-t border-l border-neutra-300 sm:grid-cols-3 lg:grid-cols-4 dark:border-neutra-800;
+  }
+
+  .sistema-celula {
+    @apply flex min-w-0 flex-col gap-1 border-r border-b border-neutra-300 p-4 dark:border-neutra-800;
+  }
+
+  .sistema-rotulo {
+    @apply font-mono text-[0.625rem] uppercase text-neutra-600 dark:text-neutra-400;
+    letter-spacing: 0.08em;
+  }
+
+  .sistema-valor {
+    @apply truncate font-mono text-lg font-medium text-neutra-950 tabular-nums dark:text-neutra-50;
+    letter-spacing: -0.03em;
+  }
+
+  .sistema-tabela {
+    @apply mt-5 w-full border-collapse font-mono text-xs;
+  }
+
+  .sistema-tabela th,
+  .sistema-tabela td {
+    @apply border-b border-neutra-200 py-2 text-left dark:border-neutra-800;
+  }
+
+  .sistema-tabela th {
+    @apply text-[0.625rem] font-medium uppercase text-neutra-600 dark:text-neutra-400;
+  }
+
+  .sistema-tabela td:last-child,
+  .sistema-tabela th:last-child {
+    @apply text-right tabular-nums;
+  }
+}
+
+@layer components {
+  .tabela th :where(button, a, span) {
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+  }
+
+  .celula-data {
+    @apply text-xs;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  .barra-progresso,
+  .barra-progresso-valor,
+  .barra-plano-progresso,
+  .barra-plano-progresso > span {
+    border-radius: 0;
+  }
+
+
+  .cabecalho-perfil,
+  .notificacao-icone {
+    border-radius: 2px;
+  }
+
+  .cabecalho-acao-indicador {
+    @apply ring-0;
+  }
+
+  .paleta-comandos,
+  .paleta-item-icone,
+  .paleta-item,
+  .paleta-entrada {
+    border-radius: 2px;
+  }
+
+  .paleta-grupo-titulo {
+    @apply font-mono text-[0.625rem] uppercase;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* ---------- Tela de entrada ---------- */
+@layer components {
+  .autenticacao-lado {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--color-creme) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--color-creme) 6%, transparent) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .entrar-marca-logo {
+    border-radius: 2px;
+  }
+
+  .entrar-titulo-lado {
+    font-variation-settings: "opsz" 96, "wdth" 76;
+    letter-spacing: -0.045em;
+    @apply text-5xl leading-[0.95];
+  }
+
+  .entrar-mosaico {
+    @apply gap-0 border-t border-l border-creme/15;
+    counter-reset: peca;
+  }
+
+  .entrar-peca,
+  .entrar-peca:nth-child(n) {
+    border-radius: 0;
+    @apply border-r border-b border-creme/15 bg-transparent text-creme;
+  }
+
+  .entrar-peca:nth-child(1) {
+    @apply bg-creme/5;
+  }
+
+  .entrar-peca-rotulo {
+    @apply font-mono text-[0.625rem] uppercase opacity-60;
+    letter-spacing: 0.08em;
+  }
+
+  .entrar-peca-rotulo::before {
+    counter-increment: peca;
+    content: counter(peca, decimal-leading-zero) " / ";
+  }
+
+  .entrar-peca-valor {
+    @apply font-mono text-lg font-medium;
+    letter-spacing: -0.04em;
+  }
+
+  .entrar-peca-barras > span {
+    border-radius: 0;
+  }
+
+  .entrar-peca-barras > span:last-child {
+    @apply bg-creme;
+  }
+
+  .entrar-rodape-lado {
+    @apply font-mono text-[0.625rem] uppercase;
+    letter-spacing: 0.08em;
+  }
+}
+
+@layer components {
+  .predefinicoes button {
+    border-radius: 2px;
+    @apply font-mono text-[0.6875rem] uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .predefinicoes button[aria-pressed="true"] {
+    @apply bg-tinta text-creme dark:bg-creme dark:text-tinta;
+  }
+
+  .funil-barra,
+  .funil-trilho {
+    border-radius: 0;
+  }
+
+  .seletor-datas,
+  .campo-data,
+  .entrada,
+  .selecao,
+  .area-texto {
+    border-radius: 2px;
+  }
+}

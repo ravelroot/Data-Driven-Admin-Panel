@@ -5,6 +5,7 @@ import { pode, sair } from "../nucleo/sessao.ts";
 import { alternarTema } from "../nucleo/tema.ts";
 import { moeda, rotulos } from "../nucleo/formato.ts";
 import { NAVEGACAO, ACOES_RAPIDAS } from "./navegacao.ts";
+import { abrirAtalhos } from "./atalhos.ts";
 import type { Pessoa, StatusTransacao, StatusUsuario } from "../nucleo/tipos.ts";
 
 interface ItemResultado {
@@ -51,6 +52,7 @@ const destacar = (texto: string, termo: string): string => {
 const executar = (item: ItemResultado): void => {
   fechar();
   if (item.acao === "alternar-tema") alternarTema();
+  else if (item.acao === "atalhos") abrirAtalhos();
   else if (item.acao === "sair") sair();
   else if (item.externo) window.open(item.href, "_blank", "noopener");
   else if (item.href) location.href = item.href;
@@ -85,12 +87,12 @@ const renderizar = (termo: string, remotos: RespostaBusca | null = null, carrega
         titulo: transacao.codigo,
         detalhe: transacao.usuario?.nome ?? "",
         lado: moeda(transacao.valor),
-        href: `/?transacao=${encodeURIComponent(transacao.id)}`,
+        href: `/transacoes?transacao=${encodeURIComponent(transacao.id)}`,
       })),
     });
   }
   if (paginas.length) grupos.push({ titulo: "Páginas", itens: paginas.map((item) => ({ ...item, titulo: item.rotulo, detalhe: item.descricao })) });
-  if (acoes.length) grupos.push({ titulo: "Ações", itens: acoes.map((item) => ({ ...item, titulo: item.rotulo })) });
+  if (acoes.length) grupos.push({ titulo: "Ações", itens: acoes.map((item) => ({ ...item, titulo: item.rotulo, lado: item.atalho })) });
 
   resultados = grupos.flatMap((grupo) => grupo.itens);
   indiceAtivo = Math.min(indiceAtivo, Math.max(0, resultados.length - 1));

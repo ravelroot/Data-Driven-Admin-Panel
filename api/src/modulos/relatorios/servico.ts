@@ -14,7 +14,7 @@ import {
   somarDias,
   somarMeses,
 } from '../../util/datas.js';
-import { naoEncontrado, validacao } from '../../util/erros.js';
+import { naoEncontrado, semPermissao, validacao } from '../../util/erros.js';
 import { montarPagina, type Pagina } from '../../util/validacao.js';
 import { registrarAtividade } from '../comum/auditoria.js';
 import { hojeLocal } from '../metricas/base.js';
@@ -219,8 +219,20 @@ export async function obterArquivo(banco: Banco, id: string): Promise<{ conteudo
   };
 }
 
-export async function excluirRelatorio(banco: Banco, id: string, autor: { id: string }, ip: string): Promise<void> {
+export interface AtorRelatorio {
+  id: string;
+  permissoes: Set<string>;
+}
+
+/** O histórico é compartilhado para leitura, mas só o autor (ou um administrador do sistema) apaga ou altera o que é de outra pessoa. */
+function garantirDono(ator: AtorRelatorio, criadoPor: string | null, oQue: string): void {
+  if (criadoPor === ator.id || ator.permissoes.has('configuracoes.sistema')) return;
+  throw semPermissao(`Só quem criou ${oQue} (ou um administrador) pode fazer isso.`);
+}
+
+export async function excluirRelatorio(banco: Banco, id: string, autor: AtorRelatorio, ip: string): Promise<void> {
   const relatorio = await buscarRelatorio(banco, id);
+  garantirDono(autor, relatorio.criadoPor?.id ?? null, 'o relatório');
   await banco.consultar('delete from relatorios where id = $1', [id]);
   await registrarAtividade(banco, {
     usuarioId: autor.id,
@@ -287,11 +299,19 @@ export async function criarAgendamento(
   return mapearAgendamento(linhas[0]);
 }
 
-export async function alterarAgendamento(banco: Banco, fuso: string, id: string, ativo: boolean): Promise<Agendamento> {
-  const { linhas: atuais } = await banco.consultar<{ frequencia: Frequencia }>('select frequencia from relatorios_agendados where id = $1', [
-    id,
-  ]);
+export async function alterarAgendamento(
+  banco: Banco,
+  fuso: string,
+  id: string,
+  ativo: boolean,
+  ator: AtorRelatorio,
+): Promise<Agendamento> {
+  const { linhas: atuais } = await banco.consultar<{ frequencia: Frequencia; criado_por: string }>(
+    'select frequencia, criado_por from relatorios_agendados where id = $1',
+    [id],
+  );
   if (!atuais[0]) throw naoEncontrado('Agendamento');
+  garantirDono(ator, String(atuais[0].criado_por), 'o agendamento');
   const { linhas } = await banco.consultar(
     `update relatorios_agendados set ativo = $2, proxima_execucao = case when $2 then $3::timestamptz else proxima_execucao end
       where id = $1 returning *`,
@@ -300,7 +320,10 @@ export async function alterarAgendamento(banco: Banco, fuso: string, id: string,
   return mapearAgendamento(linhas[0]);
 }
 
-export async function excluirAgendamento(banco: Banco, id: string): Promise<void> {
+export async function excluirAgendamento(banco: Banco, id: string, ator: AtorRelatorio): Promise<void> {
+  const { linhas } = await banco.consultar<{ criado_por: string }>('select criado_por from relatorios_agendados where id = $1', [id]);
+  if (!linhas[0]) throw naoEncontrado('Agendamento');
+  garantirDono(ator, String(linhas[0].criado_por), 'o agendamento');
   const { total } = await banco.consultar('delete from relatorios_agendados where id = $1', [id]);
   if (total === 0) throw naoEncontrado('Agendamento');
 }

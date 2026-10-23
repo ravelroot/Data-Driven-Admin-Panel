@@ -39,10 +39,24 @@ function escapar(texto: string): string {
   return /[";\n\r]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
 }
 
+/**
+ * Evita injeção de fórmula (CSV injection): Excel/LibreOffice/Sheets executam células que começam
+ * com =, +, -, @, tab ou CR. Prefixamos um apóstrofo para que o valor seja lido como texto.
+ * Só vale para colunas de texto; valores numéricos negativos (ex.: "-12,50") continuam intactos.
+ */
+export function neutralizarFormula(texto: string): string {
+  return /^[=+\-@\t\r]/.test(texto) ? `'${texto}` : texto;
+}
+
 export function gerarCsv(colunas: Coluna[], linhas: Record<string, unknown>[], fuso: string): Buffer {
-  const cabecalho = colunas.map((coluna) => escapar(coluna.titulo)).join(';');
+  const cabecalho = colunas.map((coluna) => escapar(neutralizarFormula(coluna.titulo))).join(';');
   const corpo = linhas.map((linha) =>
-    colunas.map((coluna) => escapar(formatarCelula(linha[coluna.campo], coluna.formato, fuso))).join(';'),
+    colunas
+      .map((coluna) => {
+        const celula = formatarCelula(linha[coluna.campo], coluna.formato, fuso);
+        return escapar(coluna.formato === 'texto' ? neutralizarFormula(celula) : celula);
+      })
+      .join(';'),
   );
   return Buffer.from(`﻿${[cabecalho, ...corpo].join('\r\n')}\r\n`, 'utf8');
 }

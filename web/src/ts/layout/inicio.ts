@@ -1,6 +1,8 @@
 import "@fontsource-variable/instrument-sans";
 import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/600.css";
 import "../../css/bento.css";
 
 import { html, exigir, renderizar, type Seguro } from "../nucleo/dom.ts";

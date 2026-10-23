@@ -112,6 +112,7 @@ export async function rotasRelatorios(app: FastifyInstance): Promise<void> {
         app.config.fuso,
         (requisicao.params as z.infer<typeof paramId>).id,
         (requisicao.body as z.infer<typeof corpoAlterarAgendamento>).ativo,
+        usuarioAtual(requisicao),
       ),
   );
 
@@ -119,7 +120,7 @@ export async function rotasRelatorios(app: FastifyInstance): Promise<void> {
     '/relatorios/agendados/:id',
     { schema: { tags, summary: 'Remove um agendamento', params: paramId }, preHandler: pode('relatorios.agendar') },
     async (requisicao, resposta) => {
-      await excluirAgendamento(app.banco, (requisicao.params as z.infer<typeof paramId>).id);
+      await excluirAgendamento(app.banco, (requisicao.params as z.infer<typeof paramId>).id, usuarioAtual(requisicao));
       return resposta.status(204).send();
     },
   );

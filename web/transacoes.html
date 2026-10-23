@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Transações: pagamentos com busca, filtros por status, método e período, exportação em CSV e reembolsos.">
+    <title>Transações | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/ts/paginas/transacoes.ts"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Transações</h1>
+              <p class="pagina-descricao">Acompanhe pagamentos, encontre cobranças pelo código ou pelo cliente e devolva valores com o motivo registrado.</p>
+            </div>
+            <div class="pagina-acoes">
+              <button type="button" class="botao botao-secundario" data-acao="exportar"><i data-icone="arquivo-planilha"></i>Exportar CSV</button>
+            </div>
+          </div>
+
+          <section class="cartao transacoes-resumo" aria-label="Resumo do filtro atual" data-resumo aria-busy="true">
+            <dl class="transacoes-resumo-grade">
+              <div class="kpi-mini"><dt class="kpi-mini-rotulo">Transações</dt><dd class="kpi-mini-valor" data-resumo-valor="quantidade">—</dd></div>
+              <div class="kpi-mini"><dt class="kpi-mini-rotulo">Valor pago</dt><dd class="kpi-mini-valor" data-resumo-valor="valorPago">—</dd></div>
+              <div class="kpi-mini"><dt class="kpi-mini-rotulo">Reembolsado</dt><dd class="kpi-mini-valor" data-resumo-valor="valorReembolsado">—</dd></div>
+              <div class="kpi-mini"><dt class="kpi-mini-rotulo">Taxa de falha</dt><dd class="kpi-mini-valor" data-resumo-valor="taxaFalha">—</dd></div>
+            </dl>
+          </section>
+
+          <div class="transacoes-filtros">
+            <div class="chips-filtro" role="group" aria-label="Filtrar por status" data-status-filtro>
+              <button type="button" class="chip-filtro" data-status="" aria-pressed="true">Todas <span class="contador" data-contagem="todas">0</span></button>
+              <button type="button" class="chip-filtro" data-status="paga" aria-pressed="false">Pagas <span class="contador" data-contagem="paga">0</span></button>
+              <button type="button" class="chip-filtro" data-status="pendente" aria-pressed="false">Pendentes <span class="contador" data-contagem="pendente">0</span></button>
+              <button type="button" class="chip-filtro" data-status="falhou" aria-pressed="false">Falharam <span class="contador" data-contagem="falhou">0</span></button>
+              <button type="button" class="chip-filtro" data-status="reembolsada" aria-pressed="false">Reembolsadas <span class="contador" data-contagem="reembolsada">0</span></button>
+            </div>
+            <div class="barra-ferramentas">
+              <label class="sr-only" for="filtro-metodo">Método</label>
+              <select class="filtro-selecao" id="filtro-metodo" data-filtro="metodo">
+                <option value="">Todos os métodos</option>
+                <option value="cartao">Cartão</option>
+                <option value="pix">Pix</option>
+                <option value="boleto">Boleto</option>
+              </select>
+              <label class="sr-only" for="filtro-tipo">Tipo</label>
+              <select class="filtro-selecao" id="filtro-tipo" data-filtro="tipo">
+                <option value="">Todos os tipos</option>
+                <option value="assinatura">Assinatura</option>
+                <option value="upgrade">Upgrade</option>
+                <option value="avulsa">Avulsa</option>
+                <option value="reembolso">Reembolso</option>
+              </select>
+              <div class="intervalo-datas">
+                <i data-icone="intervalo"></i>
+                <label class="sr-only" for="filtro-inicio">Data inicial</label>
+                <input type="date" id="filtro-inicio" data-filtro-data="inicio">
+                <span class="intervalo-datas-separador" aria-hidden="true">até</span>
+                <label class="sr-only" for="filtro-fim">Data final</label>
+                <input type="date" id="filtro-fim" data-filtro-data="fim">
+              </div>
+              <button type="button" class="limpar-filtros" data-acao="limpar" hidden><i data-icone="fechar"></i>Limpar filtros</button>
+            </div>
+          </div>
+
+          <section class="tabela-cartao" aria-labelledby="titulo-tabela-transacoes">
+            <div class="tabela-barra">
+              <div class="tabela-barra-titulo">
+                <h2 class="cartao-titulo" id="titulo-tabela-transacoes">Todas as transações</h2>
+                <p class="cartao-subtitulo" data-resumo-tabela>Carregando…</p>
+              </div>
+              <div class="tabela-busca">
+                <i data-icone="buscar" class="tabela-busca-icone"></i>
+                <label class="sr-only" for="busca-transacoes">Buscar transações</label>
+                <input class="entrada" type="search" id="busca-transacoes" placeholder="Buscar por código, cliente ou e-mail" autocomplete="off" maxlength="120" data-busca>
+              </div>
+            </div>
+            <div data-tabela></div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
