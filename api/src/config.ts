@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const raizProjeto = fileURLToPath(new URL('../../', import.meta.url));
-export const VERSAO = '1.1.0';
+export const VERSAO = '1.2.0';
 
 export interface Config {
   porta: number;

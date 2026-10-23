@@ -75,7 +75,7 @@ export const abrirAtalhos = (): void => {
   if (dialogo?.open) return;
   dialogo?.remove();
   const marcacao = html`
-    <dialog class="modal" aria-labelledby="atalhos-titulo">
+    <dialog class="modal modal-largo" aria-labelledby="atalhos-titulo">
       <div class="modal-conteudo">
         <div class="modal-topo">
           <div class="modal-textos">

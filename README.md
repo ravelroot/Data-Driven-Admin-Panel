@@ -20,15 +20,15 @@
 > **Banco de dados:** [`Banco-de-Dados-Bento.pdf`](Banco-de-Dados-Bento.pdf) traz o diagrama de relacionamentos, todas as tabelas com campos, tipos, chaves e restrições, os índices, as decisões de arquitetura (PostgreSQL ou PGlite, LISTEN/NOTIFY, sessões, auditoria) e como escalar (cópia em [`docs/`](docs/Banco-de-Dados-Bento.pdf)).
 
 <p align="center">
-  <img src="docs/images/tela-visao-geral.png" alt="Visão geral com a receita em destaque, KPIs com tendência, receita mês a mês, assinaturas por plano e transações recentes">
+  <img src="docs/images/tela-visao-geral.png" alt="Visão geral: a receita do período na tampa escura e os indicadores nos compartimentos da caixa">
 </p>
 
 ## O que o Bento faz
 
-- **Identidade "livro-razão":** visual monocromático com cantos retos, linhas finas, fundo milimetrado, blocos numerados (01, 02…), rótulos e números em IBM Plex Mono com algarismos tabulares, variações com ▲ e ▼ e etiquetas retangulares. Fica tudo em `web/src/css/identidade.css`.
+- **Identidade "caixa única":** um bento é uma caixa só, dividida em compartimentos. Em cada página, os blocos dividem paredes finas dentro de uma única caixa de cantos arredondados, e o menu, o cabeçalho e os títulos ficam impressos no fundo, sem bordas. Títulos e números em Bricolage Grotesque fina e condensada, rótulos em texto normal, status como um ponto de cor e variações com + e −. Fica tudo em `web/src/css/identidade.css`.
 - **Bento grid:** a grade de 12 colunas encaixa cartões de tamanhos diferentes (um quarto, um terço, metade, dois terços, cartões altos e pilhas) e se reorganiza no tablet e no celular. Há modelos prontos para vendas, produto, suporte, financeiro e marketing.
 - **Menu lateral e cabeçalho:** o menu recolhe para só ícones em telas grandes e vira gaveta no celular. O cabeçalho tem trilha de navegação, busca global (`Ctrl` + `K` ou `/`), indicador de conexão ao vivo, troca de tema, central de notificações e menu da conta.
-- **Visão geral:** receita do período em destaque com gráfico, MRR, ticket médio, conversão, usuários e assinaturas ativas, crescimento, cancelamentos e meta do mês. Cada KPI traz a seta verde ou vermelha com o percentual em relação ao período anterior e um mini gráfico. Transações e cadastros novos entram na tela na hora.
+- **Visão geral:** receita do período em destaque com gráfico, MRR, ticket médio, conversão, usuários e assinaturas ativas, crescimento, cancelamentos e meta do mês. Cada KPI traz o sinal + ou − e o percentual em relação ao período anterior, em verde ou vermelho, e um mini gráfico. Transações e cadastros novos entram na tela na hora.
 - **Analytics:** filtros por intervalo de datas, períodos prontos e agrupamento por dia, semana ou mês. Receita e reembolsos, funil de conversão, dispositivos, tráfego por canal, países, usuários novos e ativos, assinaturas e cancelamentos, receita por plano, mapa de calor de horários de compra e retenção por coorte.
 - **Transações:** busca por código, cliente ou e-mail, filtros por status, método, tipo e período (que ficam na URL para compartilhar), resumo do filtro, gaveta com a linha do tempo de cada cobrança, **reembolso com motivo** registrado na auditoria e exportação em CSV.
 - **Auditoria:** a trilha de tudo o que a equipe fez (contas, transações, sessões, relatórios, configurações, integrações e chaves de API), com filtros por pessoa, tipo de ação, período e texto, detalhes de cada registro e exportação em CSV.
@@ -81,7 +81,7 @@ O navegador abre uma conexão em `GET /api/v1/notificacoes/fluxo` e recebe os ev
 As permissões efetivas de cada pessoa são as do papel, mais as concedidas e menos as negadas na aba **Permissões** do usuário. A API confere tudo de novo em cada rota.
 
 <p align="center">
-  <img src="docs/images/tela-transacoes.png" width="49%" alt="Transações com filtros, resumo do período e a gaveta de detalhe com reembolso">
+  <img src="docs/images/tela-transacoes.png" width="49%" alt="Transações com o resumo do filtro, os filtros por status, método, tipo e período e a lista">
   <img src="docs/images/tela-auditoria.png" width="49%" alt="Trilha de auditoria com filtros por pessoa, ação e período">
 </p>
 
@@ -233,7 +233,7 @@ O projeto foi organizado para ser fácil de adaptar:
 | Trocar as cores padrão | `web/src/css/tema/cores.css` (escalas `primaria`, `destaque` e `neutra`) |
 | Criar uma paleta nova | Um bloco `[data-paleta="nome"]` em `web/src/css/tema/paletas.css` e o nome em `PALETAS` (`web/src/ts/nucleo/tema.ts`) e na validação da API |
 | Mudar fontes, tamanhos e raios | `web/src/css/tema/tipografia.css` e `web/src/css/tema/medidas.css` |
-| Mudar a identidade visual | `web/src/css/identidade.css` (raios, linhas, fundo milimetrado, rótulos em mono e blocos numerados) |
+| Mudar a identidade visual | `web/src/css/identidade.css` (materiais da caixa: fundo, compartimentos, paredes e tampa, raios, tipografia fina, status e variações) |
 | Novo item no menu | `NAVEGACAO` em `web/src/ts/layout/navegacao.ts` |
 | Novo comando na paleta | `ACOES_RAPIDAS` em `web/src/ts/layout/navegacao.ts` |
 | Novo atalho de teclado | `IR_PARA` em `web/src/ts/layout/atalhos.ts` |

@@ -1,26 +1,26 @@
 @theme {
   --color-vivo: #6E9A3E;
   --color-vivo-claro: #A3CC72;
-  --radius-controle: 2px;
-  --radius-cartao: 3px;
-  --radius-painel: 4px;
-  --radius-casca: 6px;
-  --radius-xs: 1px;
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 3px;
-  --radius-xl: 4px;
-  --radius-2xl: 4px;
-  --radius-3xl: 6px;
+  --radius-controle: 0.5rem;
+  --radius-cartao: 1.125rem;
+  --radius-painel: 1.125rem;
+  --radius-casca: 1.125rem;
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.125rem;
 
   --shadow-cartao: none;
-  --shadow-elevado: 0 0 0 1px rgb(0 0 0 / 0.10), 5px 5px 0 0 rgb(0 0 0 / 0.08);
-  --shadow-flutuante: 0 0 0 1px rgb(0 0 0 / 0.14), 8px 8px 0 0 rgb(0 0 0 / 0.12);
-  --shadow-gaveta: -1px 0 0 0 rgb(0 0 0 / 0.2), -10px 0 0 0 rgb(0 0 0 / 0.06);
+  --shadow-elevado: 0 0 0 1px rgb(0 0 0 / 0.08), 0 8px 24px -12px rgb(0 0 0 / 0.18);
+  --shadow-flutuante: 0 0 0 1px rgb(0 0 0 / 0.08), 0 24px 48px -16px rgb(0 0 0 / 0.28);
+  --shadow-gaveta: -1px 0 0 0 rgb(0 0 0 / 0.08), -24px 0 48px -24px rgb(0 0 0 / 0.22);
   --shadow-anel: 0 0 0 2px var(--color-neutra-50), 0 0 0 3px var(--color-primaria-800);
-  --shadow-interno: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+  --shadow-interno: none;
 
-  --spacing-barra: 17rem;
+  --spacing-barra: 15.5rem;
   --spacing-barra-recolhida: 4.75rem;
   --spacing-cabecalho: 3.75rem;
   --spacing-gaveta: 30rem;
