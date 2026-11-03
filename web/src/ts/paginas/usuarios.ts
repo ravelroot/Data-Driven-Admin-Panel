@@ -48,6 +48,18 @@ interface DetalheUsuario {
   transacoes: Transacao[];
   atividades: Atividade[];
   sessoesAtivas: number;
+  notas?: { total: number; fixadas: number };
+}
+
+interface NotaUsuario {
+  id: string;
+  texto: string;
+  fixada: boolean;
+  criadoEm: string;
+  atualizadoEm: string;
+  editada: boolean;
+  autor: { id: string; nome: string; iniciais: string } | null;
+  podeAlterar: boolean;
 }
 
 interface PermissoesUsuario {
@@ -87,7 +99,7 @@ interface AcaoUsuario {
 
 type ItemAcao = AcaoUsuario | "separador" | false;
 type AcaoMassa = "bloquear" | "desbloquear" | "ativar" | "excluir";
-type Aba = "resumo" | "editar" | "permissoes";
+type Aba = "resumo" | "editar" | "permissoes" | "notas";
 
 interface EstadoPagina {
   tabela: TabelaDados<Usuario, RespostaUsuarios> | null;
@@ -149,6 +161,7 @@ const acoesDoUsuario = (usuario: Usuario): ItemAcao[] => [
   { rotulo: "Ver detalhes", icone: "olho", executar: () => abrirDetalhes(usuario.id) },
   pode("usuarios.editar") && { rotulo: "Editar", icone: "editar", executar: () => abrirDetalhes(usuario.id, "editar") },
   pode("usuarios.ver") && { rotulo: "Permissões", icone: "escudo", executar: () => abrirDetalhes(usuario.id, "permissoes") },
+  pode("usuarios.ver") && { rotulo: "Notas internas", icone: "nota", executar: () => abrirDetalhes(usuario.id, "notas") },
   pode("usuarios.editar") && { rotulo: "Redefinir senha", icone: "chave", executar: () => redefinirSenha(usuario) },
   pode("usuarios.bloquear") && "separador",
   pode("usuarios.bloquear") &&
@@ -496,6 +509,201 @@ const lerPermissoes = (formulario: HTMLFormElement): { papel: string; concedidas
   return { papel: campo<RadioNodeList>(formulario, "papel").value, concedidas, negadas };
 };
 
+const paragrafos = (texto: string): Seguro => html`${texto.split(/\n{2,}/).map((bloco) => html`<p>${bloco.split("\n").map((linha, indice) => (indice ? html`<br>${linha}` : html`${linha}`))}</p>`)}`;
+
+const itemNota = (nota: NotaUsuario): Seguro => html`
+  <article class="comentarios-item" data-nota="${nota.id}">
+    <span class="avatar avatar-pequeno" data-cor="${corAvatar(nota.autor?.nome ?? "")}" aria-hidden="true">${nota.autor?.iniciais ?? "?"}</span>
+    <div class="comentarios-corpo">
+      <p class="comentarios-meta"><span class="comentarios-autor">${nota.autor?.nome ?? "Conta removida"}</span><time datetime="${nota.criadoEm}" title="${dataHora(nota.criadoEm)}">${relativo(nota.criadoEm)}</time>${nota.editada ? html`<span class="comentarios-editado" title="${dataHora(nota.atualizadoEm)}">editada</span>` : ""}</p>
+      <div class="comentarios-texto" data-nota-texto>${paragrafos(nota.texto)}</div>
+      ${nota.podeAlterar
+        ? html`<div class="comentarios-acoes">
+            <button type="button" class="comentarios-acao" data-nota-acao="fixar" aria-pressed="${nota.fixada}">${html([icone(nota.fixada ? "desafixar" : "fixar")])}${nota.fixada ? "Desafixar" : "Fixar"}</button>
+            <button type="button" class="comentarios-acao" data-nota-acao="editar">${html([icone("editar")])}Editar</button>
+            <button type="button" class="comentarios-acao" data-nota-acao="remover">${html([icone("lixeira")])}Remover</button>
+          </div>`
+        : ""}
+    </div>
+  </article>
+`;
+
+const editorNota = (): Seguro => {
+  const eu = usuarioAtual();
+  return html`
+    <form class="comentarios-novo" id="form-nota" novalidate>
+      <span class="avatar avatar-pequeno" data-cor="${corAvatar(eu?.nome ?? "")}" aria-hidden="true">${eu?.iniciais ?? "?"}</span>
+      <div class="comentarios-editor">
+        <label class="sr-only" for="nota-texto">Escrever nota interna</label>
+        <textarea id="nota-texto" name="texto" rows="3" maxlength="2000" placeholder="Escreva uma nota interna. Só a equipe vê."></textarea>
+        <div class="comentarios-editor-barra">
+          <button type="button" class="comentarios-editor-ferramenta" data-fixar-nova aria-pressed="false" aria-label="Fixar no topo" title="Fixar no topo"><i data-icone="fixar"></i></button>
+          <span class="comentarios-editor-dica" data-contador-nota>Ctrl + Enter salva</span>
+          <button type="submit" class="botao botao-primario botao-pequeno" data-salvar-nota><i data-icone="enviar"></i>Salvar nota</button>
+        </div>
+      </div>
+    </form>
+  `;
+};
+
+const listaNotas = (notas: NotaUsuario[]): Seguro => {
+  const fixadas = notas.filter((nota) => nota.fixada);
+  const demais = notas.filter((nota) => !nota.fixada);
+  return html`
+    ${fixadas.length
+      ? html`<div class="comentarios-fixado"><p class="comentarios-fixado-rotulo">${html([icone("fixar")])}${plural(fixadas.length, "nota fixada", "notas fixadas")}</p><div class="comentarios">${fixadas.map(itemNota)}</div></div>`
+      : ""}
+    ${demais.length ? html`<div class="comentarios">${demais.map(itemNota)}</div>` : ""}
+    ${notas.length
+      ? ""
+      : html`<div class="vazio"><span class="vazio-icone">${html([icone("nota")])}</span><p class="vazio-titulo">Nenhuma nota ainda</p><p class="vazio-texto">Registre combinados, contexto de atendimento e pendências. As notas não aparecem para o cliente.</p></div>`}
+  `;
+};
+
+const montarNotas = async (painel: HTMLElement, usuario: Usuario, aoMudar: (total: number) => void): Promise<void> => {
+  const caminho = `/usuarios/${usuario.id}/notas`;
+  const podeAnotar = pode("usuarios.anotar");
+  let notas: NotaUsuario[] = [];
+
+  renderizar(painel, html`<div class="pilha">${podeAnotar ? editorNota() : html`<p class="text-xs texto-suave">Você pode ler as notas, mas só quem tem a permissão de anotar escreve aqui.</p>`}<div data-lista-notas><div class="gaveta-carregando"><span class="giro"></span></div></div></div>`);
+  hidratarIcones(painel);
+  const lista = exigir<HTMLElement>("[data-lista-notas]", painel);
+
+  const desenhar = (): void => {
+    renderizar(lista, listaNotas(notas));
+    hidratarIcones(lista);
+    aoMudar(notas.length);
+  };
+
+  const ordenar = (): void => {
+    notas.sort((a, b) => Number(b.fixada) - Number(a.fixada) || b.criadoEm.localeCompare(a.criadoEm));
+  };
+
+  try {
+    notas = await api.obter<NotaUsuario[]>(caminho);
+    desenhar();
+  } catch (erro) {
+    renderizar(lista, html`<div class="vazio vazio-erro"><p class="vazio-texto">${mensagemDeErro(erro)}</p></div>`);
+    return;
+  }
+
+  const formulario = $<HTMLFormElement>("#form-nota", painel);
+  if (formulario) {
+    const campo = exigir<HTMLTextAreaElement>("textarea", formulario);
+    const fixar = exigir<HTMLButtonElement>("[data-fixar-nova]", formulario);
+    const contador = exigir<HTMLElement>("[data-contador-nota]", formulario);
+    campo.addEventListener("input", () => {
+      contador.textContent = campo.value.length > 1800 ? `${numero(2000 - campo.value.length)} caracteres restantes` : "Ctrl + Enter salva";
+    });
+    campo.addEventListener("keydown", (evento) => {
+      if (evento.key === "Enter" && (evento.ctrlKey || evento.metaKey)) {
+        evento.preventDefault();
+        formulario.requestSubmit();
+      }
+    });
+    fixar.addEventListener("click", () => fixar.setAttribute("aria-pressed", String(fixar.getAttribute("aria-pressed") !== "true")));
+    formulario.addEventListener("submit", async (evento) => {
+      evento.preventDefault();
+      const texto = campo.value.trim();
+      if (texto.length < 2) {
+        campo.focus();
+        avisar({ tipo: "alerta", titulo: "Nota muito curta", texto: "Escreva pelo menos 2 caracteres." });
+        return;
+      }
+      const botao = exigir<HTMLButtonElement>("[data-salvar-nota]", formulario);
+      carregando(botao, true);
+      try {
+        const nova = await api.criar<NotaUsuario>(caminho, { texto, fixada: fixar.getAttribute("aria-pressed") === "true" });
+        notas.unshift(nova);
+        ordenar();
+        desenhar();
+        campo.value = "";
+        contador.textContent = "Ctrl + Enter salva";
+        fixar.setAttribute("aria-pressed", "false");
+        avisoSucesso("Nota salva", `No perfil de ${usuario.nome}`);
+      } catch (erro) {
+        avisar({ tipo: "erro", titulo: "Não foi possível salvar a nota", texto: mensagemDeErro(erro) });
+      } finally {
+        carregando(botao, false);
+      }
+    });
+  }
+
+  const substituirNota = (atualizada: NotaUsuario): void => {
+    notas = notas.map((nota) => (nota.id === atualizada.id ? atualizada : nota));
+    ordenar();
+    desenhar();
+  };
+
+  lista.addEventListener("click", async (evento) => {
+    const botao = (evento.target as Element | null)?.closest<HTMLButtonElement>("[data-nota-acao]");
+    const artigo = botao?.closest<HTMLElement>("[data-nota]");
+    const nota = notas.find((item) => item.id === artigo?.dataset.nota);
+    if (!botao || !artigo || !nota) return;
+    const acao = botao.dataset.notaAcao;
+    if (acao === "fixar") {
+      carregando(botao, true);
+      try {
+        substituirNota(await api.atualizar<NotaUsuario>(`${caminho}/${nota.id}`, { fixada: !nota.fixada }));
+      } catch (erro) {
+        carregando(botao, false);
+        avisar({ tipo: "erro", titulo: "Não foi possível fixar a nota", texto: mensagemDeErro(erro) });
+      }
+    } else if (acao === "remover") {
+      const ok = await confirmar({ titulo: "Remover esta nota?", texto: "A remoção fica registrada na auditoria e não pode ser desfeita.", tipo: "perigo", confirmar: "Remover nota" });
+      if (!ok) return;
+      try {
+        await api.excluir(`${caminho}/${nota.id}`);
+        notas = notas.filter((item) => item.id !== nota.id);
+        desenhar();
+        avisoSucesso("Nota removida", "");
+      } catch (erro) {
+        avisar({ tipo: "erro", titulo: "Não foi possível remover a nota", texto: mensagemDeErro(erro) });
+      }
+    } else if (acao === "editar") {
+      const alvo = exigir<HTMLElement>("[data-nota-texto]", artigo);
+      const acoes = $<HTMLElement>(".comentarios-acoes", artigo);
+      if (acoes) acoes.hidden = true;
+      renderizar(alvo, html`<form class="comentarios-editor" data-editar-nota><label class="sr-only" for="editar-${nota.id}">Editar nota</label><textarea id="editar-${nota.id}" rows="3" maxlength="2000">${nota.texto}</textarea><div class="comentarios-editor-barra"><span class="comentarios-editor-dica">Esc cancela</span><button type="button" class="botao botao-secundario botao-pequeno" data-cancelar-edicao>Cancelar</button><button type="submit" class="botao botao-primario botao-pequeno"><i data-icone="salvar"></i>Salvar</button></div></form>`);
+      hidratarIcones(alvo);
+      const edicao = exigir<HTMLFormElement>("[data-editar-nota]", alvo);
+      const area = exigir<HTMLTextAreaElement>("textarea", edicao);
+      area.focus();
+      area.setSelectionRange(area.value.length, area.value.length);
+      const cancelar = (): void => desenhar();
+      exigir("[data-cancelar-edicao]", edicao).addEventListener("click", cancelar);
+      area.addEventListener("keydown", (tecla) => {
+        if (tecla.key === "Escape") {
+          tecla.preventDefault();
+          tecla.stopPropagation();
+          cancelar();
+        } else if (tecla.key === "Enter" && (tecla.ctrlKey || tecla.metaKey)) {
+          tecla.preventDefault();
+          edicao.requestSubmit();
+        }
+      });
+      edicao.addEventListener("submit", async (envio) => {
+        envio.preventDefault();
+        const texto = area.value.trim();
+        if (texto === nota.texto) return cancelar();
+        if (texto.length < 2) {
+          avisar({ tipo: "alerta", titulo: "Nota muito curta", texto: "Escreva pelo menos 2 caracteres." });
+          return;
+        }
+        const salvar = exigir<HTMLButtonElement>('button[type="submit"]', edicao);
+        carregando(salvar, true);
+        try {
+          substituirNota(await api.atualizar<NotaUsuario>(`${caminho}/${nota.id}`, { texto }));
+          avisoSucesso("Nota atualizada", "");
+        } catch (erro) {
+          carregando(salvar, false);
+          avisar({ tipo: "erro", titulo: "Não foi possível editar a nota", texto: mensagemDeErro(erro) });
+        }
+      });
+    }
+  });
+};
+
 const abrirDetalhes = async (id: string, abaInicial: Aba = "resumo"): Promise<void> => {
   const gaveta = new Gaveta({ titulo: "Usuário", subtitulo: "Carregando…", largura: "larga", aoFechar: () => atualizarUrl({ usuario: null }) }).abrir();
   atualizarUrl({ usuario: id });
@@ -514,15 +722,18 @@ const abrirDetalhes = async (id: string, abaInicial: Aba = "resumo"): Promise<vo
       <button type="button" class="aba" role="tab" id="aba-resumo" data-aba="resumo" aria-controls="painel-resumo">${html([icone("usuario")])}Resumo</button>
       ${pode("usuarios.editar") ? html`<button type="button" class="aba" role="tab" id="aba-editar" data-aba="editar" aria-controls="painel-editar">${html([icone("editar")])}Editar</button>` : ""}
       <button type="button" class="aba" role="tab" id="aba-permissoes" data-aba="permissoes" aria-controls="painel-permissoes">${html([icone("escudo")])}Permissões</button>
+      <button type="button" class="aba" role="tab" id="aba-notas" data-aba="notas" aria-controls="painel-notas">${html([icone("nota")])}Notas<span class="contador" data-contador-notas>${numero(detalhe.notas?.total ?? 0)}</span></button>
     </div>
   `);
   gaveta.definirCorpo(html`
     <div class="painel-aba" id="painel-resumo" role="tabpanel" aria-labelledby="aba-resumo">${painelResumo(detalhe)}</div>
     ${pode("usuarios.editar") ? html`<div class="painel-aba" id="painel-editar" role="tabpanel" aria-labelledby="aba-editar" hidden><form class="formulario" id="form-editar-usuario" novalidate>${camposUsuario(usuario)}</form></div>` : ""}
     <div class="painel-aba" id="painel-permissoes" role="tabpanel" aria-labelledby="aba-permissoes" hidden><div class="gaveta-carregando"><span class="giro"></span></div></div>
+    <div class="painel-aba" id="painel-notas" role="tabpanel" aria-labelledby="aba-notas" hidden><div class="gaveta-carregando"><span class="giro"></span></div></div>
   `);
 
   let permissoesCarregadas = false;
+  let notasCarregadas = false;
   const editavelPermissoes = pode("usuarios.permissoes") && !ehEuMesmo(usuario);
 
   const rodapes: Record<Aba, () => Seguro> = {
@@ -541,6 +752,7 @@ const abrirDetalhes = async (id: string, abaInicial: Aba = "resumo"): Promise<vo
       editavelPermissoes
         ? html`<p class="gaveta-rodape-esquerda text-xs texto-suave">As mudanças valem no próximo acesso.</p><button type="submit" form="form-permissoes" class="botao botao-primario" data-salvar-permissoes><i data-icone="escudo-ok"></i>Salvar permissões</button>`
         : html`<p class="gaveta-rodape-esquerda text-xs texto-suave">${ehEuMesmo(usuario) ? "Você não pode alterar as próprias permissões." : "Só quem tem a permissão de gerenciar permissões pode alterar."}</p>`,
+    notas: () => html`<p class="gaveta-rodape-esquerda text-xs texto-suave">${html([icone("cadeado")])} Notas internas: visíveis só para a equipe e registradas na auditoria.</p>`,
   };
 
   const carregarPermissoes = async (): Promise<void> => {
@@ -583,6 +795,13 @@ const abrirDetalhes = async (id: string, abaInicial: Aba = "resumo"): Promise<vo
     aoTrocar: (nome: string) => {
       gaveta.definirRodape(rodapes[nome as Aba]?.() ?? "");
       if (nome === "permissoes") carregarPermissoes();
+      if (nome === "notas" && !notasCarregadas) {
+        notasCarregadas = true;
+        montarNotas(exigir<HTMLElement>("#painel-notas"), usuario, (total) => {
+          const contador = $<HTMLElement>("[data-contador-notas]", gaveta.abas);
+          if (contador) contador.textContent = numero(total);
+        });
+      }
     },
   });
 

@@ -22,6 +22,7 @@ import {
   salvarPermissoesUsuario,
   type Ator,
 } from './servico.js';
+import { atualizarNota, criarNota, excluirNota, listarNotas } from './notas.js';
 
 const papel = z.string().trim().regex(/^[a-z][a-z0-9_]{1,31}$/, 'Papel inválido.');
 
@@ -79,6 +80,21 @@ const corpoMassa = z.object({
   acao: z.enum(['bloquear', 'desbloquear', 'ativar', 'excluir']),
   motivo: opcional(z.string().trim().max(300)),
 });
+
+const corpoNota = z.object({
+  texto: z.string().trim().min(2, 'Escreva pelo menos 2 caracteres.').max(2000, 'A nota pode ter até 2.000 caracteres.'),
+  fixada: z.boolean().optional(),
+});
+
+const corpoAtualizarNota = z
+  .object({
+    texto: z.string().trim().min(2, 'Escreva pelo menos 2 caracteres.').max(2000, 'A nota pode ter até 2.000 caracteres.').optional(),
+    fixada: z.boolean().optional(),
+  })
+  .strict()
+  .refine((dados) => dados.texto !== undefined || dados.fixada !== undefined, 'Informe o texto ou se a nota fica fixada.');
+
+const paramNota = z.object({ id: esquemaUuid, nota: esquemaUuid });
 
 const COLUNAS_USUARIOS: Coluna[] = [
   { campo: 'nome', titulo: 'Nome', formato: 'texto' },
@@ -188,6 +204,43 @@ export async function rotasUsuarios(app: FastifyInstance): Promise<void> {
     { schema: { tags, summary: 'Define o papel e as permissões individuais', params: paramId, body: corpoPermissoes }, preHandler: pode('usuarios.permissoes') },
     async (requisicao) =>
       salvarPermissoesUsuario(app, ator(requisicao), id(requisicao), requisicao.body as z.infer<typeof corpoPermissoes>),
+  );
+
+  app.get(
+    '/usuarios/:id/notas',
+    { schema: { tags, summary: 'Notas internas da conta, fixadas primeiro', params: paramId }, preHandler: pode('usuarios.ver') },
+    async (requisicao) => listarNotas(app.banco, ator(requisicao), id(requisicao)),
+  );
+
+  app.post(
+    '/usuarios/:id/notas',
+    { schema: { tags, summary: 'Adiciona uma nota interna à conta', params: paramId, body: corpoNota }, preHandler: pode('usuarios.ver', 'usuarios.anotar') },
+    async (requisicao, resposta) => {
+      const nota = await criarNota(app, ator(requisicao), id(requisicao), requisicao.body as z.infer<typeof corpoNota>);
+      return resposta.status(201).send(nota);
+    },
+  );
+
+  app.patch(
+    '/usuarios/:id/notas/:nota',
+    {
+      schema: { tags, summary: 'Edita o texto ou fixa uma nota (autor ou quem controla permissões)', params: paramNota, body: corpoAtualizarNota },
+      preHandler: pode('usuarios.ver', 'usuarios.anotar'),
+    },
+    async (requisicao) => {
+      const { id: usuarioId, nota } = requisicao.params as z.infer<typeof paramNota>;
+      return atualizarNota(app, ator(requisicao), usuarioId, nota, requisicao.body as z.infer<typeof corpoAtualizarNota>);
+    },
+  );
+
+  app.delete(
+    '/usuarios/:id/notas/:nota',
+    { schema: { tags, summary: 'Remove uma nota (autor ou quem controla permissões)', params: paramNota }, preHandler: pode('usuarios.ver', 'usuarios.anotar') },
+    async (requisicao, resposta) => {
+      const { id: usuarioId, nota } = requisicao.params as z.infer<typeof paramNota>;
+      await excluirNota(app, ator(requisicao), usuarioId, nota);
+      return resposta.status(204).send();
+    },
   );
 
   app.get(

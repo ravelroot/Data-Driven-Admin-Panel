@@ -1,5 +1,6 @@
 import { iniciarPagina } from "../layout/inicio.ts";
 import { html, $, $$, exigir, parametrosUrl, atualizarUrl, carregando, atrasar } from "../nucleo/dom.ts";
+import { iniciarVisoesSalvas } from "../componentes/visoes-salvas.ts";
 import { icone } from "../nucleo/icones.ts";
 import { api, mensagemDeErro, ErroApi } from "../nucleo/api.ts";
 import { pode } from "../nucleo/sessao.ts";
@@ -313,6 +314,7 @@ iniciarPagina({
   pagina: "transacoes",
   permissao: "transacoes.ver",
   aoIniciar: async () => {
+    const visoes = iniciarVisoesSalvas({ pagina: "transacoes", depoisDe: exigir(".transacoes-filtros"), ignorar: ["transacao"], descricao: "os filtros, a busca e a ordenação" });
     const url = parametrosUrl();
     const filtros = lerFiltrosDaUrl(url);
     const ordenar = url.ordenar && ORDENAVEIS.has(url.ordenar) ? url.ordenar : "criadoEm";
@@ -331,6 +333,7 @@ iniciarPagina({
       aoCarregar: (resposta: RespostaTransacoes) => {
         atualizarResumo(resposta);
         sincronizarUrl();
+        visoes.atualizar();
       },
     });
 

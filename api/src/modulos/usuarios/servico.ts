@@ -10,6 +10,7 @@ import { registrarAtividade } from '../comum/auditoria.js';
 import { atividadesRecentes, buscarUsuario, transacoesRecentes } from '../comum/consultas.js';
 import { mapearUsuario, SELECAO_USUARIO, type Usuario } from '../comum/mapeadores.js';
 import { criarNotificacao } from '../notificacoes/servico.js';
+import { contarNotas } from './notas.js';
 
 export interface Ator {
   usuario: UsuarioSessao;
@@ -207,7 +208,7 @@ export async function criarUsuario(app: FastifyInstance, ator: Ator, dados: Dado
 
 export async function detalharUsuario(banco: Banco, id: string) {
   const usuario = await buscarUsuario(banco, id);
-  const [assinaturas, transacoes, atividades, sessoes] = await Promise.all([
+  const [assinaturas, transacoes, atividades, sessoes, notas] = await Promise.all([
     banco.consultar<Record<string, unknown>>(
       `select a.id, a.plano, p.nome as plano_nome, a.status, a.ciclo, a.metodo, a.valor, a.iniciada_em, a.teste_ate,
               a.convertida_em, a.renovacao_em, a.cancelada_em
@@ -223,6 +224,7 @@ export async function detalharUsuario(banco: Banco, id: string) {
       'select count(*)::int as total from sessoes where usuario_id = $1 and revogada_em is null and expira_em > now()',
       [id],
     ),
+    contarNotas(banco, id),
   ]);
   const assinatura = assinaturas.linhas[0];
   const iso = (valor: unknown) => (valor ? new Date(String(valor instanceof Date ? valor.toISOString() : valor)).toISOString() : null);
@@ -246,6 +248,7 @@ export async function detalharUsuario(banco: Banco, id: string) {
     transacoes,
     atividades,
     sessoesAtivas: sessoes.linhas[0]?.total ?? 0,
+    notas,
   };
 }
 

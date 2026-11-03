@@ -1,5 +1,6 @@
 import { iniciarPagina } from "../layout/inicio.ts";
 import { html, $$, exigir, parametrosUrl, atualizarUrl, carregando } from "../nucleo/dom.ts";
+import { iniciarVisoesSalvas } from "../componentes/visoes-salvas.ts";
 import { icone } from "../nucleo/icones.ts";
 import { api, mensagemDeErro } from "../nucleo/api.ts";
 import { data, dataHora, relativo, corAvatar, plural } from "../nucleo/formato.ts";
@@ -66,6 +67,8 @@ const ROTULOS_ACAO: Record<string, string> = {
   "usuario.desbloqueado": "Conta desbloqueada",
   "usuario.editado": "Usuário editado",
   "usuario.excluido": "Usuário excluído",
+  "usuario.nota_adicionada": "Nota adicionada",
+  "usuario.nota_removida": "Nota removida",
   "usuario.papel_alterado": "Papel alterado",
   "usuario.permissoes_alteradas": "Permissões alteradas",
   "usuario.senha_redefinida": "Senha redefinida",
@@ -196,6 +199,7 @@ iniciarPagina({
   pagina: "auditoria",
   permissao: "auditoria.ver",
   aoIniciar: async () => {
+    const visoes = iniciarVisoesSalvas({ pagina: "auditoria", depoisDe: exigir(".auditoria-filtros"), ignorar: ["atividade"], descricao: "os filtros e a busca" });
     const url = parametrosUrl();
     const pessoas = await api.obter<PessoaEquipe[]>("/atividades/pessoas").catch(() => [] as PessoaEquipe[]);
 
@@ -221,6 +225,7 @@ iniciarPagina({
       aoCarregar: (resposta) => {
         exigir("[data-resumo-tabela]").textContent = plural(resposta.total, "registro encontrado", "registros encontrados");
         sincronizarUrl();
+        visoes.atualizar();
       },
     });
 

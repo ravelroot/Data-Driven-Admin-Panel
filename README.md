@@ -5,7 +5,7 @@
 <h1 align="center">Bento<br><sub><sup><sup><sub>Copyright (©) 2026 Erik Pimenta</sub></sup></sup></sub></h1>
 
 <p align="center">
-  Painel administrativo para SaaS montado em bento grid: cada bloco mostra uma parte do negócio, da receita e dos usuários às assinaturas e ao crescimento. Modo escuro nativo, gráficos interativos, tabelas com ordenação, busca e paginação, gavetas laterais, transações com reembolso, trilha de auditoria, paleta de comandos com atalhos de teclado, status do sistema, notificações em tempo real e relatórios em CSV e PDF, com uma API completa e testada por trás.<br>
+  Painel administrativo para SaaS montado em bento grid: cada bloco mostra uma parte do negócio, da receita e dos usuários às assinaturas e ao crescimento. Modo escuro nativo, gráficos interativos, tabelas com ordenação, busca e paginação, gavetas laterais, transações com reembolso, trilha de auditoria, paleta de comandos com atalhos de teclado, status do sistema, notificações em tempo real e relatórios em CSV e PDF, notas internas nos perfis e visões salvas de filtros, com uma API completa e testada por trás.<br>
   Pronto para usar, estudar ou adaptar.
 </p>
 
@@ -31,9 +31,11 @@
 - **Visão geral:** receita do período em destaque com gráfico, MRR, ticket médio, conversão, usuários e assinaturas ativas, crescimento, cancelamentos e meta do mês. Cada KPI traz o sinal + ou − e o percentual em relação ao período anterior, em verde ou vermelho, e um mini gráfico. Transações e cadastros novos entram na tela na hora.
 - **Analytics:** filtros por intervalo de datas, períodos prontos e agrupamento por dia, semana ou mês. Receita e reembolsos, funil de conversão, dispositivos, tráfego por canal, países, usuários novos e ativos, assinaturas e cancelamentos, receita por plano, mapa de calor de horários de compra e retenção por coorte.
 - **Transações:** busca por código, cliente ou e-mail, filtros por status, método, tipo e período (que ficam na URL para compartilhar), resumo do filtro, gaveta com a linha do tempo de cada cobrança, **reembolso com motivo** registrado na auditoria e exportação em CSV.
+- **Visões salvas:** em Transações e Auditoria, a combinação atual de filtros, busca e ordenação vira um atalho com nome (até 12 por página). Um clique reaplica a visão, a ativa fica destacada e dá para removê-la ali mesmo. Fica guardado por pessoa no navegador.
 - **Auditoria:** a trilha de tudo o que a equipe fez (contas, transações, sessões, relatórios, configurações, integrações e chaves de API), com filtros por pessoa, tipo de ação, período e texto, detalhes de cada registro e exportação em CSV.
 - **Paleta de comandos e atalhos:** `Ctrl` + `K` abre busca e comandos (ir para páginas, cadastrar usuário, exportar transações, enviar aviso, ver o status do sistema, alternar tema, sair). `?` mostra a folha de atalhos e `g` seguido de uma letra navega (`g` `t` abre Transações, `g` `d` abre Auditoria).
 - **Usuários:** cadastro, edição, busca instantânea, filtros por status, papel e plano, colunas ordenáveis, paginação, ações em massa, bloqueio e desbloqueio com motivo, senha temporária, exportação em CSV e controle de permissões por papel com exceções por pessoa.
+- **Notas internas:** cada usuário tem a aba **Notas** na gaveta, com o contador no título. A equipe registra combinados e contexto de atendimento (até 2.000 caracteres, com quebras de linha), fixa as importantes no topo, edita e remove as próprias. `Ctrl` + `Enter` salva. Só o autor ou quem controla permissões altera uma nota, e cada nota criada ou removida entra na auditoria.
 - **Notificações:** alertas em tempo real via Server-Sent Events sobre transações, contas, segurança e relatórios, com filtros, marcar como lida, dispensar, preferências por categoria e envio de avisos para a equipe.
 - **Relatórios:** receita, transações, usuários, assinaturas e crescimento, com prévia antes de gerar, exportação em CSV (pronto para Excel) ou PDF paginado, histórico para baixar de novo e envios agendados diários, semanais ou mensais.
 - **Configurações:** perfil, aparência (tema claro, escuro ou do sistema, 16 paletas e densidade), troca de senha, sessões ativas, chaves de API com escopo, integrações com webhook, Slack e Discord, dados da empresa (moeda, fuso e meta mensal) e **status do sistema** (versão, banco e latência, tempo no ar, memória, conexões em tempo real, volume das tabelas e migrações aplicadas).
@@ -73,9 +75,9 @@ O navegador abre uma conexão em `GET /api/v1/notificacoes/fluxo` e recebe os ev
 | Papel | O que pode |
 |---|---|
 | Administrador | Tudo |
-| Gerente | Tudo, menos dados da empresa, status do sistema, excluir usuários e alterar permissões |
+| Gerente | Tudo, menos dados da empresa, status do sistema, excluir usuários e alterar permissões (anota, mas só altera as próprias notas) |
 | Analista | Visão geral, analytics, ver transações, ver usuários e relatórios |
-| Suporte | Visão geral, ver, editar e bloquear usuários, ver transações |
+| Suporte | Visão geral, ver, editar, bloquear e anotar em usuários, ver transações |
 | Cliente | Não acessa o painel |
 
 As permissões efetivas de cada pessoa são as do papel, mais as concedidas e menos as negadas na aba **Permissões** do usuário. A API confere tudo de novo em cada rota.
@@ -185,6 +187,7 @@ curl -H "Authorization: Bearer bnt_SUA_CHAVE" "http://localhost:8080/api/v1/tran
 | `POST /api/v1/usuarios/{id}/bloquear` · `desbloquear` · `redefinir-senha` | Bloqueio com motivo e senha temporária |
 | `GET/PUT /api/v1/usuarios/{id}/permissoes` · `GET /papeis` · `GET /permissoes` | Papel e exceções de cada pessoa |
 | `POST /api/v1/usuarios/acoes-em-massa` · `GET /usuarios/exportar` | Ações em várias contas e CSV |
+| `GET/POST /api/v1/usuarios/{id}/notas` · `PATCH/DELETE /{nota}` | Notas internas da conta: lista com as fixadas primeiro, criação, edição, fixar e remoção |
 | `GET /api/v1/notificacoes` · `/contagem` · `/fluxo` | Lista, contagem e fluxo em tempo real |
 | `POST /api/v1/notificacoes` · `/{id}/ler` · `/ler-todas` · `GET/PUT /preferencias` | Avisos, leitura e preferências |
 | `GET /api/v1/relatorios/tipos` · `/previa` · `GET/POST /relatorios` · `/{id}/baixar` | Tipos, prévia, geração e download em CSV ou PDF |
@@ -237,6 +240,7 @@ O projeto foi organizado para ser fácil de adaptar:
 | Novo item no menu | `NAVEGACAO` em `web/src/ts/layout/navegacao.ts` |
 | Novo comando na paleta | `ACOES_RAPIDAS` em `web/src/ts/layout/navegacao.ts` |
 | Novo atalho de teclado | `IR_PARA` em `web/src/ts/layout/atalhos.ts` |
+| Visões salvas em outra página | `iniciarVisoesSalvas` (`web/src/ts/componentes/visoes-salvas.ts`) no `aoIniciar` da página, com `visoes.atualizar()` depois de sincronizar a URL |
 | Novo cartão na visão geral | Marcação em `web/index.html` com as classes `.bento-*` e o preenchimento em `web/src/ts/paginas/visao-geral.ts` |
 | Nova coluna na tabela de usuários | `COLUNAS` em `web/src/ts/paginas/usuarios.ts` e o campo de ordenação em `api/src/modulos/usuarios` |
 | Novo tipo de relatório | `api/src/modulos/relatorios` (colunas, consulta e resumo) |
@@ -246,10 +250,21 @@ O projeto foi organizado para ser fácil de adaptar:
 ## Desenvolvimento e testes
 
 ```bash
-npm test                          # 58 testes da API e 13 da interface
+npm test                          # 64 testes da API e 18 da interface
 npm run verificar                 # checagem de tipos (strict) da interface e da API
 npm run build                     # gera web/dist e api/dist
 ```
+
+### Novidades da versão 1.3.0
+
+| Área | O que mudou |
+|---|---|
+| Usuários | Aba **Notas** na gaveta: notas internas com fixar no topo, edição, remoção, contador e `Ctrl` + `Enter` para salvar |
+| Permissões | Nova permissão `usuarios.anotar` (Administrador, Gerente e Suporte). Ver as notas exige só `usuarios.ver` |
+| Auditoria | Ações `usuario.nota_adicionada` e `usuario.nota_removida`, com um trecho da nota nos detalhes |
+| Transações e Auditoria | Visões salvas: filtros, busca e ordenação com nome, reaplicados com um clique |
+| Banco | Migração `005_notas_usuario.sql` com a tabela `notas_usuario` e o índice `notas_usuario_lista` |
+| Testes | 6 testes novos da API (`api/test/notas.test.ts`) e 5 da interface (`web/tests/visoes.test.ts`) |
 
 ### Segurança e qualidade
 
@@ -285,7 +300,7 @@ api/                        API em TypeScript
   src/banco/                conexão (PostgreSQL ou PGlite), migrações e dados de demonstração
   src/relatorios/           geração de CSV e PDF
   migracoes/                esquema do banco
-  test/                     testes da API, de segurança, de transações e de auditoria
+  test/                     testes da API, de segurança, de transações, de auditoria e de notas
 scripts/                    servidor de desenvolvimento e criação do .env no Windows
 docs/                       manuais em PDF e imagens do README
 .github/workflows/          CI
