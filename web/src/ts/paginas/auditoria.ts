@@ -4,7 +4,7 @@ import { iniciarVisoesSalvas } from "../componentes/visoes-salvas.ts";
 import { icone } from "../nucleo/icones.ts";
 import { api, mensagemDeErro } from "../nucleo/api.ts";
 import { data, dataHora, relativo, corAvatar, plural } from "../nucleo/formato.ts";
-import { TabelaDados } from "../componentes/tabela.ts";
+import { TabelaDados, tamanhoPreferido } from "../componentes/tabela.ts";
 import type { ColunaTabela, ParametrosTabela, ValorFiltro } from "../componentes/tabela.ts";
 import { Gaveta } from "../componentes/gaveta.ts";
 import { avisar, avisoSucesso } from "../componentes/aviso.ts";
@@ -111,12 +111,13 @@ const COLUNAS: ColunaTabela<AtividadeCompleta>[] = [
   {
     campo: "criadoEm",
     titulo: "Data e hora",
+    fixa: true,
     classe: "celula-data",
     render: (atividade) => html`<time class="auditoria-data" datetime="${atividade.criadoEm}" title="${relativo(atividade.criadoEm)}">${dataHoraMono(atividade.criadoEm)}</time>`,
   },
   { campo: "usuario", titulo: "Pessoa", render: pessoaCelula },
   { campo: "acao", titulo: "Ação", render: (atividade) => etiquetaAcao(atividade.acao) },
-  { campo: "descricao", titulo: "Descrição", render: (atividade) => html`<span class="auditoria-descricao" title="${atividade.descricao}">${atividade.descricao}</span>` },
+  { campo: "descricao", titulo: "Descrição", fixa: true, render: (atividade) => html`<span class="auditoria-descricao" title="${atividade.descricao}">${atividade.descricao}</span>` },
   { campo: "ip", titulo: "IP", render: (atividade) => (atividade.ip ? html`<span class="auditoria-ip">${atividade.ip}</span>` : html`<span class="texto-fraco">—</span>`) },
 ];
 
@@ -138,7 +139,7 @@ const sincronizarUrl = (): void => {
     q: filtros.q ?? null,
     ...Object.fromEntries(FILTROS.map((nome) => [nome, filtros[nome] ?? null])),
     pagina: pagina > 1 ? pagina : null,
-    porPagina: porPagina !== 25 ? porPagina : null,
+    porPagina: porPagina !== tamanhoPreferido() ? porPagina : null,
   });
   exigir<HTMLButtonElement>('[data-acao="limpar"]').hidden = Object.keys(filtros).length === 0;
 };
@@ -214,8 +215,9 @@ iniciarPagina({
     tabelaAtual = new TabelaDados<AtividadeCompleta>(exigir<HTMLElement>("[data-tabela]"), {
       colunas: COLUNAS,
       legenda: "Registro de atividades em ordem cronológica, do mais recente ao mais antigo",
+      idColunas: "auditoria",
       filtros,
-      porPagina: POR_PAGINA.has(Number(url.porPagina)) ? Number(url.porPagina) : 25,
+      porPagina: POR_PAGINA.has(Number(url.porPagina)) ? Number(url.porPagina) : tamanhoPreferido(),
       buscar: (parametros: ParametrosTabela, sinal: AbortSignal) => {
         const { ordenar: _ordenar, direcao: _direcao, ...consulta } = parametros;
         return api.obter<Pagina<AtividadeCompleta>>("/atividades", consulta, { sinal });

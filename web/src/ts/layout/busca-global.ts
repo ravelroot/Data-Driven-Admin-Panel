@@ -1,11 +1,13 @@
 import { html, criar, atrasar, escapar, exigir } from "../nucleo/dom.ts";
 import { icone } from "../nucleo/icones.ts";
 import { api } from "../nucleo/api.ts";
-import { pode, sair } from "../nucleo/sessao.ts";
+import { pode, sair, usuarioAtual } from "../nucleo/sessao.ts";
+import { limparRecentes, listarRecentes } from "../nucleo/recentes.ts";
 import { alternarTema } from "../nucleo/tema.ts";
 import { moeda, rotulos } from "../nucleo/formato.ts";
 import { NAVEGACAO, ACOES_RAPIDAS } from "./navegacao.ts";
-import { abrirAtalhos } from "./atalhos.ts";
+import { abrirAtalhos, atalhosAtivos } from "./atalhos.ts";
+import { abrirNovidades } from "./novidades.ts";
 import type { Pessoa, StatusTransacao, StatusUsuario } from "../nucleo/tipos.ts";
 
 interface ItemResultado {
@@ -53,6 +55,8 @@ const executar = (item: ItemResultado): void => {
   fechar();
   if (item.acao === "alternar-tema") alternarTema();
   else if (item.acao === "atalhos") abrirAtalhos();
+  else if (item.acao === "novidades") abrirNovidades();
+  else if (item.acao === "limpar-recentes") limparRecentes(usuarioAtual()?.id);
   else if (item.acao === "sair") sair();
   else if (item.externo) window.open(item.href, "_blank", "noopener");
   else if (item.href) location.href = item.href;
@@ -67,6 +71,18 @@ const renderizar = (termo: string, remotos: RespostaBusca | null = null, carrega
   const acoes = ACOES_RAPIDAS.filter((item) => pode(item.permissao)).filter((item) => !filtro || normalizar(item.rotulo).includes(filtro));
 
   const grupos: GrupoResultado[] = [];
+  if (!filtro) {
+    const recentes = listarRecentes(usuarioAtual()?.id).filter((item) => pode(item.tipo === "usuario" ? "usuarios.ver" : "transacoes.ver"));
+    if (recentes.length) {
+      grupos.push({
+        titulo: "Abertos recentemente",
+        itens: [
+          ...recentes.map((item) => ({ icone: item.tipo === "usuario" ? "usuario" : "recibo", titulo: item.titulo, detalhe: item.detalhe, href: item.href, lado: item.tipo === "usuario" ? "Usuário" : "Transação" })),
+          { icone: "lixeira", titulo: "Limpar a lista de recentes", acao: "limpar-recentes" },
+        ],
+      });
+    }
+  }
   if (remotos?.usuarios?.length) {
     grupos.push({
       titulo: "Usuários",
@@ -228,7 +244,7 @@ export const iniciarAtalhosBusca = (): void => {
     if ((evento.ctrlKey || evento.metaKey) && evento.key.toLowerCase() === "k") {
       evento.preventDefault();
       abrirBusca();
-    } else if (evento.key === "/" && !editando) {
+    } else if (evento.key === "/" && !editando && atalhosAtivos()) {
       evento.preventDefault();
       abrirBusca();
     }

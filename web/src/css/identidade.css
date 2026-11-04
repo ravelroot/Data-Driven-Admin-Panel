@@ -1,20 +1,3 @@
-/*
-  Identidade "caixa única" (1.2.0)
-
-  Um bento é uma caixa só, dividida em compartimentos. O painel segue a mesma ideia:
-  - a mesa: o fundo, o menu e o cabeçalho ficam no mesmo tom, sem bordas;
-  - a caixa: os blocos de cada página dividem paredes finas dentro de uma única caixa
-    de cantos arredondados, em vez de cartões soltos com sombra;
-  - a tampa: o bloco principal de cada página é o único escuro.
-  A tipografia faz o resto: números e títulos em Bricolage Grotesque fina e condensada,
-  textos em Instrument Sans, sem caixa-alta e sem rótulos em mono. Cor só onde informa:
-  alta e queda, status e conexão.
-
-  Este arquivo vem por último no bento.css e só ajusta a aparência:
-  a estrutura e as classes continuam as mesmas.
-*/
-
-/* ---------- Materiais ---------- */
 @layer components {
   :root {
     --mesa: var(--color-neutra-100);
@@ -78,7 +61,6 @@
   }
 }
 
-/* ---------- Menu lateral: impresso na mesa ---------- */
 @layer components {
   .barra-lateral,
   .dark .barra-lateral,
@@ -206,7 +188,6 @@
   }
 }
 
-/* ---------- Cabeçalho ---------- */
 @layer components {
   .cabecalho {
     border-bottom-color: transparent;
@@ -275,7 +256,6 @@
   }
 }
 
-/* ---------- Cabeçalho da página ---------- */
 @layer components {
   .pagina-cabecalho {
     border-bottom: 0;
@@ -306,7 +286,6 @@
   }
 }
 
-/* ---------- A caixa ---------- */
 @layer components {
   .bento,
   .bento-kpis {
@@ -334,7 +313,6 @@
     background-color: var(--parede);
   }
 
-  /* Blocos soltos, fora da caixa, são uma caixa de um compartimento só */
   .cartao,
   .kpi,
   .tabela-cartao {
@@ -364,7 +342,6 @@
     @apply px-6 pt-6 compacta:px-4 compacta:pt-4;
   }
 
-  /* A tampa: o bloco principal de cada página */
   .cartao-destaque,
   .dark .cartao-destaque,
   .cartao-escuro,
@@ -388,7 +365,6 @@
     color: color-mix(in oklab, var(--tampa-texto) 62%, transparent);
   }
 
-  /* Meta do mês: compartimento comum, com a barra em tinta */
   .cartao-ouro,
   .dark .cartao-ouro {
     background-color: var(--caixa);
@@ -431,7 +407,6 @@
     @apply text-xs font-normal text-(--texto-3) opacity-100;
   }
 
-  /* Dentro da caixa, os compartimentos dividem as paredes */
   .bento > *,
   .bento-pilha > *,
   .bento-kpis > * {
@@ -476,7 +451,6 @@
   }
 }
 
-/* ---------- Números ---------- */
 @layer components {
   .kpi-icone {
     @apply hidden;
@@ -564,7 +538,6 @@
     font-feature-settings: "tnum" 1;
   }
 
-  /* Alta e queda: o sinal e a cor bastam */
   .tendencia,
   .dark .tendencia {
     @apply gap-0 rounded-none bg-transparent px-0 py-0 text-xs font-medium;
@@ -612,7 +585,6 @@
   }
 }
 
-/* ---------- Status: um ponto de cor e o texto neutro ---------- */
 @layer components {
   .emblema,
   .dark .emblema {
@@ -679,7 +651,6 @@
   }
 }
 
-/* ---------- Botões e controles ---------- */
 @layer components {
   .botao {
     border-radius: var(--raio-controle);
@@ -712,7 +683,6 @@
     border-radius: var(--raio-controle);
   }
 
-  /* Escolhas de período e abas: texto, e um compartimento branco na opção ativa */
   .seletor-periodo,
   .predefinicoes,
   .abas-pilula {
@@ -778,7 +748,6 @@
   }
 }
 
-/* ---------- Tabelas ---------- */
 @layer components {
   .tabela thead th,
   .tabela-simples th {
@@ -819,7 +788,6 @@
   }
 }
 
-/* ---------- Camadas flutuantes ---------- */
 @layer components {
   .modal,
   .paleta-comandos {
@@ -859,7 +827,6 @@
   }
 }
 
-/* ---------- Folha de atalhos ---------- */
 @layer components {
   .atalhos-grade {
     grid-auto-flow: dense;
@@ -892,7 +859,6 @@
   }
 }
 
-/* ---------- Status do sistema ---------- */
 @layer components {
   .sistema-grade {
     gap: 1px;
@@ -934,7 +900,6 @@
   }
 }
 
-/* ---------- Tela de entrada ---------- */
 @layer components {
   .autenticacao-lado {
     background-image: none;
@@ -1053,7 +1018,6 @@
   }
 }
 
-/* ---------- Notificações: cada dia é uma caixa ---------- */
 @layer components {
   .notificacao-grande,
   .notificacao-grande[data-lida="false"] {

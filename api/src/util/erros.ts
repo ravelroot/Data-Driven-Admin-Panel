@@ -9,6 +9,8 @@ export type CodigoErro =
   | 'CREDENCIAIS'
   | 'BLOQUEADO'
   | 'CSRF'
+  | 'MANUTENCAO'
+  | 'INDISPONIVEL'
   | 'INTERNO';
 
 const STATUS_POR_CODIGO: Record<CodigoErro, number> = {
@@ -22,6 +24,8 @@ const STATUS_POR_CODIGO: Record<CodigoErro, number> = {
   CREDENCIAIS: 401,
   BLOQUEADO: 423,
   CSRF: 403,
+  MANUTENCAO: 503,
+  INDISPONIVEL: 503,
   INTERNO: 500,
 };
 

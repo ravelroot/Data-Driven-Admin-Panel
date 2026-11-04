@@ -55,6 +55,7 @@ export function registrarErros(app: FastifyInstance): void {
       );
     }
     requisicao.log.error({ err: erro }, 'Erro inesperado');
-    return resposta.status(500).send(new ErroApi('INTERNO', 'Algo deu errado do nosso lado. Tente de novo.').paraJson());
+    const corpo = new ErroApi('INTERNO', 'Algo deu errado do nosso lado. Tente de novo.').paraJson();
+    return resposta.status(500).send({ erro: { ...corpo.erro, requisicao: requisicao.id } });
   });
 }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <meta name="theme-color" content="#F5F4F4">
-    <meta name="description" content="Perfil, aparência, segurança, chaves de API, integrações e dados da empresa.">
+    <meta name="description" content="Perfil, aparência, preferências, segurança, chaves de API, integrações, dados da empresa, status e manutenção.">
     <title>Configurações | Bento</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <script src="/tema-inicial.js"></script>
@@ -22,7 +22,7 @@
           <div class="pagina-cabecalho">
             <div class="pagina-titulos">
               <h1 class="pagina-titulo">Configurações</h1>
-              <p class="pagina-descricao">Seu perfil, a aparência do painel, a segurança da conta e as conexões com outros serviços.</p>
+              <p class="pagina-descricao">Seu perfil, a aparência e as preferências do painel, a segurança da conta, as conexões com outros serviços e a manutenção do sistema.</p>
             </div>
           </div>
 
@@ -31,11 +31,13 @@
               <div class="abas-vertical" role="tablist" aria-orientation="vertical" data-secoes>
                 <button type="button" class="aba" role="tab" id="aba-perfil" data-aba="perfil" aria-controls="secao-perfil"><i data-icone="usuario"></i>Perfil</button>
                 <button type="button" class="aba" role="tab" id="aba-aparencia" data-aba="aparencia" aria-controls="secao-aparencia"><i data-icone="paleta"></i>Aparência</button>
+                <button type="button" class="aba" role="tab" id="aba-preferencias" data-aba="preferencias" aria-controls="secao-preferencias"><i data-icone="ajustes"></i>Preferências</button>
                 <button type="button" class="aba" role="tab" id="aba-seguranca" data-aba="seguranca" aria-controls="secao-seguranca"><i data-icone="escudo"></i>Segurança</button>
                 <button type="button" class="aba" role="tab" id="aba-chaves" data-aba="chaves" aria-controls="secao-chaves"><i data-icone="chave"></i>Chaves de API</button>
                 <button type="button" class="aba" role="tab" id="aba-integracoes" data-aba="integracoes" aria-controls="secao-integracoes" data-permissao="configuracoes.integracoes"><i data-icone="integracao"></i>Integrações</button>
                 <button type="button" class="aba" role="tab" id="aba-sistema" data-aba="sistema" aria-controls="secao-sistema"><i data-icone="empresa"></i>Empresa</button>
                 <button type="button" class="aba" role="tab" id="aba-status" data-aba="status" aria-controls="secao-status" data-permissao="configuracoes.sistema"><i data-icone="atividade"></i>Status do sistema</button>
+                <button type="button" class="aba" role="tab" id="aba-manutencao" data-aba="manutencao" aria-controls="secao-manutencao" data-permissao="configuracoes.sistema"><i data-icone="ferramenta"></i>Manutenção</button>
               </div>
             </nav>
 
@@ -170,6 +172,82 @@
                 </form>
               </section>
 
+              <section class="config-secao painel-aba" id="secao-preferencias" role="tabpanel" aria-labelledby="aba-preferencias" hidden>
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Preferências</h2>
+                    <p class="config-secao-descricao">Como o painel se comporta para você. Ficam salvas na sua conta e valem em qualquer navegador.</p>
+                  </div>
+                </header>
+                <form data-form-preferencias>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Página inicial</p>
+                      <p class="config-linha-texto">Para onde o painel leva você depois de entrar.</p>
+                    </div>
+                    <div>
+                      <select class="selecao preferencia-selecao" name="paginaInicial" aria-label="Página inicial" data-paginas-iniciais></select>
+                    </div>
+                  </div>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Linhas por página</p>
+                      <p class="config-linha-texto">Quantas linhas as tabelas de usuários, transações e auditoria mostram ao abrir.</p>
+                    </div>
+                    <div>
+                      <div class="segmentado">
+                        <label><input type="radio" name="itensPorPagina" value="10"><span>10</span></label>
+                        <label><input type="radio" name="itensPorPagina" value="25"><span>25</span></label>
+                        <label><input type="radio" name="itensPorPagina" value="50"><span>50</span></label>
+                        <label><input type="radio" name="itensPorPagina" value="100"><span>100</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Animações</p>
+                      <p class="config-linha-texto">Reduzir desliga transições, gráficos animados e rolagens suaves, mesmo se o sistema permitir.</p>
+                    </div>
+                    <div>
+                      <div class="segmentado">
+                        <label><input type="radio" name="movimento" value="sistema"><span><i data-icone="monitor"></i>Seguir o sistema</span></label>
+                        <label><input type="radio" name="movimento" value="reduzido"><span><i data-icone="pausa"></i>Reduzir</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Atalhos de uma tecla</p>
+                      <p class="config-linha-texto"><kbd>/</kbd> para buscar, <kbd>?</kbd> para a folha de atalhos e <kbd>g</kbd> seguido de uma letra para trocar de página. <kbd>Ctrl</kbd> + <kbd>K</kbd> funciona sempre.</p>
+                    </div>
+                    <div class="linha">
+                      <label class="interruptor"><input type="checkbox" name="atalhosTeclado"><span class="interruptor-trilho"></span></label>
+                      <span class="text-sm">Usar atalhos de uma tecla</span>
+                    </div>
+                  </div>
+                  <div class="config-linha" data-permissao="configuracoes.sistema">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Primeiros passos</p>
+                      <p class="config-linha-texto">O guia na visão geral com o que falta para deixar o painel pronto para a equipe.</p>
+                    </div>
+                    <div class="linha">
+                      <label class="interruptor"><input type="checkbox" name="mostrarPrimeirosPassos"><span class="interruptor-trilho"></span></label>
+                      <span class="text-sm">Mostrar na visão geral</span>
+                    </div>
+                  </div>
+                  <div class="config-linha">
+                    <div class="config-linha-rotulo">
+                      <p class="config-linha-titulo">Novidades e recentes</p>
+                      <p class="config-linha-texto">A janela de novidades da versão e a lista de abertos recentemente na paleta de comandos ficam neste navegador.</p>
+                    </div>
+                    <div class="linha flex-wrap">
+                      <button type="button" class="botao botao-secundario botao-pequeno" data-ver-novidades><i data-icone="novidades"></i>Ver as novidades</button>
+                      <button type="button" class="botao botao-fantasma botao-pequeno" data-limpar-recentes><i data-icone="lixeira"></i>Limpar recentes</button>
+                    </div>
+                  </div>
+                </form>
+              </section>
+
               <section class="config-secao painel-aba" id="secao-seguranca" role="tabpanel" aria-labelledby="aba-seguranca" hidden>
                 <header class="config-secao-cabecalho">
                   <div>
@@ -293,6 +371,69 @@
                 </header>
                 <div data-status-sistema aria-live="polite">
                   <div class="sistema-grade"><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div><div class="sistema-celula"><span class="esqueleto esqueleto-texto"></span></div></div>
+                </div>
+              </section>
+              <section class="config-secao painel-aba" id="secao-manutencao" role="tabpanel" aria-labelledby="aba-manutencao" data-permissao="configuracoes.sistema" hidden>
+                <header class="config-secao-cabecalho">
+                  <div>
+                    <h2 class="config-secao-titulo">Manutenção</h2>
+                    <p class="config-secao-descricao">Verificações do ambiente, modo somente leitura, backups, retenção de dados e monitoramento.</p>
+                  </div>
+                </header>
+                <div class="config-linha">
+                  <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Verificações</p>
+                    <p class="config-linha-texto">Confere ambiente, variáveis, banco, migrações, segurança e tarefas agendadas. O mesmo que <code>npm run diagnostico</code>.</p>
+                    <button type="button" class="botao botao-secundario botao-pequeno mt-3 self-start" data-conferir><i data-icone="atualizar"></i>Conferir de novo</button>
+                  </div>
+                  <div data-diagnostico aria-live="polite"><div class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span></div></div>
+                </div>
+                <div class="config-linha">
+                  <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Modo de manutenção</p>
+                    <p class="config-linha-texto">Deixa o painel somente leitura para quem não configura o sistema, pausa o simulador e os relatórios agendados e mostra um aviso no topo de todas as páginas.</p>
+                  </div>
+                  <form class="formulario" data-form-manutencao novalidate>
+                    <div class="linha-interruptor">
+                      <div class="opcao-texto"><span class="opcao-titulo">Manutenção ativa</span><span class="opcao-descricao" data-manutencao-estado>Desligada.</span></div>
+                      <label class="interruptor"><input type="checkbox" name="ativo"><span class="interruptor-trilho"></span></label>
+                    </div>
+                    <label class="campo">
+                      <span class="campo-rotulo">Mensagem para a equipe</span>
+                      <input class="entrada" name="mensagem" maxlength="300" placeholder="Ex.: Atualizando o banco; volta às 14h.">
+                      <span class="campo-ajuda">Aparece no aviso do topo e nas mensagens de erro de quem tentar alterar algo.</span>
+                    </label>
+                    <div class="formulario-acoes justify-start">
+                      <button type="submit" class="botao botao-primario" data-salvar><i data-icone="salvar"></i>Aplicar</button>
+                    </div>
+                  </form>
+                </div>
+                <div class="config-linha">
+                  <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Backups</p>
+                    <p class="config-linha-texto" data-backup-politica>Cópias completas do banco em <code>.ndjson.gz</code>. Restaure com <code>npm run restaurar</code>.</p>
+                    <button type="button" class="botao botao-primario botao-pequeno mt-3 self-start" data-fazer-backup><i data-icone="backup"></i>Fazer backup agora</button>
+                  </div>
+                  <div data-backups><div class="esqueleto-linhas"><span class="esqueleto-texto"></span></div></div>
+                </div>
+                <div class="config-linha">
+                  <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Retenção de dados</p>
+                    <p class="config-linha-texto">O que fica velho demais é removido todo dia. Os prazos vêm das variáveis <code>BENTO_RETENCAO_*</code>.</p>
+                    <button type="button" class="botao botao-perigo-suave botao-pequeno mt-3 self-start" data-limpar><i data-icone="lixeira"></i>Limpar agora</button>
+                  </div>
+                  <div data-retencao><div class="esqueleto-linhas"><span class="esqueleto-texto"></span></div></div>
+                </div>
+                <div class="config-linha">
+                  <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Monitoramento</p>
+                    <p class="config-linha-texto">Endereços para o orquestrador, o balanceador e o Prometheus.</p>
+                  </div>
+                  <dl class="lista-definicao monitoramento" data-monitoramento>
+                    <dt><code>/api/v1/saude/vivo</code></dt><dd>Sonda de vida: o processo responde.</dd>
+                    <dt><code>/api/v1/saude/pronto</code></dt><dd>Sonda de prontidão: banco no ar, migrações em dia e sem encerramento. Responde 503 quando não está pronto.</dd>
+                    <dt><code>/api/v1/metricas</code></dt><dd data-metricas-estado>Métricas no formato do Prometheus.</dd>
+                  </dl>
                 </div>
               </section>
             </div>

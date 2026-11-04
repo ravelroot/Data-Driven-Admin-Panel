@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="robots" content="noindex">
+    <meta name="description" content="Esta página não existe no Bento.">
+    <title>Página não encontrada | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/ts/paginas/nao-encontrada.ts"></script>
+  </head>
+  <body>
+    <main class="erro-pagina" data-tipo="404">
+      <div class="erro-pagina-caixa">
+        <div class="erro-pagina-textos">
+          <span class="erro-pagina-rotulo"><i data-icone="bussola"></i>Página não encontrada</span>
+          <p class="erro-pagina-codigo" aria-hidden="true">404</p>
+          <h1 class="erro-pagina-titulo">Esse endereço não existe no painel</h1>
+          <p class="erro-pagina-texto">O link pode ter mudado ou estar incompleto. <span data-caminho></span></p>
+          <div class="erro-pagina-acoes">
+            <a class="botao botao-primario" href="/"><i data-icone="casa"></i>Ir para a visão geral</a>
+            <button type="button" class="botao botao-secundario" data-voltar><i data-icone="seta-esquerda"></i>Voltar</button>
+          </div>
+          <nav class="erro-pagina-links" aria-label="Páginas do painel">
+            <a class="erro-pagina-link" href="/usuarios"><span class="erro-pagina-link-icone"><i data-icone="usuarios"></i></span><span class="flex min-w-0 flex-col"><span class="erro-pagina-link-titulo">Usuários</span><span class="erro-pagina-link-texto">Cadastro, bloqueio e permissões</span></span></a>
+            <a class="erro-pagina-link" href="/transacoes"><span class="erro-pagina-link-icone"><i data-icone="recibo"></i></span><span class="flex min-w-0 flex-col"><span class="erro-pagina-link-titulo">Transações</span><span class="erro-pagina-link-texto">Pagamentos, filtros e reembolsos</span></span></a>
+            <a class="erro-pagina-link" href="/configuracoes"><span class="erro-pagina-link-icone"><i data-icone="configuracoes"></i></span><span class="flex min-w-0 flex-col"><span class="erro-pagina-link-titulo">Configurações</span><span class="erro-pagina-link-texto">Perfil, preferências e sistema</span></span></a>
+          </nav>
+        </div>
+        <div class="erro-ilustracao" data-tipo="404" aria-hidden="true">
+          <span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span><span class="erro-ilustracao-peca"></span>
+          <span class="erro-ilustracao-selo"><i data-icone="bussola"></i></span>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,3 +1,6 @@
+import { randomUUID } from 'node:crypto';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyCookie from '@fastify/cookie';
 import fastifyCors from '@fastify/cors';
@@ -9,6 +12,7 @@ import fastifySwaggerUi from '@fastify/swagger-ui';
 import './tipos.js';
 import { iniciarAgendador } from './agendador.js';
 import { criarBanco, type Banco } from './banco/conexao.js';
+import { listarMigracoes } from './banco/migrar.js';
 import { VERSAO, type Config } from './config.js';
 import { registrarEstatico } from './estatico.js';
 import { rotasAnalytics } from './modulos/analytics/rotas.js';
@@ -26,9 +30,13 @@ import { rotasVisaoGeral } from './modulos/visao-geral/rotas.js';
 import { registrarAutenticacao } from './plugins/autenticacao.js';
 import { registrarErros } from './plugins/erros.js';
 import { registrarValidacaoZod, transformarParaSwagger } from './plugins/esquemas.js';
+import { MANUTENCAO_DESLIGADA, registrarModoManutencao, sincronizarManutencao, type EstadoManutencao } from './operacao/manutencao.js';
+import { criarMetricas, metricasDoProcesso, registrarColetaMetricas, tokenConfere } from './operacao/metricas.js';
 import { iniciarSimulador } from './simulador.js';
 import { criarBarramento } from './tempo-real/barramento.js';
 import { ErroApi } from './util/erros.js';
+
+const ID_REQUISICAO = /^[A-Za-z0-9._:-]{8,80}$/;
 
 export interface OpcoesApp {
   config: Config;
@@ -43,6 +51,11 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
     logger: opcoes.registrarLogs === false ? false : { level: config.log },
     trustProxy: config.proxyConfiavel,
     bodyLimit: 1_048_576,
+    requestIdHeader: false,
+    genReqId: (requisicao) => {
+      const recebido = requisicao.headers['x-request-id'];
+      return typeof recebido === 'string' && ID_REQUISICAO.test(recebido) ? recebido : randomUUID();
+    },
   });
 
   registrarValidacaoZod(app);
@@ -61,6 +74,12 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
   app.decorate('config', config);
   app.decorate('banco', banco);
   app.decorate('barramento', barramento);
+  app.decorate('estado', { iniciadoEm: new Date(), encerrando: false, manutencao: { ...MANUTENCAO_DESLIGADA } });
+  app.decorate('metricas', criarMetricas());
+  app.addHook('onSend', async (requisicao, resposta) => {
+    resposta.header('x-request-id', requisicao.id);
+  });
+  registrarColetaMetricas(app);
 
   await app.register(fastifyCookie);
   await app.register(fastifyHelmet, {
@@ -107,7 +126,8 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
       components: {
         securitySchemes: {
           cookieSessao: { type: 'apiKey', in: 'cookie', name: 'bento_sessao' },
-          chaveApi: { type: 'http', scheme: 'bearer', description: 'Chave de API bnt_... criada em Configurações › Segurança' },
+          chaveApi: { type: 'http', scheme: 'bearer', description: 'Chave de API bnt_... criada em Configurações › Chaves de API' },
+          tokenMetricas: { type: 'http', scheme: 'bearer', description: 'Valor de BENTO_METRICAS_TOKEN' },
         },
       },
       security: [{ cookieSessao: [] }, { chaveApi: [] }],
@@ -118,13 +138,58 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
 
   registrarErros(app);
   registrarAutenticacao(app);
+  registrarModoManutencao(app);
 
   await app.register(
     async (api) => {
-      api.get('/saude', { schema: { tags: ['Sistema'], summary: 'Saúde da API e do banco' } }, async () => {
+      const semLimite = { rateLimit: false };
+      api.get('/saude', { schema: { tags: ['Sistema'], summary: 'Saúde da API e do banco' }, config: semLimite }, async () => {
         await banco.consultar('select 1');
-        return { status: 'ok', banco: banco.tipo, versao: VERSAO, uptime: Math.round(process.uptime()) };
+        return {
+          status: 'ok',
+          banco: banco.tipo,
+          versao: VERSAO,
+          uptime: Math.round(process.uptime()),
+          manutencao: app.estado.manutencao.ativo,
+        };
       });
+      api.get('/saude/vivo', { schema: { tags: ['Sistema'], summary: 'Sonda de vida: o processo responde' }, config: semLimite }, async () => ({
+        status: 'ok',
+      }));
+      api.get(
+        '/saude/pronto',
+        { schema: { tags: ['Sistema'], summary: 'Sonda de prontidão: banco no ar, migrações em dia e sem encerramento' }, config: semLimite },
+        async (_requisicao, resposta) => {
+          const motivos: string[] = [];
+          if (app.estado.encerrando) motivos.push('O servidor está encerrando.');
+          try {
+            const { linhas } = await banco.consultar<{ nome: string }>('select nome from migracoes');
+            const aplicadas = new Set(linhas.map((linha) => linha.nome));
+            const pendentes = listarMigracoes().filter((migracao) => !aplicadas.has(migracao.nome));
+            if (pendentes.length) motivos.push(`Migrações pendentes: ${pendentes.map((migracao) => migracao.nome).join(', ')}.`);
+          } catch {
+            motivos.push('O banco de dados não respondeu.');
+          }
+          if (motivos.length) return resposta.status(503).send({ status: 'indisponivel', motivos });
+          return { status: 'pronto', versao: VERSAO, manutencao: app.estado.manutencao.ativo };
+        },
+      );
+      api.get(
+        '/metricas',
+        {
+          schema: { tags: ['Sistema'], summary: 'Métricas no formato do Prometheus (exige BENTO_METRICAS_TOKEN)', security: [{ tokenMetricas: [] }] },
+          config: semLimite,
+        },
+        async (requisicao, resposta) => {
+          if (!config.metricasToken) throw new ErroApi('NAO_ENCONTRADO', 'Métricas desligadas. Defina BENTO_METRICAS_TOKEN para ativar.');
+          const [esquema, valor] = (requisicao.headers.authorization ?? '').split(' ');
+          if (esquema?.toLowerCase() !== 'bearer' || !valor || !tokenConfere(valor, config.metricasToken)) {
+            throw new ErroApi('NAO_AUTENTICADO', 'Envie o token de métricas em Authorization: Bearer.');
+          }
+          const texto = app.metricas.exportar(await metricasDoProcesso(app));
+          return resposta.header('content-type', 'text/plain; version=0.0.4; charset=utf-8').header('cache-control', 'no-store').send(texto);
+        },
+      );
       await api.register(rotasAuth);
       await api.register(rotasVisaoGeral);
       await api.register(rotasAnalytics);
@@ -143,16 +208,25 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
 
   const temWeb = await registrarEstatico(app);
 
+  const temPagina404 = temWeb && existsSync(path.join(config.dirWeb, '404.html'));
   app.setNotFoundHandler((requisicao, resposta) => {
     if (requisicao.url.startsWith('/api/') || !temWeb || requisicao.method !== 'GET') {
       return resposta.status(404).send(new ErroApi('NAO_ENCONTRADO', 'Rota não encontrada.').paraJson());
     }
+    if (temPagina404) return resposta.status(404).header('cache-control', 'no-cache').sendFile('404.html');
     return resposta.redirect('/');
   });
 
   const paradas: (() => void)[] = [];
+  barramento.assinarInterno((evento) => {
+    if (evento.tipo !== 'sistema') return;
+    const dados = evento.dados as { manutencao?: EstadoManutencao } | null;
+    if (dados?.manutencao) app.estado.manutencao = dados.manutencao;
+  });
+
   app.addHook('onReady', async () => {
     await barramento.iniciar();
+    await sincronizarManutencao(app);
     if (opcoes.iniciarTarefas) {
       paradas.push(iniciarAgendador(app));
       if (config.simulador) paradas.push(iniciarSimulador(app));

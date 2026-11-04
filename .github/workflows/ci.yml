@@ -27,6 +27,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --no-audit --no-fund
+      - name: Conferir a versão em todos os arquivos
+        run: npm run versao -- --conferir
       - name: Checar tipos da interface
         run: npm run verificar -w web
       - name: Testes do núcleo da interface
@@ -66,22 +68,36 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Checar tipos
         run: npm run verificar -w api
-      - name: Testes da API (PGlite)
-        run: npm test -w api
+      - name: Auditar dependências de produção
+        run: npm audit --omit=dev --audit-level=high
+      - name: Testes da API com cobertura (PGlite)
+        run: npm run cobertura -w api
       - name: Compilar a API
         run: npm run build -w api
+      - name: Migrar, semear, fazer backup e restaurar no PostgreSQL
+        env:
+          DATABASE_URL: postgres://bento:bento@localhost:5432/bento
+          BENTO_SEGREDO_JWT: segredo-de-teste-da-integracao-continua-com-mais-de-32-caracteres
+        run: |
+          node api/dist/cli.js migrar
+          node api/dist/cli.js semear
+          node api/dist/cli.js backup --pasta /tmp/bento-backups
+          node api/dist/cli.js restaurar "$(ls /tmp/bento-backups/*.ndjson.gz | head -n 1)" --sim
+          node api/dist/cli.js diagnostico
       - name: Subir contra um PostgreSQL de verdade
         env:
           DATABASE_URL: postgres://bento:bento@localhost:5432/bento
           BENTO_SEGREDO_JWT: segredo-de-teste-da-integracao-continua-com-mais-de-32-caracteres
           BENTO_SIMULADOR: "false"
+          BENTO_METRICAS_TOKEN: token-de-metricas-da-integracao-continua
         run: |
           node api/dist/servidor.js &
           for tentativa in $(seq 1 60); do
-            if curl -fsS http://localhost:8080/api/v1/saude; then break; fi
+            if curl -fsS http://localhost:8080/api/v1/saude/pronto; then break; fi
             sleep 1
           done
           curl -fsS http://localhost:8080/api/v1/saude | grep -q '"banco":"postgresql"'
+          curl -fsS -H "Authorization: Bearer token-de-metricas-da-integracao-continua" http://localhost:8080/api/v1/metricas | grep -q 'bento_info{'
           curl -fsS -c cookies.txt -H "Content-Type: application/json" -H "X-Bento: 1" \
             -d '{"email":"admin@bento.local","senha":"bento123"}' http://localhost:8080/api/v1/auth/entrar > /dev/null
           curl -fsS -b cookies.txt "http://localhost:8080/api/v1/visao-geral?periodo=30d" | grep -q '"kpis"'

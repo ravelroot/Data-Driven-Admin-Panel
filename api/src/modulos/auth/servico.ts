@@ -15,16 +15,14 @@ import {
 } from '../comum/consultas.js';
 import type { Usuario } from '../comum/mapeadores.js';
 import { criarNotificacao } from '../notificacoes/servico.js';
+import { VERSAO } from '../../config.js';
+import { lerManutencao, type EstadoManutencao } from '../../operacao/manutencao.js';
 
 export const CUSTO_BCRYPT = 10;
 const LIMITE_TENTATIVAS = 5;
 const MINUTOS_BLOQUEIO = 15;
 let hashFicticio: string | null = null;
 
-/**
- * Tentativas contra e-mails que não existem. Sem isso, só contas reais chegavam ao bloqueio temporário
- * ("Muitas tentativas..."), e a diferença de resposta revelava quais e-mails estão cadastrados.
- */
 const MAX_EMAILS_DESCONHECIDOS = 10_000;
 const tentativasDesconhecidas = new Map<string, { tentativas: number; bloqueadoAte: number }>();
 
@@ -66,21 +64,22 @@ export interface Contexto {
   usuario: Usuario;
   permissoes: string[];
   preferencias: Preferencias;
-  sistema: Pick<ConfigSistema, 'nomeEmpresa' | 'moeda' | 'metaMensal'>;
+  sistema: Pick<ConfigSistema, 'nomeEmpresa' | 'moeda' | 'metaMensal'> & { versao: string; manutencao: EstadoManutencao };
 }
 
 export async function montarContexto(banco: Banco, usuarioId: string): Promise<Contexto> {
-  const [usuario, permissoes, preferencias, sistema] = await Promise.all([
+  const [usuario, permissoes, preferencias, sistema, manutencao] = await Promise.all([
     buscarUsuario(banco, usuarioId),
     permissoesEfetivas(banco, usuarioId),
     obterPreferencias(banco, usuarioId),
     obterConfigSistema(banco),
+    lerManutencao(banco),
   ]);
   return {
     usuario,
     permissoes,
     preferencias,
-    sistema: { nomeEmpresa: sistema.nomeEmpresa, moeda: sistema.moeda, metaMensal: sistema.metaMensal },
+    sistema: { nomeEmpresa: sistema.nomeEmpresa, moeda: sistema.moeda, metaMensal: sistema.metaMensal, versao: VERSAO, manutencao },
   };
 }
 

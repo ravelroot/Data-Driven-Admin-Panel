@@ -3,7 +3,7 @@ import { iniciarPagina } from "../layout/inicio.ts";
 import { html, $, $$, exigir, renderizar, parametrosUrl } from "../nucleo/dom.ts";
 import { icone, hidratarIcones } from "../nucleo/icones.ts";
 import { api, mensagemDeErro } from "../nucleo/api.ts";
-import { pode, usuarioAtual } from "../nucleo/sessao.ts";
+import { atualizarPreferencias, pode, preferencia, usuarioAtual } from "../nucleo/sessao.ts";
 import { ouvir } from "../nucleo/eventos.ts";
 import { ler, gravar } from "../nucleo/armazenamento.ts";
 import { moeda, numero, percentual, relativo, data, iniciais } from "../nucleo/formato.ts";
@@ -11,7 +11,7 @@ import { Grafico, eixoMoeda, gradienteArea, coresDoTema } from "../componentes/g
 import { preencherKpi, tendencia, valorGrande } from "../componentes/indicadores.ts";
 import { linhaTransacao, abrirTransacao } from "../componentes/transacao.ts";
 import { avisar } from "../componentes/aviso.ts";
-import type { Atividade, EstadoConexao, Kpi, Transacao, Usuario } from "../nucleo/tipos.ts";
+import type { Atividade, EstadoConexao, Kpi, Preferencias, Transacao, Usuario } from "../nucleo/tipos.ts";
 
 type Periodo = "7d" | "30d" | "90d" | "12m";
 type Cores = ReturnType<typeof coresDoTema>;
@@ -338,6 +338,71 @@ const aoVivo = (): void => {
 
 const linhaDoEvento = (evento: Event): HTMLTableRowElement | null => (evento.target as Element | null)?.closest<HTMLTableRowElement>("tr[data-chave]") ?? null;
 
+interface PassoInicial {
+  id: string;
+  titulo: string;
+  texto: string;
+  feito: boolean;
+  href: string;
+  acao: string;
+}
+
+const carregarPrimeirosPassos = async (): Promise<void> => {
+  const alvo = $<HTMLElement>("[data-primeiros-passos]");
+  if (!alvo || !pode("configuracoes.sistema") || preferencia("primeirosPassosOcultos", false)) return;
+  let resposta: { passos: PassoInicial[]; feitos: number; total: number };
+  try {
+    resposta = await api.obter("/sistema/primeiros-passos");
+  } catch {
+    return;
+  }
+  if (resposta.feitos >= resposta.total) return;
+  const porcentagem = Math.round((resposta.feitos / resposta.total) * 100);
+  const atual = resposta.passos.find((passo) => !passo.feito)?.id;
+  renderizar(
+    alvo,
+    html`
+      <div class="primeiros-passos-cabecalho">
+        <div class="primeiros-passos-topo">
+          <div>
+            <h2 class="primeiros-passos-titulo" id="titulo-primeiros-passos">Primeiros passos</h2>
+            <p class="primeiros-passos-texto">O que falta para a equipe usar o painel com segurança.</p>
+          </div>
+          <button type="button" class="botao botao-fantasma botao-pequeno" data-ocultar-passos>${html([icone("olho-fechado")])}Ocultar</button>
+        </div>
+        <div class="primeiros-passos-progresso">
+          <div class="primeiros-passos-trilho" role="progressbar" aria-valuenow="${porcentagem}" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso dos primeiros passos"><span style="--valor: ${porcentagem}%"></span></div>
+          <span class="primeiros-passos-contagem">${resposta.feitos} de ${resposta.total}</span>
+        </div>
+      </div>
+      <ol class="primeiros-passos-lista">
+        ${resposta.passos.map(
+          (passo, indice) => html`<li class="primeiros-passos-item" ${passo.feito ? html`data-feito="true"` : ""} ${passo.id === atual ? html`data-atual="true"` : ""}>
+            <span class="primeiros-passos-marcador">${passo.feito ? html([icone("confirmar")]) : indice + 1}</span>
+            <div class="primeiros-passos-item-textos">
+              <p class="primeiros-passos-item-titulo">${passo.titulo}<span class="sr-only">${passo.feito ? " (feito)" : " (pendente)"}</span></p>
+              <p class="primeiros-passos-item-texto">${passo.texto}</p>
+            </div>
+            ${passo.feito ? "" : html`<a class="botao ${passo.id === atual ? "botao-primario" : "botao-secundario"} botao-pequeno primeiros-passos-item-acao" href="${passo.href}">${passo.acao}</a>`}
+          </li>`,
+        )}
+      </ol>
+    `,
+  );
+  alvo.hidden = false;
+  alvo.querySelector("[data-ocultar-passos]")?.addEventListener("click", async () => {
+    alvo.hidden = true;
+    try {
+      const salvas = await api.substituir<Preferencias>("/configuracoes/preferencias", { primeirosPassosOcultos: true });
+      atualizarPreferencias(salvas);
+      avisar({ tipo: "info", titulo: "Primeiros passos ocultos", texto: "Para mostrar de novo, use Configurações › Preferências." });
+    } catch (erro) {
+      alvo.hidden = false;
+      avisar({ tipo: "erro", titulo: "Não foi possível ocultar", texto: mensagemDeErro(erro) });
+    }
+  });
+};
+
 iniciarPagina({
   pagina: "visao-geral",
   permissao: "painel.ver",
@@ -367,6 +432,7 @@ iniciarPagina({
     });
 
     aoVivo();
+    void carregarPrimeirosPassos();
     await carregar();
 
     const { transacao } = parametrosUrl();

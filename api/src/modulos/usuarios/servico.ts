@@ -117,11 +117,6 @@ async function contarAdminsAtivos(banco: Banco, exceto: string): Promise<number>
   return linhas[0]?.total ?? 0;
 }
 
-/**
- * Quem não controla permissões (usuarios.permissoes) só pode alterar contas de nível
- * estritamente inferior ao próprio papel. Sem isso, um papel como "suporte" (que tem
- * usuarios.editar) redefiniria a senha de um administrador e assumiria a conta dele.
- */
 async function garantirHierarquia(banco: Banco, ator: Ator, alvo: Usuario): Promise<void> {
   if (alvo.id === ator.usuario.id || ator.usuario.permissoes.has('usuarios.permissoes')) return;
   const { linhas } = await banco.consultar<{ codigo: string; nivel: number }>(

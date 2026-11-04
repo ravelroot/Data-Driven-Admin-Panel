@@ -12,7 +12,7 @@ export interface Ambiente {
   fechar(): Promise<void>;
 }
 
-export async function criarAmbiente(): Promise<Ambiente> {
+export async function criarAmbiente(sobrescrever: Partial<Config> = {}): Promise<Ambiente> {
   const config = lerConfig({
     dirDados: 'memoria',
     urlBanco: null,
@@ -20,6 +20,7 @@ export async function criarAmbiente(): Promise<Ambiente> {
     simulador: false,
     log: 'silent',
     dirWeb: '/caminho/que/nao/existe',
+    ...sobrescrever,
   });
   const banco = await criarBanco(config);
   await aplicarMigracoes(banco);

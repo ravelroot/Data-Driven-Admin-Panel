@@ -134,6 +134,7 @@ export function iniciarSimulador(app: FastifyInstance): () => void {
     const espera = Math.round(mediaMs * (0.6 + sorteio() * 0.8));
     temporizador = setTimeout(async () => {
       try {
+        if (app.estado.manutencao.ativo) return;
         ciclos += 1;
         await novaTransacao();
         if (ciclos % 5 === 0) await novoCadastro();

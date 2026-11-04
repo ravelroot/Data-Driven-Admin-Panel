@@ -1,6 +1,6 @@
 import ApexCharts, { type ApexOptions } from "apexcharts";
 import { ouvir } from "../nucleo/eventos.ts";
-import { escuroAtivo } from "../nucleo/tema.ts";
+import { escuroAtivo, movimentoReduzido } from "../nucleo/tema.ts";
 import { moeda, numero } from "../nucleo/formato.ts";
 
 const PT_BR = {
@@ -103,7 +103,6 @@ export const mesclar = <T extends object>(alvo: T, ...fontes: Array<object | nul
   return resultado as T;
 };
 
-const movimentoReduzido = (): boolean => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const opcoesBase = (cores: CoresTema): ApexOptions => ({
   chart: {

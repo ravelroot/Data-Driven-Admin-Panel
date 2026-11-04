@@ -2,15 +2,19 @@ import { iniciarPagina } from "../layout/inicio.ts";
 import { html, $, $$, exigir, renderizar, parametrosUrl, atualizarUrl, carregando } from "../nucleo/dom.ts";
 import { icone, hidratarIcones } from "../nucleo/icones.ts";
 import { api, mensagemDeErro, ErroApi } from "../nucleo/api.ts";
-import { pode, atualizarUsuarioAtual, atualizarPreferencias, atualizarSistema } from "../nucleo/sessao.ts";
-import { aplicarTema, aplicarPaleta, aplicarDensidade, definirBarraRecolhida, preferenciasLocais } from "../nucleo/tema.ts";
-import { relativo, corAvatar, moeda } from "../nucleo/formato.ts";
+import { pode, atualizarUsuarioAtual, atualizarPreferencias, atualizarSistema, usuarioAtual } from "../nucleo/sessao.ts";
+import { aplicarTema, aplicarPaleta, aplicarDensidade, aplicarMovimento, definirBarraRecolhida, preferenciasLocais } from "../nucleo/tema.ts";
+import { relativo, corAvatar, moeda, dataHora, numero } from "../nucleo/formato.ts";
+import { limparRecentes } from "../nucleo/recentes.ts";
+import { PAGINAS_INICIAIS, paginaPorId } from "../layout/navegacao.ts";
+import { abrirNovidades } from "../layout/novidades.ts";
+import { definirManutencao } from "../layout/manutencao.ts";
 import { Gaveta } from "../componentes/gaveta.ts";
 import { iniciarAbas } from "../componentes/abas.ts";
 import { confirmar, mostrarSegredo } from "../componentes/modal.ts";
 import { avisar, avisoSucesso } from "../componentes/aviso.ts";
 import { lerFormulario, mostrarErros, limparErros, ligarForcaSenha, ligarMostrarSenha } from "../componentes/formulario.ts";
-import type { Integracao, Preferencias, Sistema, Usuario } from "../nucleo/tipos.ts";
+import type { EntregaIntegracao, EstadoManutencao, Integracao, Pagina, Preferencias, Sistema, StatusEntrega, Usuario } from "../nucleo/tipos.ts";
 
 interface SessaoAtiva {
   id: string;
@@ -150,6 +154,49 @@ const secaoAparencia = async (): Promise<void> => {
       if (casca) casca.dataset.barra = dados.sidebarRecolhida ? "recolhida" : "expandida";
     }
     salvarNoServidor(dados);
+  });
+};
+
+const secaoPreferencias = async (): Promise<void> => {
+  const formulario = exigir<HTMLFormElement>("[data-form-preferencias]");
+  const seletor = exigir<HTMLSelectElement>("[data-paginas-iniciais]", formulario);
+  const opcoes = PAGINAS_INICIAIS.map((id) => paginaPorId(id)).filter((item) => item && pode(item.permissao));
+  renderizar(seletor, html`${opcoes.map((item) => html`<option value="${item?.id ?? ""}">${item?.rotulo ?? ""}</option>`)}`);
+  const atuais = await api.obter<Preferencias>("/configuracoes/preferencias");
+  atualizarPreferencias(atuais);
+  const preencher = (preferencias: Preferencias): void =>
+    preencherFormulario(formulario, {
+      paginaInicial: opcoes.some((item) => item?.id === preferencias.paginaInicial) ? preferencias.paginaInicial : (opcoes[0]?.id ?? "visao-geral"),
+      itensPorPagina: preferencias.itensPorPagina ?? 25,
+      movimento: preferencias.movimento ?? "sistema",
+      atalhosTeclado: preferencias.atalhosTeclado ?? true,
+      mostrarPrimeirosPassos: !preferencias.primeirosPassosOcultos,
+    });
+  preencher(atuais);
+  formulario.addEventListener("change", async (evento) => {
+    const alvo = evento.target as HTMLInputElement;
+    const dados = lerFormulario(formulario) as Record<string, unknown>;
+    const corpo: Partial<Preferencias> = {
+      paginaInicial: dados.paginaInicial as Preferencias["paginaInicial"],
+      itensPorPagina: Number(dados.itensPorPagina),
+      movimento: dados.movimento as Preferencias["movimento"],
+      atalhosTeclado: Boolean(dados.atalhosTeclado),
+    };
+    if ("mostrarPrimeirosPassos" in dados) corpo.primeirosPassosOcultos = !dados.mostrarPrimeirosPassos;
+    if (alvo.name === "movimento") aplicarMovimento(String(dados.movimento));
+    try {
+      const salvas = await api.substituir<Preferencias>("/configuracoes/preferencias", corpo);
+      atualizarPreferencias(salvas);
+      avisoSucesso("Preferência salva", alvo.name === "itensPorPagina" ? "Vale para as próximas tabelas que você abrir." : undefined);
+    } catch (erro) {
+      preencher(atuais);
+      avisar({ tipo: "erro", titulo: "Não foi possível salvar a preferência", texto: mensagemDeErro(erro) });
+    }
+  });
+  exigir("[data-ver-novidades]", formulario).addEventListener("click", () => abrirNovidades());
+  exigir("[data-limpar-recentes]", formulario).addEventListener("click", () => {
+    limparRecentes(usuarioAtual()?.id);
+    avisoSucesso("Lista de recentes limpa");
   });
 };
 
@@ -322,10 +369,120 @@ const cartaoIntegracao = (integracao: Integracao) => html`
     <p class="integracao-descricao">${integracao.descricao}</p>
     <div class="integracao-rodape">
       <span class="integracao-evento">${integracao.ultimoEvento ? `Último evento ${relativo(integracao.ultimoEvento)}` : integracao.configurada ? "Configurada" : "Não configurada"}</span>
-      <button type="button" class="botao botao-secundario botao-pequeno" data-configurar="${integracao.id}">${html([icone("ajustes")])}Configurar</button>
+      <div class="integracao-botoes">
+        ${ENVIAM_EVENTOS.has(integracao.provedor) ? html`<button type="button" class="botao botao-fantasma botao-icone botao-pequeno" data-entregas="${integracao.id}" aria-label="Histórico de entregas de ${integracao.nome}" data-dica-flutuante="Entregas">${html([icone("historico")])}</button>` : ""}
+        <button type="button" class="botao botao-secundario botao-pequeno" data-configurar="${integracao.id}">${html([icone("ajustes")])}Configurar</button>
+      </div>
     </div>
+    ${integracao.status === "erro" && integracao.ultimoErro ? html`<p class="integracao-erro">${integracao.ultimoErro}</p>` : ""}
   </article>
 `;
+
+const ENVIAM_EVENTOS = new Set(["webhook", "slack", "discord"]);
+
+const ROTULOS_ENTREGA: Record<StatusEntrega, string> = { pendente: "Nova tentativa", entregue: "Entregue", falhou: "Falhou" };
+const STATUS_EMBLEMA_ENTREGA: Record<StatusEntrega, string> = { pendente: "pendente", entregue: "sucesso", falhou: "erro" };
+const ROTULOS_EVENTO: Record<string, string> = {
+  "transacao.paga": "Transação paga",
+  "usuario.criado": "Usuário criado",
+  "usuario.bloqueado": "Usuário bloqueado",
+  "relatorio.gerado": "Relatório gerado",
+  "integracao.teste": "Teste",
+};
+
+type RespostaEntregas = Pagina<EntregaIntegracao> & { resumo: Record<StatusEntrega, number> };
+
+const itemEntrega = (entrega: EntregaIntegracao) => html`
+  <li class="entrega" data-status="${entrega.status}">
+    <div class="entrega-topo">
+      <span class="emblema emblema-pequeno" data-status="${STATUS_EMBLEMA_ENTREGA[entrega.status]}">${ROTULOS_ENTREGA[entrega.status]}</span>
+      <span class="entrega-evento">${ROTULOS_EVENTO[entrega.evento] ?? entrega.evento}</span>
+      <time class="entrega-data" datetime="${entrega.criadoEm}" title="${dataHora(entrega.criadoEm)}">${relativo(entrega.criadoEm)}</time>
+    </div>
+    <p class="entrega-resumo">${entrega.resumo}</p>
+    <p class="entrega-meta">
+      ${entrega.codigoHttp ? html`<span>HTTP ${entrega.codigoHttp}</span>` : ""}
+      ${entrega.duracaoMs !== null ? html`<span>${numero(entrega.duracaoMs)} ms</span>` : ""}
+      <span>${entrega.tentativas} ${entrega.tentativas === 1 ? "tentativa" : "tentativas"}</span>
+      ${entrega.status === "pendente" && entrega.proximaTentativa ? html`<span>próxima ${relativo(entrega.proximaTentativa)}</span>` : ""}
+    </p>
+    ${entrega.erro && entrega.status !== "entregue" ? html`<p class="entrega-erro">${entrega.erro}</p>` : ""}
+    ${entrega.teste ? "" : html`<button type="button" class="botao botao-fantasma botao-pequeno entrega-reenviar" data-reenviar="${entrega.id}">${html([icone("repetir")])}Reenviar</button>`}
+  </li>
+`;
+
+const abrirEntregas = (integracao: Integracao, recarregarCartoes: () => Promise<void>): void => {
+  const gaveta = new Gaveta({ titulo: `Entregas · ${integracao.nome}`, subtitulo: "Eventos enviados, com código HTTP, tempo de resposta e tentativas.", largura: "larga" }).abrir();
+  let filtro: StatusEntrega | "" = "";
+  let pagina = 1;
+  const carregar = async (): Promise<void> => {
+    try {
+      const resposta = await api.obter<RespostaEntregas>(`/integracoes/${integracao.id}/entregas`, { status: filtro, pagina, porPagina: 20 });
+      const { resumo } = resposta;
+      gaveta.definirCorpo(html`
+        <div class="entregas-filtros" role="group" aria-label="Filtrar entregas">
+          ${(
+            [
+              ["", "Todas", resumo.entregue + resumo.pendente + resumo.falhou],
+              ["entregue", "Entregues", resumo.entregue],
+              ["pendente", "Aguardando", resumo.pendente],
+              ["falhou", "Falharam", resumo.falhou],
+            ] as const
+          ).map(([valor, rotulo, total]) => html`<button type="button" class="botao botao-fantasma botao-pequeno" data-filtro-entrega="${valor}" aria-pressed="${filtro === valor}">${rotulo}<span class="contador">${numero(total)}</span></button>`)}
+        </div>
+        ${resposta.itens.length
+          ? html`<ul class="entregas-lista" role="list">${resposta.itens.map(itemEntrega)}</ul>`
+          : html`<div class="vazio vazio-compacto"><span class="vazio-icone">${html([icone("webhook")])}</span><p class="vazio-titulo">Nenhuma entrega${filtro ? " com esse status" : ""}</p><p class="vazio-texto">Os eventos aparecem aqui assim que a integração estiver ligada.</p></div>`}
+        ${resposta.paginas > 1
+          ? html`<div class="entregas-paginacao">
+              <button type="button" class="botao botao-secundario botao-pequeno" data-pagina-entregas="${pagina - 1}" ${pagina <= 1 ? "disabled" : ""}>${html([icone("chevron-esquerda")])}Anteriores</button>
+              <span class="texto-suave text-sm">${pagina} de ${resposta.paginas}</span>
+              <button type="button" class="botao botao-secundario botao-pequeno" data-pagina-entregas="${pagina + 1}" ${pagina >= resposta.paginas ? "disabled" : ""}>Próximas${html([icone("chevron-direita")])}</button>
+            </div>`
+          : ""}
+        <div class="alerta alerta-info alerta-compacto mt-4">${html([icone("info")])}<span>Falhas são reenviadas sozinhas depois de 1, 5 e 30 minutos. Cada envio leva os cabeçalhos <code>X-Bento-Entrega</code> e <code>X-Bento-Tentativa</code> para o destino ignorar repetições.</span></div>
+      `);
+    } catch (erro) {
+      gaveta.definirCorpo(html`<div class="vazio vazio-erro"><span class="vazio-icone">${html([icone("alerta")])}</span><p class="vazio-titulo">Não foi possível carregar</p><p class="vazio-texto">${mensagemDeErro(erro)}</p></div>`);
+    }
+  };
+  gaveta.corpo.addEventListener("click", async (evento) => {
+    const alvo = alvoDoEvento(evento);
+    const botaoFiltro = alvo.closest<HTMLElement>("[data-filtro-entrega]");
+    if (botaoFiltro) {
+      filtro = (botaoFiltro.dataset.filtroEntrega ?? "") as StatusEntrega | "";
+      pagina = 1;
+      await carregar();
+      return;
+    }
+    const botaoPagina = alvo.closest<HTMLButtonElement>("[data-pagina-entregas]");
+    if (botaoPagina && !botaoPagina.disabled) {
+      pagina = Math.max(1, Number(botaoPagina.dataset.paginaEntregas));
+      await carregar();
+      return;
+    }
+    const botaoReenviar = alvo.closest<HTMLButtonElement>("[data-reenviar]");
+    if (botaoReenviar) {
+      carregando(botaoReenviar, true);
+      try {
+        const entrega = await api.criar<EntregaIntegracao>(`/integracoes/${integracao.id}/entregas/${botaoReenviar.dataset.reenviar}/reenviar`);
+        avisar({ tipo: entrega.status === "entregue" ? "sucesso" : "erro", titulo: entrega.status === "entregue" ? "Evento reenviado" : "O reenvio falhou", texto: entrega.erro ?? undefined });
+        await carregar();
+        void recarregarCartoes();
+      } catch (erro) {
+        carregando(botaoReenviar, false);
+        avisar({ tipo: "erro", titulo: "Não foi possível reenviar", texto: mensagemDeErro(erro) });
+      }
+    }
+  });
+  gaveta.definirRodape(html`
+    <button type="button" class="botao botao-fantasma" data-atualizar-entregas>${html([icone("atualizar")])}Atualizar</button>
+    <button type="button" class="botao botao-secundario" data-fechar-entregas>Fechar</button>
+  `);
+  exigir("[data-atualizar-entregas]", gaveta.rodape).addEventListener("click", () => void carregar());
+  exigir("[data-fechar-entregas]", gaveta.rodape).addEventListener("click", () => gaveta.fechar());
+  void carregar();
+};
 
 const abrirIntegracao = (integracao: Integracao, recarregar: () => Promise<void>): void => {
   const gaveta = new Gaveta({ titulo: integracao.nome, subtitulo: integracao.descricao }).abrir();
@@ -395,6 +552,12 @@ const secaoIntegracoes = async (): Promise<void> => {
     renderizar(alvo, html`${lista.map(cartaoIntegracao)}`);
   };
   alvo.addEventListener("click", (evento) => {
+    const entregas = alvoDoEvento(evento).closest<HTMLElement>("[data-entregas]");
+    if (entregas) {
+      const integracao = lista.find((item) => item.id === entregas.dataset.entregas);
+      if (integracao) abrirEntregas(integracao, recarregar);
+      return;
+    }
     const botao = alvoDoEvento(evento).closest<HTMLElement>("[data-configurar]");
     if (!botao) return;
     const integracao = lista.find((item) => item.id === botao.dataset.configurar);
@@ -437,7 +600,6 @@ const secaoSistema = async (): Promise<void> => {
   });
 };
 
-
 interface StatusSistema {
   versao: string;
   agora: string;
@@ -445,11 +607,13 @@ interface StatusSistema {
   simulador: boolean;
   node: string;
   plataforma: string;
-  processo: { pid: number; tempoNoArSegundos: number; memoriaBytes: number; heapUsadoBytes: number };
+  processo: { pid: number; tempoNoArSegundos: number; memoriaBytes: number; heapUsadoBytes: number; requisicoes?: number };
   banco: { tipo: "postgresql" | "pglite"; versao: string; latenciaMs: number; tamanhoBytes: number };
   tempoReal: { conexoes: number; canalAtivo: boolean };
   tabelas: Array<{ nome: string; registros: number }>;
   migracoes: Array<{ nome: string; aplicadaEm: string }>;
+  manutencao?: EstadoManutencao;
+  producao?: boolean;
 }
 
 const bytes = (valor: number): string => {
@@ -482,6 +646,8 @@ const NOMES_TABELAS: Record<string, string> = {
   relatorios_agendados: "Relatórios agendados",
   sessoes: "Sessões",
   chaves_api: "Chaves de API",
+  notas_usuario: "Notas internas",
+  entregas_integracao: "Entregas das integrações",
   auditoria: "Registros de auditoria",
 };
 
@@ -498,7 +664,10 @@ const secaoStatus = async (): Promise<void> => {
       ["Tempo no ar", duracao(status.processo.tempoNoArSegundos)],
       ["Memória (RSS)", bytes(status.processo.memoriaBytes)],
       ["Tempo real", `${status.tempoReal.conexoes} ${status.tempoReal.conexoes === 1 ? "conexão" : "conexões"}`],
+      ["Requisições atendidas", numero(status.processo.requisicoes ?? 0)],
       ["Node.js", status.node],
+      ["Modo", status.manutencao?.ativo ? "Manutenção" : status.producao ? "Produção" : "Desenvolvimento"],
+      ["Heap usado", bytes(status.processo.heapUsadoBytes)],
     ];
     renderizar(
       alvo,
@@ -537,7 +706,248 @@ const secaoStatus = async (): Promise<void> => {
   }, 15_000);
 };
 
-const SECOES: Record<string, () => Promise<void>> = { perfil: secaoPerfil, aparencia: secaoAparencia, seguranca: secaoSeguranca, chaves: secaoChaves, integracoes: secaoIntegracoes, sistema: secaoSistema, status: secaoStatus };
+type StatusVerificacao = "ok" | "info" | "aviso" | "erro";
+
+interface Verificacao {
+  id: string;
+  grupo: string;
+  titulo: string;
+  status: StatusVerificacao;
+  detalhe: string;
+  dica?: string;
+}
+
+interface Diagnostico {
+  versao: string;
+  geradoEm: string;
+  resumo: Record<StatusVerificacao, number>;
+  verificacoes: Verificacao[];
+}
+
+interface ArquivoBackup {
+  nome: string;
+  bytes: number;
+  criadoEm: string;
+}
+
+interface ItemLimpeza {
+  categoria: string;
+  nome: string;
+  dias: number;
+  registros: number;
+  bytes: number;
+}
+
+const ROTULOS_VERIFICACAO: Record<StatusVerificacao, string> = { ok: "Tudo certo", info: "Informação", aviso: "Atenção", erro: "Precisa de ajuste" };
+const STATUS_EMBLEMA_VERIFICACAO: Record<StatusVerificacao, string> = { ok: "sucesso", info: "info", aviso: "alerta", erro: "erro" };
+const ORDEM_VERIFICACAO: Record<StatusVerificacao, number> = { erro: 0, aviso: 1, info: 2, ok: 3 };
+
+const descreverManutencao = (estado: EstadoManutencao): string =>
+  estado.ativo ? `Ligada ${estado.desde ? relativo(estado.desde) : ""}${estado.porNome ? ` por ${estado.porNome}` : ""}.` : "Desligada: todos alteram o que o papel permite.";
+
+const secaoManutencao = async (): Promise<void> => {
+  const alvoDiagnostico = exigir("[data-diagnostico]");
+  const carregarDiagnostico = async (): Promise<void> => {
+    try {
+      const resultado = await api.obter<Diagnostico>("/sistema/diagnostico");
+      const ordenadas = [...resultado.verificacoes].sort((a, b) => ORDEM_VERIFICACAO[a.status] - ORDEM_VERIFICACAO[b.status]);
+      const atencao = ordenadas.filter((item) => item.status === "erro" || item.status === "aviso");
+      const demais = ordenadas.filter((item) => item.status === "ok" || item.status === "info");
+      const lista = (itens: Verificacao[]) => html`<ul class="verificacoes" role="list">
+        ${itens.map(
+          (item) => html`<li class="verificacao" data-status="${item.status}">
+            <span class="verificacao-ponto" aria-hidden="true"></span>
+            <div class="verificacao-texto">
+              <p class="verificacao-titulo">${item.titulo}<span class="sr-only">: ${ROTULOS_VERIFICACAO[item.status]}</span><span class="verificacao-grupo">${item.grupo}</span></p>
+              <p class="verificacao-detalhe">${item.detalhe}</p>
+              ${item.dica ? html`<p class="verificacao-dica">${html([icone("chevron-direita")])}${item.dica}</p>` : ""}
+            </div>
+          </li>`,
+        )}
+      </ul>`;
+      renderizar(
+        alvoDiagnostico,
+        html`
+          <p class="verificacoes-resumo">
+            ${(["erro", "aviso", "ok", "info"] as const).map((status) => html`<span class="emblema emblema-pequeno" data-status="${STATUS_EMBLEMA_VERIFICACAO[status]}">${numero(resultado.resumo[status])} ${status === "ok" ? "ok" : status === "info" ? "informativas" : status === "aviso" ? (resultado.resumo.aviso === 1 ? "aviso" : "avisos") : resultado.resumo.erro === 1 ? "erro" : "erros"}</span>`)}
+            <span class="texto-suave text-xs">conferido ${relativo(resultado.geradoEm)}</span>
+          </p>
+          ${atencao.length ? lista(atencao) : html`<div class="alerta alerta-sucesso alerta-compacto">${html([icone("sucesso")])}<span>Nenhum erro ou aviso. O Bento está configurado como esperado.</span></div>`}
+          <details class="verificacoes-demais">
+            <summary>${atencao.length ? `Ver as outras ${demais.length} verificações` : `Ver as ${demais.length} verificações`}</summary>
+            ${lista(demais)}
+          </details>
+        `,
+      );
+    } catch (erro) {
+      renderizar(alvoDiagnostico, html`<div class="alerta alerta-erro alerta-compacto">${html([icone("alerta")])}<span>${mensagemDeErro(erro)}</span></div>`);
+    }
+  };
+
+  const formulario = exigir<HTMLFormElement>("[data-form-manutencao]");
+  const estadoTexto = exigir("[data-manutencao-estado]", formulario);
+  const preencherManutencao = (estado: EstadoManutencao): void => {
+    campo(formulario, "ativo").checked = estado.ativo;
+    campo(formulario, "mensagem").value = estado.mensagem ?? "";
+    estadoTexto.textContent = descreverManutencao(estado);
+  };
+  preencherManutencao(await api.obter<EstadoManutencao>("/sistema/manutencao"));
+  formulario.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    const ativo = campo(formulario, "ativo").checked;
+    const mensagem = campo(formulario, "mensagem").value.trim();
+    if (ativo) {
+      const ok = await confirmar({
+        titulo: "Ligar o modo de manutenção?",
+        texto: "Quem não configura o sistema passa a só consultar dados até você encerrar. O simulador e os relatórios agendados ficam pausados.",
+        tipo: "alerta",
+        confirmar: "Ligar manutenção",
+      });
+      if (!ok) return;
+    }
+    const botao = formulario.querySelector<HTMLButtonElement>("[data-salvar]");
+    carregando(botao, true);
+    try {
+      const estado = await api.substituir<EstadoManutencao>("/sistema/manutencao", { ativo, mensagem });
+      preencherManutencao(estado);
+      definirManutencao(estado);
+      avisoSucesso(estado.ativo ? "Modo de manutenção ligado" : "Modo de manutenção desligado");
+    } catch (erro) {
+      avisar({ tipo: "erro", titulo: "Não foi possível aplicar", texto: mensagemDeErro(erro) });
+    } finally {
+      carregando(botao, false);
+    }
+  });
+
+  const alvoBackups = exigir("[data-backups]");
+  const politica = exigir("[data-backup-politica]");
+  const carregarBackups = async (): Promise<void> => {
+    try {
+      const resposta = await api.obter<{ automatico: string; manter: number; itens: ArquivoBackup[] }>("/sistema/backups");
+      politica.innerHTML = String(
+        html`${resposta.automatico === "desligado" ? "Backup automático desligado (defina BENTO_BACKUP_AUTOMATICO=diario)." : `Backup automático ${resposta.automatico === "diario" ? "diário" : "semanal"}, guardando os ${resposta.manter} mais recentes.`} Restaure com <code>npm run restaurar</code>.`,
+      );
+      renderizar(
+        alvoBackups,
+        resposta.itens.length
+          ? html`<ul class="arquivos-backup" role="list">
+              ${resposta.itens.slice(0, 12).map(
+                (arquivo) => html`<li class="arquivo-backup">
+                  <span class="arquivo-backup-icone">${html([icone("banco-dados")])}</span>
+                  <div class="arquivo-backup-texto">
+                    <p class="arquivo-backup-nome">${arquivo.nome}</p>
+                    <p class="arquivo-backup-meta">${bytes(arquivo.bytes)} · <time datetime="${arquivo.criadoEm}" title="${dataHora(arquivo.criadoEm)}">${relativo(arquivo.criadoEm)}</time>${arquivo.nome.includes("-auto.") ? " · automático" : ""}</p>
+                  </div>
+                  <button type="button" class="botao botao-fantasma botao-icone botao-pequeno" data-baixar-backup="${arquivo.nome}" aria-label="Baixar ${arquivo.nome}" data-dica-flutuante="Baixar">${html([icone("baixar")])}</button>
+                </li>`,
+              )}
+            </ul>`
+          : html`<div class="vazio vazio-compacto"><span class="vazio-icone">${html([icone("backup")])}</span><p class="vazio-titulo">Nenhum backup ainda</p><p class="vazio-texto">Faça o primeiro agora ou ligue o backup automático.</p></div>`,
+      );
+    } catch (erro) {
+      renderizar(alvoBackups, html`<div class="alerta alerta-erro alerta-compacto">${html([icone("alerta")])}<span>${mensagemDeErro(erro)}</span></div>`);
+    }
+  };
+  exigir("[data-fazer-backup]").addEventListener("click", async (evento) => {
+    const botao = evento.currentTarget as HTMLButtonElement;
+    carregando(botao, true);
+    try {
+      const resumo = await api.criar<{ nome: string; registros: number; bytes: number }>("/sistema/backups");
+      avisoSucesso("Backup gravado", `${resumo.nome} · ${numero(resumo.registros)} registros · ${bytes(resumo.bytes)}`);
+      await carregarBackups();
+    } catch (erro) {
+      avisar({ tipo: "erro", titulo: "Não foi possível fazer o backup", texto: mensagemDeErro(erro) });
+    } finally {
+      carregando(botao, false);
+    }
+  });
+  alvoBackups.addEventListener("click", async (evento) => {
+    const botao = alvoDoEvento(evento).closest<HTMLButtonElement>("[data-baixar-backup]");
+    if (!botao) return;
+    carregando(botao, true);
+    try {
+      await api.baixar(`/sistema/backups/${encodeURIComponent(botao.dataset.baixarBackup ?? "")}`, null, botao.dataset.baixarBackup);
+    } catch (erro) {
+      avisar({ tipo: "erro", titulo: "Não foi possível baixar", texto: mensagemDeErro(erro) });
+    } finally {
+      carregando(botao, false);
+    }
+  });
+
+  const alvoRetencao = exigir("[data-retencao]");
+  const desenharRetencao = (itens: ItemLimpeza[], removidos = false): void => {
+    renderizar(
+      alvoRetencao,
+      html`<table class="sistema-tabela retencao-tabela">
+        <thead><tr><th>Dado</th><th>Prazo</th><th>${removidos ? "Removidos" : "A remover"}</th></tr></thead>
+        <tbody>
+          ${itens.map(
+            (item) => html`<tr>
+              <td>${item.nome}</td>
+              <td>${item.dias > 0 ? `${numero(item.dias)} dias` : "sem limite"}</td>
+              <td>${numero(item.registros)}${item.bytes ? html` <span class="texto-suave">(${bytes(item.bytes)})</span>` : ""}</td>
+            </tr>`,
+          )}
+        </tbody>
+      </table>`,
+    );
+  };
+  const carregarRetencao = async (): Promise<void> => {
+    try {
+      desenharRetencao((await api.obter<{ itens: ItemLimpeza[] }>("/sistema/limpeza")).itens);
+    } catch (erro) {
+      renderizar(alvoRetencao, html`<div class="alerta alerta-erro alerta-compacto">${html([icone("alerta")])}<span>${mensagemDeErro(erro)}</span></div>`);
+    }
+  };
+  exigir("[data-limpar]").addEventListener("click", async (evento) => {
+    const botao = evento.currentTarget as HTMLButtonElement;
+    const ok = await confirmar({
+      titulo: "Aplicar a retenção agora?",
+      texto: "Os registros mais antigos que os prazos da tabela são apagados de vez. Faça um backup antes se quiser guardá-los.",
+      tipo: "perigo",
+      confirmar: "Limpar agora",
+    });
+    if (!ok) return;
+    carregando(botao, true);
+    try {
+      const resultado = await api.criar<{ itens: ItemLimpeza[]; total: number }>("/sistema/limpeza");
+      desenharRetencao(resultado.itens, true);
+      avisoSucesso(resultado.total ? `${numero(resultado.total)} registros removidos` : "Nada a remover");
+      window.setTimeout(() => void carregarRetencao(), 6000);
+    } catch (erro) {
+      avisar({ tipo: "erro", titulo: "Não foi possível limpar", texto: mensagemDeErro(erro) });
+    } finally {
+      carregando(botao, false);
+    }
+  });
+
+  exigir("[data-conferir]").addEventListener("click", async (evento) => {
+    const botao = evento.currentTarget as HTMLButtonElement;
+    carregando(botao, true);
+    await carregarDiagnostico();
+    carregando(botao, false);
+  });
+
+  const status = await api.obter<StatusSistema & { metricas?: boolean }>("/sistema/status").catch(() => null);
+  if (status) {
+    exigir("[data-metricas-estado]").textContent = status.metricas
+      ? "Métricas no formato do Prometheus, ativas. Envie o token em Authorization: Bearer."
+      : "Métricas no formato do Prometheus, desligadas. Defina BENTO_METRICAS_TOKEN para ativar.";
+  }
+  await Promise.all([carregarDiagnostico(), carregarBackups(), carregarRetencao()]);
+};
+
+const SECOES: Record<string, () => Promise<void>> = {
+  perfil: secaoPerfil,
+  aparencia: secaoAparencia,
+  preferencias: secaoPreferencias,
+  seguranca: secaoSeguranca,
+  chaves: secaoChaves,
+  integracoes: secaoIntegracoes,
+  sistema: secaoSistema,
+  status: secaoStatus,
+  manutencao: secaoManutencao,
+};
 
 const abrirSecao = async (nome: string): Promise<void> => {
   atualizarUrl({ secao: nome === "perfil" ? null : nome });

@@ -30,7 +30,6 @@ const corpoEnviar = z.object({
   mensagem: z.string().trim().min(2).max(1000),
   tipo: z.enum(['info', 'sucesso', 'alerta', 'erro']).default('info'),
   destinatario: z.union([z.literal('todos'), esquemaUuid]).default('todos'),
-  // "//site" e "/\site" são URLs relativas ao protocolo: levariam a outro domínio (redirecionamento aberto).
   link: opcional(z.string().trim().max(300).regex(/^(\/(?![/\\])|https?:\/\/)/, 'Use um caminho interno (/...) ou uma URL.')),
 });
 

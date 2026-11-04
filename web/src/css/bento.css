@@ -47,6 +47,7 @@
 @import "./componentes/integracoes.css";
 @import "./componentes/filtros.css";
 @import "./componentes/calendario.css";
+@import "./componentes/operacao.css";
 
 @import "./kit/animacoes.css";
 @import "./kit/acordeao.css";

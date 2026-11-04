@@ -1,12 +1,15 @@
+import type { FastifyBaseLogger } from 'fastify';
 import type { Banco } from '../../banco/conexao.js';
 import {
   CAMPOS_POR_PROVEDOR,
   destinoClaramenteInterno,
   ENVIA_EVENTOS,
-  enviarParaProvedor,
   lerConfigIntegracao,
+  registrarEntrega,
+  tentarEntrega,
   type Provedor,
 } from '../../integracoes.js';
+import { montarPagina, type Pagina } from '../../util/validacao.js';
 import { paraIso } from '../../util/datas.js';
 import { naoEncontrado, validacao } from '../../util/erros.js';
 import { cifrar, mascarar } from '../../util/seguranca.js';
@@ -22,6 +25,7 @@ export interface Integracao {
   configurada: boolean;
   status: 'conectada' | 'desconectada' | 'erro';
   ultimoEvento: string | null;
+  ultimoErro: string | null;
   campos: { nome: string; rotulo: string; tipo: 'texto' | 'url' | 'segredo'; valor: string }[];
 }
 
@@ -35,6 +39,7 @@ interface LinhaIntegracao {
   config: unknown;
   status: Integracao['status'];
   ultimo_evento: Date | null;
+  ultimo_erro: string | null;
 }
 
 function estaConfigurada(provedor: Provedor, valores: Record<string, string>): boolean {
@@ -53,6 +58,7 @@ function mapear(linha: LinhaIntegracao, segredo: string): Integracao {
     configurada: estaConfigurada(linha.provedor, valores),
     status: linha.status,
     ultimoEvento: paraIso(linha.ultimo_evento),
+    ultimoErro: linha.status === 'erro' ? linha.ultimo_erro : null,
     campos: CAMPOS_POR_PROVEDOR[linha.provedor].map((campo) => ({
       nome: campo.nome,
       rotulo: campo.rotulo,
@@ -131,7 +137,12 @@ export async function atualizarIntegracao(
   return mapear(await buscar(banco, id), segredo);
 }
 
-export async function testarIntegracao(banco: Banco, segredo: string, id: string): Promise<{ ok: boolean; mensagem: string }> {
+export async function testarIntegracao(
+  banco: Banco,
+  segredo: string,
+  log: FastifyBaseLogger,
+  id: string,
+): Promise<{ ok: boolean; mensagem: string; entrega?: string }> {
   const atual = await buscar(banco, id);
   const valores = lerConfigIntegracao(atual.config, segredo);
   const campos = CAMPOS_POR_PROVEDOR[atual.provedor];
@@ -146,16 +157,126 @@ export async function testarIntegracao(banco: Banco, segredo: string, id: string
   if (!ENVIA_EVENTOS.includes(atual.provedor)) {
     return { ok: true, mensagem: `Os campos de ${atual.nome} estão no formato esperado.` };
   }
-  try {
-    await enviarParaProvedor(atual.provedor, valores, 'integracao.teste', 'Teste de integração do Bento', { teste: true });
-    await banco.consultar(`update integracoes set ultimo_evento = now(), ultimo_erro = null, status = case when ativo then 'conectada' else status end where id = $1`, [id]);
-    return { ok: true, mensagem: `Mensagem de teste entregue para ${atual.nome}.` };
-  } catch (erro) {
-    const mensagem = erro instanceof Error ? erro.message : String(erro);
-    await banco.consultar(`update integracoes set ultimo_erro = $2, status = case when ativo then 'erro' else status end where id = $1`, [
-      id,
-      mensagem.slice(0, 300),
-    ]);
-    return { ok: false, mensagem: `Não foi possível entregar: ${mensagem}` };
+  const entregaId = await registrarEntrega(banco, id, 'integracao.teste', 'Teste de integração do Bento', { teste: true }, true);
+  const resultado = await tentarEntrega(banco, segredo, log, entregaId);
+  if (resultado?.ok) return { ok: true, mensagem: `Mensagem de teste entregue para ${atual.nome}.`, entrega: entregaId };
+  return { ok: false, mensagem: `Não foi possível entregar: ${resultado?.mensagem ?? 'tente de novo.'}`, entrega: entregaId };
+}
+
+export interface Entrega {
+  id: string;
+  evento: string;
+  resumo: string;
+  status: 'pendente' | 'entregue' | 'falhou';
+  tentativas: number;
+  proximaTentativa: string | null;
+  codigoHttp: number | null;
+  duracaoMs: number | null;
+  erro: string | null;
+  teste: boolean;
+  criadoEm: string;
+  atualizadoEm: string;
+}
+
+interface LinhaEntrega {
+  id: string;
+  evento: string;
+  resumo: string;
+  status: Entrega['status'];
+  tentativas: number;
+  proxima_tentativa: Date | null;
+  codigo_http: number | null;
+  duracao_ms: number | null;
+  erro: string | null;
+  teste: boolean;
+  criado_em: Date;
+  atualizado_em: Date;
+}
+
+const mapearEntrega = (linha: LinhaEntrega): Entrega => ({
+  id: linha.id,
+  evento: linha.evento,
+  resumo: linha.resumo,
+  status: linha.status,
+  tentativas: linha.tentativas,
+  proximaTentativa: paraIso(linha.proxima_tentativa),
+  codigoHttp: linha.codigo_http,
+  duracaoMs: linha.duracao_ms,
+  erro: linha.erro,
+  teste: linha.teste,
+  criadoEm: paraIso(linha.criado_em) ?? '',
+  atualizadoEm: paraIso(linha.atualizado_em) ?? '',
+});
+
+export async function listarEntregas(
+  banco: Banco,
+  integracaoId: string,
+  filtro: { status?: Entrega['status']; pagina: number; porPagina: number },
+): Promise<Pagina<Entrega> & { resumo: Record<Entrega['status'], number> }> {
+  await buscar(banco, integracaoId);
+  const parametros: unknown[] = [integracaoId];
+  let condicao = 'integracao_id = $1';
+  if (filtro.status) {
+    parametros.push(filtro.status);
+    condicao += ` and status = $${parametros.length}`;
   }
+  const [lista, total, resumo] = await Promise.all([
+    banco.consultar<LinhaEntrega>(
+      `select id, evento, resumo, status, tentativas, proxima_tentativa, codigo_http, duracao_ms, erro, teste, criado_em, atualizado_em
+         from entregas_integracao where ${condicao}
+        order by criado_em desc, id desc
+        limit $${parametros.length + 1} offset $${parametros.length + 2}`,
+      [...parametros, filtro.porPagina, (filtro.pagina - 1) * filtro.porPagina],
+    ),
+    banco.consultar<{ total: number }>(`select count(*)::int as total from entregas_integracao where ${condicao}`, parametros),
+    banco.consultar<{ status: Entrega['status']; total: number }>(
+      `select status, count(*)::int as total from entregas_integracao where integracao_id = $1 group by status`,
+      [integracaoId],
+    ),
+  ]);
+  const porStatus = { pendente: 0, entregue: 0, falhou: 0 };
+  for (const linha of resumo.linhas) porStatus[linha.status] = linha.total;
+  return {
+    ...montarPagina(lista.linhas.map(mapearEntrega), total.linhas[0]?.total ?? 0, filtro.pagina, filtro.porPagina),
+    resumo: porStatus,
+  };
+}
+
+export async function reenviarEntrega(
+  banco: Banco,
+  segredo: string,
+  log: FastifyBaseLogger,
+  integracaoId: string,
+  entregaId: string,
+  autor: { id: string },
+  ip: string,
+): Promise<Entrega> {
+  const integracao = await buscar(banco, integracaoId);
+  const { linhas } = await banco.consultar<{ id: string; evento: string; teste: boolean }>(
+    `update entregas_integracao set status = 'pendente', proxima_tentativa = now(), atualizado_em = now()
+      where id = $1 and integracao_id = $2 and status <> 'pendente'
+      returning id, evento, teste`,
+    [entregaId, integracaoId],
+  );
+  if (!linhas[0]) {
+    const { linhas: existentes } = await banco.consultar('select 1 from entregas_integracao where id = $1 and integracao_id = $2', [entregaId, integracaoId]);
+    if (!existentes[0]) throw naoEncontrado('Entrega');
+    await banco.consultar(`update entregas_integracao set proxima_tentativa = now() where id = $1 and status = 'pendente'`, [entregaId]);
+  }
+  await registrarAtividade(banco, {
+    usuarioId: autor.id,
+    acao: 'integracao.reenvio',
+    entidade: 'integracao',
+    entidadeId: integracaoId,
+    descricao: `reenviou um evento para a integração ${integracao.nome}`,
+    detalhes: { entrega: entregaId, evento: linhas[0]?.evento ?? null },
+    ip,
+  });
+  await tentarEntrega(banco, segredo, log, entregaId);
+  const { linhas: final } = await banco.consultar<LinhaEntrega>(
+    `select id, evento, resumo, status, tentativas, proxima_tentativa, codigo_http, duracao_ms, erro, teste, criado_em, atualizado_em
+       from entregas_integracao where id = $1`,
+    [entregaId],
+  );
+  return mapearEntrega(final[0] as LinhaEntrega);
 }

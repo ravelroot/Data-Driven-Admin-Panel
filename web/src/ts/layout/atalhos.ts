@@ -1,5 +1,5 @@
 import { html } from "../nucleo/dom.ts";
-import { pode } from "../nucleo/sessao.ts";
+import { pode, preferencia } from "../nucleo/sessao.ts";
 import { IR_PARA, paginaPorId } from "./navegacao.ts";
 
 export { IR_PARA };
@@ -15,6 +15,8 @@ interface GrupoAtalhos {
 }
 
 const ESPERA_SEGUNDA_TECLA = 1200;
+
+export const atalhosAtivos = (): boolean => preferencia("atalhosTeclado", true);
 
 let dialogo: HTMLDialogElement | null = null;
 let aguardandoG = false;
@@ -80,7 +82,7 @@ export const abrirAtalhos = (): void => {
         <div class="modal-topo">
           <div class="modal-textos">
             <h2 class="modal-titulo" id="atalhos-titulo">Atalhos de teclado</h2>
-            <p class="modal-texto">Funcionam em qualquer página, fora dos campos de texto.</p>
+            <p class="modal-texto">${atalhosAtivos() ? "Funcionam em qualquer página, fora dos campos de texto." : "Os atalhos de uma tecla estão desligados nas suas preferências; Ctrl + K continua valendo."}</p>
           </div>
         </div>
         <div class="atalhos-grade">
@@ -117,7 +119,7 @@ export const abrirAtalhos = (): void => {
 
 export const iniciarAtalhosTeclado = (): void => {
   document.addEventListener("keydown", (evento) => {
-    if (evento.defaultPrevented || evento.ctrlKey || evento.metaKey || evento.altKey || editando(evento.target)) {
+    if (evento.defaultPrevented || evento.ctrlKey || evento.metaKey || evento.altKey || editando(evento.target) || !atalhosAtivos()) {
       if (aguardandoG) cancelarSequencia();
       return;
     }

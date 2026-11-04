@@ -44,6 +44,75 @@ const navegarTeclado = (menu: HTMLElement, evento: KeyboardEvent): void => {
   }
 };
 
+const posicionar = (origem: HTMLElement, elemento: HTMLElement): void => {
+  const caixa = origem.getBoundingClientRect();
+  const largura = elemento.offsetWidth;
+  const altura = elemento.offsetHeight;
+  const espacoAbaixo = window.innerHeight - caixa.bottom;
+  const topo = espacoAbaixo < altura + 16 ? Math.max(8, caixa.top - altura - 6) : caixa.bottom + 6;
+  const esquerda = Math.min(window.innerWidth - largura - 8, Math.max(8, caixa.right - largura));
+  elemento.style.top = `${topo}px`;
+  elemento.style.left = `${esquerda}px`;
+  elemento.style.right = "auto";
+};
+
+export interface OpcaoMarcacao {
+  valor: string;
+  rotulo: string;
+  marcado: boolean;
+  desativado?: boolean;
+}
+
+export interface MenuMarcacao {
+  titulo: string;
+  opcoes: OpcaoMarcacao[];
+  rodape?: { rotulo: string; executar: () => void };
+  aoAlterar: (valor: string, marcado: boolean) => OpcaoMarcacao[] | void;
+}
+
+export const abrirMenuMarcacao = (origem: HTMLElement, menu: MenuMarcacao): void => {
+  if (menuFlutuante?.origem === origem) {
+    fecharFlutuante();
+    return;
+  }
+  fecharFlutuante();
+  const desenhar = (opcoes: OpcaoMarcacao[]) => html`
+    <p class="menu-titulo">${menu.titulo}</p>
+    ${opcoes.map(
+      (opcao) => html`<button type="button" role="menuitemcheckbox" class="menu-item menu-item-marcacao" aria-checked="${opcao.marcado}" data-valor="${opcao.valor}" ${opcao.desativado ? "disabled" : ""}>
+        <span>${opcao.rotulo}</span>
+      </button>`,
+    )}
+    ${menu.rodape ? html`<div class="menu-separador" role="separator"></div><button type="button" role="menuitem" class="menu-item" data-rodape>${html([icone("atualizar")])}<span>${menu.rodape.rotulo}</span></button>` : ""}
+  `;
+  const elemento = criar<HTMLElement>(html`<div class="menu menu-marcacao" role="menu" aria-label="${menu.titulo}" data-aberto="true" style="position:fixed">${desenhar(menu.opcoes)}</div>`);
+  document.body.append(elemento);
+  elemento.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    const alvo = (evento.target as Element | null)?.closest<HTMLButtonElement>(".menu-item");
+    if (!alvo || alvo.disabled) return;
+    if (alvo.dataset.rodape !== undefined) {
+      fecharFlutuante();
+      menu.rodape?.executar();
+      return;
+    }
+    const valor = alvo.dataset.valor ?? "";
+    const marcado = alvo.getAttribute("aria-checked") !== "true";
+    const novas = menu.aoAlterar(valor, marcado);
+    if (novas) {
+      elemento.innerHTML = String(desenhar(novas));
+      elemento.querySelector<HTMLElement>(`[data-valor="${CSS.escape(valor)}"]`)?.focus();
+    } else {
+      alvo.setAttribute("aria-checked", String(marcado));
+    }
+  });
+  elemento.addEventListener("keydown", (evento) => navegarTeclado(elemento, evento));
+  posicionar(origem, elemento);
+  origem.setAttribute("aria-expanded", "true");
+  menuFlutuante = { origem, elemento };
+  elemento.querySelector<HTMLElement>(".menu-item")?.focus();
+};
+
 export const abrirMenuAcoes = (origem: HTMLElement, itens: EntradaMenu[]): void => {
   if (menuFlutuante?.origem === origem) {
     fecharFlutuante();
@@ -73,16 +142,7 @@ export const abrirMenuAcoes = (origem: HTMLElement, itens: EntradaMenu[]): void 
   });
   elemento.addEventListener("keydown", (evento) => navegarTeclado(elemento, evento));
 
-  const caixa = origem.getBoundingClientRect();
-  const largura = elemento.offsetWidth;
-  const altura = elemento.offsetHeight;
-  const espacoAbaixo = window.innerHeight - caixa.bottom;
-  const topo = espacoAbaixo < altura + 16 ? Math.max(8, caixa.top - altura - 6) : caixa.bottom + 6;
-  const esquerda = Math.min(window.innerWidth - largura - 8, Math.max(8, caixa.right - largura));
-  elemento.style.top = `${topo}px`;
-  elemento.style.left = `${esquerda}px`;
-  elemento.style.right = "auto";
-
+  posicionar(origem, elemento);
   origem.setAttribute("aria-expanded", "true");
   menuFlutuante = { origem, elemento };
   elemento.querySelector<HTMLElement>(".menu-item")?.focus();

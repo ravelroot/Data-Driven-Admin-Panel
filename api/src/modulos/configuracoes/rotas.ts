@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { exigir } from '../../plugins/autenticacao.js';
 import { usuarioAtual } from '../../tipos.js';
 import { opcional, paramId, textoOpcional } from '../../util/validacao.js';
-import { buscarUsuario, obterConfigSistema, obterPreferencias } from '../comum/consultas.js';
+import { buscarUsuario, ITENS_POR_PAGINA, type Preferencias, obterConfigSistema, obterPreferencias, PAGINAS_INICIAIS } from '../comum/consultas.js';
 import {
   atualizarPerfil,
   criarChave,
@@ -11,7 +11,7 @@ import {
   listarSessoes,
   revogarChave,
   revogarSessao,
-  salvarAparencia,
+  salvarPreferencias,
   salvarConfigSistema,
   trocarSenha,
 } from './servico.js';
@@ -35,6 +35,15 @@ const corpoAparencia = z
     paleta: z.enum(['bento', 'oliva', 'grafite', 'oceano', 'terracota', 'ameixa', 'floresta', 'ardosia', 'vinho', 'lavanda', 'cobre', 'petroleo', 'girassol', 'menta', 'noite', 'areia']).optional(),
     densidade: z.enum(['confortavel', 'compacta']).optional(),
     sidebarRecolhida: z.boolean().optional(),
+    paginaInicial: z.enum(PAGINAS_INICIAIS).optional(),
+    itensPorPagina: z
+      .number()
+      .int()
+      .refine((valor) => (ITENS_POR_PAGINA as readonly number[]).includes(valor), 'Use 10, 25, 50 ou 100.')
+      .optional(),
+    movimento: z.enum(['sistema', 'reduzido']).optional(),
+    atalhosTeclado: z.boolean().optional(),
+    primeirosPassosOcultos: z.boolean().optional(),
   })
   .strict();
 
@@ -77,15 +86,25 @@ export async function rotasConfiguracoes(app: FastifyInstance): Promise<void> {
       atualizarPerfil(app.banco, usuarioAtual(requisicao).id, requisicao.body as z.infer<typeof corpoPerfil>, requisicao.ip),
   );
 
-  app.get('/configuracoes/aparencia', { schema: { tags, summary: 'Tema, paleta e densidade' }, preHandler: autenticado }, async (requisicao) =>
-    obterPreferencias(app.banco, usuarioAtual(requisicao).id),
-  );
+  for (const caminho of ['/configuracoes/aparencia', '/configuracoes/preferencias']) {
+    app.get(caminho, { schema: { tags, summary: 'Aparência e preferências de uso da pessoa logada' }, preHandler: autenticado }, async (requisicao) =>
+      obterPreferencias(app.banco, usuarioAtual(requisicao).id),
+    );
 
-  app.put(
-    '/configuracoes/aparencia',
-    { schema: { tags, summary: 'Salva tema, paleta, densidade e menu', body: corpoAparencia }, preHandler: autenticado },
-    async (requisicao) => salvarAparencia(app.banco, usuarioAtual(requisicao).id, requisicao.body as z.infer<typeof corpoAparencia>),
-  );
+    app.put(
+      caminho,
+      {
+        schema: {
+          tags,
+          summary: 'Salva tema, paleta, densidade, menu, página inicial, itens por página, movimento, atalhos e primeiros passos',
+          body: corpoAparencia,
+        },
+        preHandler: autenticado,
+      },
+      async (requisicao) =>
+        salvarPreferencias(app.banco, usuarioAtual(requisicao).id, requisicao.body as Partial<Preferencias>),
+    );
+  }
 
   app.post(
     '/configuracoes/seguranca/senha',

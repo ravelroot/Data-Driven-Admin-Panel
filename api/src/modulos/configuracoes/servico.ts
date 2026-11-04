@@ -58,15 +58,29 @@ export async function atualizarPerfil(banco: Banco, usuarioId: string, dados: Da
   return buscarUsuario(banco, usuarioId);
 }
 
-export async function salvarAparencia(banco: Banco, usuarioId: string, dados: Partial<Preferencias>): Promise<Preferencias> {
+export async function salvarPreferencias(banco: Banco, usuarioId: string, dados: Partial<Preferencias>): Promise<Preferencias> {
   const atual = await obterPreferencias(banco, usuarioId);
   const final = { ...atual, ...Object.fromEntries(Object.entries(dados).filter(([, valor]) => valor !== undefined)) } as Preferencias;
   await banco.consultar(
-    `insert into preferencias_usuario (usuario_id, tema, paleta, densidade, sidebar_recolhida, atualizado_em)
-     values ($1, $2, $3, $4, $5, now())
+    `insert into preferencias_usuario (usuario_id, tema, paleta, densidade, sidebar_recolhida, pagina_inicial, itens_por_pagina,
+                                       movimento, atalhos_teclado, primeiros_passos_ocultos, atualizado_em)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, now())
      on conflict (usuario_id) do update set tema = excluded.tema, paleta = excluded.paleta, densidade = excluded.densidade,
-       sidebar_recolhida = excluded.sidebar_recolhida, atualizado_em = now()`,
-    [usuarioId, final.tema, final.paleta, final.densidade, final.sidebarRecolhida],
+       sidebar_recolhida = excluded.sidebar_recolhida, pagina_inicial = excluded.pagina_inicial,
+       itens_por_pagina = excluded.itens_por_pagina, movimento = excluded.movimento, atalhos_teclado = excluded.atalhos_teclado,
+       primeiros_passos_ocultos = excluded.primeiros_passos_ocultos, atualizado_em = now()`,
+    [
+      usuarioId,
+      final.tema,
+      final.paleta,
+      final.densidade,
+      final.sidebarRecolhida,
+      final.paginaInicial,
+      final.itensPorPagina,
+      final.movimento,
+      final.atalhosTeclado,
+      final.primeirosPassosOcultos,
+    ],
   );
   return final;
 }

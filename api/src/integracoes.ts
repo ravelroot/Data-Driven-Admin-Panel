@@ -1,10 +1,11 @@
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
+import { performance } from 'node:perf_hooks';
 import type { FastifyBaseLogger } from 'fastify';
 import type { Banco } from './banco/conexao.js';
+import { VERSAO } from './config.js';
 import { assinarHmac, decifrar } from './util/seguranca.js';
 
-/** Faixas IPv4 que nunca devem receber webhooks: loopback, privadas, link-local (metadados de nuvem), CGNAT, multicast etc. */
 const FAIXAS_IPV4_INTERNAS: [string, number][] = [
   ['0.0.0.0', 8],
   ['10.0.0.0', 8],
@@ -34,7 +35,6 @@ function ipv4Interno(ip: string): boolean {
   });
 }
 
-/** Diz se um endereço IP (v4 ou v6) aponta para a própria máquina ou para uma rede interna. */
 export function enderecoInterno(endereco: string): boolean {
   const ip = endereco.replace(/^\[|\]$/g, '').toLowerCase();
   const versao = isIP(ip);
@@ -50,16 +50,15 @@ export function enderecoInterno(endereco: string): boolean {
   }
   if (ip === '::' || ip === '::1') return true;
   const primeiro = Number.parseInt(ip.split(':')[0] || '0', 16);
-  if ((primeiro & 0xfe00) === 0xfc00) return true; // fc00::/7 (ULA)
-  if ((primeiro & 0xffc0) === 0xfe80) return true; // fe80::/10 (link-local)
-  if ((primeiro & 0xff00) === 0xff00) return true; // ff00::/8 (multicast)
-  if (ip.startsWith('64:ff9b:')) return true; // NAT64 pode apontar para IPv4 interno
+  if ((primeiro & 0xfe00) === 0xfc00) return true;
+  if ((primeiro & 0xffc0) === 0xfe80) return true;
+  if ((primeiro & 0xff00) === 0xff00) return true;
+  if (ip.startsWith('64:ff9b:')) return true;
   return false;
 }
 
 const permitirRedeInterna = () => ['1', 'true', 'sim'].includes((process.env.BENTO_INTEGRACOES_REDE_INTERNA ?? '').trim().toLowerCase());
 
-/** Checagem sem DNS, usada ao salvar a configuração: recusa esquemas estranhos, localhost e IPs internos literais. */
 export function destinoClaramenteInterno(bruto: string): string | null {
   if (permitirRedeInterna()) return null;
   let url: URL;
@@ -78,7 +77,6 @@ export function destinoClaramenteInterno(bruto: string): string | null {
   return null;
 }
 
-/** Proteção contra SSRF: resolve o nome e recusa o envio se qualquer endereço for interno. */
 export async function garantirDestinoExterno(bruto: string): Promise<URL> {
   const problema = destinoClaramenteInterno(bruto);
   if (problema) throw new Error(`Destino bloqueado: ${problema}`);
@@ -150,22 +148,49 @@ export function lerConfigIntegracao(config: unknown, segredo: string): Record<st
   return resultado;
 }
 
+export interface ResultadoEnvio {
+  codigoHttp: number | null;
+  duracaoMs: number;
+}
+
+export class ErroEnvio extends Error {
+  readonly codigoHttp: number | null;
+  readonly duracaoMs: number;
+
+  constructor(mensagem: string, codigoHttp: number | null, duracaoMs: number) {
+    super(mensagem);
+    this.name = 'ErroEnvio';
+    this.codigoHttp = codigoHttp;
+    this.duracaoMs = duracaoMs;
+  }
+}
+
+export interface OpcoesEnvio {
+  entregaId?: string;
+  criadoEm?: string;
+  tentativa?: number;
+}
+
 export async function enviarParaProvedor(
   provedor: Provedor,
   valores: Record<string, string>,
   evento: string,
   resumo: string,
   dados: unknown,
-): Promise<void> {
-  const controle = AbortSignal.timeout(5_000);
+  opcoes: OpcoesEnvio = {},
+): Promise<ResultadoEnvio> {
+  const inicio = performance.now();
+  const duracao = () => Math.round(performance.now() - inicio);
   let url = '';
   let corpo = '';
-  const cabecalhos: Record<string, string> = { 'content-type': 'application/json', 'user-agent': 'Bento/1.0' };
+  const cabecalhos: Record<string, string> = { 'content-type': 'application/json', 'user-agent': `Bento/${VERSAO}` };
   if (provedor === 'webhook') {
     url = valores.url;
-    corpo = JSON.stringify({ evento, resumo, criadoEm: new Date().toISOString(), dados });
+    corpo = JSON.stringify({ evento, resumo, criadoEm: opcoes.criadoEm ?? new Date().toISOString(), entrega: opcoes.entregaId ?? null, dados });
     cabecalhos['x-bento-evento'] = evento;
     cabecalhos['x-bento-assinatura'] = `sha256=${assinarHmac(valores.segredo ?? '', corpo)}`;
+    if (opcoes.entregaId) cabecalhos['x-bento-entrega'] = opcoes.entregaId;
+    if (opcoes.tentativa) cabecalhos['x-bento-tentativa'] = String(opcoes.tentativa);
   } else if (provedor === 'slack') {
     url = valores.webhookUrl;
     corpo = JSON.stringify({ text: `*Bento* · ${resumo}` });
@@ -173,12 +198,146 @@ export async function enviarParaProvedor(
     url = valores.webhookUrl;
     corpo = JSON.stringify({ content: `**Bento** · ${resumo}` });
   } else {
-    return;
+    return { codigoHttp: null, duracaoMs: 0 };
   }
-  const destino = await garantirDestinoExterno(url);
-  // redirect: 'manual' impede que um 3xx leve o servidor a um endereço interno depois da checagem.
-  const resposta = await fetch(destino, { method: 'POST', headers: cabecalhos, body: corpo, signal: controle, redirect: 'manual' });
-  if (!resposta.ok) throw new Error(`O destino respondeu ${resposta.status}`);
+  let destino: URL;
+  try {
+    destino = await garantirDestinoExterno(url);
+  } catch (erro) {
+    throw new ErroEnvio(erro instanceof Error ? erro.message : String(erro), null, duracao());
+  }
+  let resposta: Response;
+  try {
+    resposta = await fetch(destino, { method: 'POST', headers: cabecalhos, body: corpo, signal: AbortSignal.timeout(TEMPO_LIMITE_ENVIO), redirect: 'manual' });
+  } catch (erro) {
+    const nome = (erro as { name?: string }).name;
+    throw new ErroEnvio(nome === 'TimeoutError' ? `O destino não respondeu em ${TEMPO_LIMITE_ENVIO / 1000} s` : 'Não foi possível conectar ao destino', null, duracao());
+  }
+  await resposta.body?.cancel().catch(() => undefined);
+  if (!resposta.ok) throw new ErroEnvio(`O destino respondeu ${resposta.status}`, resposta.status, duracao());
+  return { codigoHttp: resposta.status, duracaoMs: duracao() };
+}
+
+export const MAX_TENTATIVAS = 4;
+export const ESPERAS_MINUTOS = [1, 5, 30];
+const TEMPO_LIMITE_ENVIO = 5_000;
+
+interface EntregaReservada {
+  id: string;
+  integracao_id: string;
+  evento: string;
+  resumo: string;
+  carga: unknown;
+  tentativas: number;
+  teste: boolean;
+  criado_em: Date | string;
+  provedor: Provedor;
+  ativo: boolean;
+  config: unknown;
+}
+
+export async function registrarEntrega(
+  banco: Banco,
+  integracaoId: string,
+  evento: string,
+  resumo: string,
+  dados: unknown,
+  teste = false,
+): Promise<string> {
+  const { linhas } = await banco.consultar<{ id: string }>(
+    `insert into entregas_integracao (integracao_id, evento, resumo, carga, teste, proxima_tentativa)
+     values ($1, $2, $3, $4::jsonb, $5, now()) returning id`,
+    [integracaoId, evento, resumo.slice(0, 300), JSON.stringify(dados ?? {}), teste],
+  );
+  return linhas[0].id;
+}
+
+export interface ResultadoEntrega {
+  id: string;
+  ok: boolean;
+  status: 'pendente' | 'entregue' | 'falhou';
+  mensagem: string;
+  codigoHttp: number | null;
+  tentativas: number;
+}
+
+export async function tentarEntrega(banco: Banco, segredo: string, log: FastifyBaseLogger, entregaId: string): Promise<ResultadoEntrega | null> {
+  const { linhas } = await banco.consultar<EntregaReservada>(
+    `with reservada as (
+       update entregas_integracao set proxima_tentativa = now() + interval '2 minutes', atualizado_em = now()
+        where id = $1 and status = 'pendente' and proxima_tentativa <= now()
+        returning *
+     )
+     select r.id, r.integracao_id, r.evento, r.resumo, r.carga, r.tentativas, r.teste, r.criado_em, i.provedor, i.ativo, i.config
+       from reservada r join integracoes i on i.id = r.integracao_id`,
+    [entregaId],
+  );
+  const entrega = linhas[0];
+  if (!entrega) return null;
+  const tentativa = entrega.tentativas + 1;
+  if (!entrega.ativo && !entrega.teste) {
+    await banco.consultar(
+      `update entregas_integracao set status = 'falhou', proxima_tentativa = null, erro = 'A integração foi desativada.', atualizado_em = now() where id = $1`,
+      [entrega.id],
+    );
+    return { id: entrega.id, ok: false, status: 'falhou', mensagem: 'A integração foi desativada.', codigoHttp: null, tentativas: entrega.tentativas };
+  }
+  try {
+    const resultado = await enviarParaProvedor(
+      entrega.provedor,
+      lerConfigIntegracao(entrega.config, segredo),
+      entrega.evento,
+      entrega.resumo,
+      entrega.carga,
+      { entregaId: entrega.id, criadoEm: new Date(entrega.criado_em).toISOString(), tentativa },
+    );
+    await banco.transacao(async (tx) => {
+      await tx.consultar(
+        `update entregas_integracao set status = 'entregue', tentativas = $2, proxima_tentativa = null, codigo_http = $3, duracao_ms = $4,
+                erro = null, atualizado_em = now()
+          where id = $1`,
+        [entrega.id, tentativa, resultado.codigoHttp, resultado.duracaoMs],
+      );
+      await tx.consultar(
+        `update integracoes set ultimo_evento = now(), ultimo_erro = null, status = case when ativo then 'conectada' else status end where id = $1`,
+        [entrega.integracao_id],
+      );
+    });
+    return { id: entrega.id, ok: true, status: 'entregue', mensagem: 'Entregue.', codigoHttp: resultado.codigoHttp, tentativas: tentativa };
+  } catch (erro) {
+    const mensagem = (erro instanceof Error ? erro.message : String(erro)).slice(0, 300);
+    const codigoHttp = erro instanceof ErroEnvio ? erro.codigoHttp : null;
+    const duracaoMs = erro instanceof ErroEnvio ? erro.duracaoMs : null;
+    const definitivo = entrega.teste || tentativa >= MAX_TENTATIVAS || mensagem.startsWith('Destino bloqueado');
+    const espera = ESPERAS_MINUTOS[Math.min(tentativa - 1, ESPERAS_MINUTOS.length - 1)] ?? 30;
+    await banco.transacao(async (tx) => {
+      await tx.consultar(
+        `update entregas_integracao
+            set status = $2, tentativas = $3, codigo_http = $4, duracao_ms = $5, erro = $6, atualizado_em = now(),
+                proxima_tentativa = case when $2 = 'pendente' then now() + make_interval(mins => $7::int) else null end
+          where id = $1`,
+        [entrega.id, definitivo ? 'falhou' : 'pendente', tentativa, codigoHttp, duracaoMs, mensagem, espera],
+      );
+      await tx.consultar(`update integracoes set ultimo_erro = $2, status = case when ativo then 'erro' else status end where id = $1`, [
+        entrega.integracao_id,
+        mensagem,
+      ]);
+    });
+    if (!entrega.teste) log.warn({ provedor: entrega.provedor, erro: mensagem, tentativa }, 'Falha ao entregar evento para integração');
+    return { id: entrega.id, ok: false, status: definitivo ? 'falhou' : 'pendente', mensagem, codigoHttp, tentativas: tentativa };
+  }
+}
+
+export async function processarEntregasPendentes(banco: Banco, segredo: string, log: FastifyBaseLogger, limite = 20): Promise<number> {
+  const { linhas } = await banco.consultar<{ id: string }>(
+    `select id from entregas_integracao where status = 'pendente' and proxima_tentativa <= now() order by proxima_tentativa limit $1`,
+    [limite],
+  );
+  let processadas = 0;
+  for (const { id } of linhas) {
+    if (await tentarEntrega(banco, segredo, log, id)) processadas += 1;
+  }
+  return processadas;
 }
 
 export async function dispararIntegracoes(
@@ -189,25 +348,11 @@ export async function dispararIntegracoes(
   resumo: string,
   dados: unknown,
 ): Promise<void> {
-  const { linhas } = await banco.consultar<{ id: string; provedor: Provedor; config: unknown }>(
-    `select id, provedor, config from integracoes where ativo and provedor = any($1::text[])`,
-    [ENVIA_EVENTOS],
-  );
+  const { linhas } = await banco.consultar<{ id: string }>(`select id from integracoes where ativo and provedor = any($1::text[])`, [ENVIA_EVENTOS]);
   await Promise.all(
     linhas.map(async (integracao) => {
-      try {
-        await enviarParaProvedor(integracao.provedor, lerConfigIntegracao(integracao.config, segredo), evento, resumo, dados);
-        await banco.consultar(
-          `update integracoes set ultimo_evento = now(), status = 'conectada', ultimo_erro = null where id = $1`,
-          [integracao.id],
-        );
-      } catch (erro) {
-        const mensagem = erro instanceof Error ? erro.message : String(erro);
-        log.warn({ provedor: integracao.provedor, erro: mensagem }, 'Falha ao enviar evento para integração');
-        await banco
-          .consultar(`update integracoes set status = 'erro', ultimo_erro = $2 where id = $1`, [integracao.id, mensagem.slice(0, 300)])
-          .catch(() => undefined);
-      }
+      const entregaId = await registrarEntrega(banco, integracao.id, evento, resumo, dados);
+      await tentarEntrega(banco, segredo, log, entregaId);
     }),
   );
 }

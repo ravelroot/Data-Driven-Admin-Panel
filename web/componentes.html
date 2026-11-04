@@ -1396,6 +1396,68 @@
     </div>
   </div>
 </section>
+
+              <h2 class="vitrine-grupo-titulo" data-grupo="Operação">Operação e manutenção</h2>
+
+<section class="vitrine-secao" id="faixa-manutencao" aria-labelledby="t-faixa-manutencao">
+  <h2 class="vitrine-titulo" id="t-faixa-manutencao">Faixa de manutenção</h2>
+  <p class="vitrine-descricao">Aviso fixo abaixo do cabeçalho enquanto o modo de manutenção está ligado, com a mensagem da equipe e o botão de encerrar para quem configura o sistema.</p>
+  <div class="vitrine-exemplo">
+    <div class="faixa-manutencao mx-0! mt-0!" role="status">
+      <span class="faixa-manutencao-icone"><i data-icone="manutencao"></i></span>
+      <p class="faixa-manutencao-texto"><strong>Modo de manutenção.</strong> O painel aceita só consultas por enquanto. <span class="faixa-manutencao-mensagem">Atualizando o banco; volta às 14h.</span><span class="faixa-manutencao-meta">Desde há 5 minutos · Ana Martins</span></p>
+      <button type="button" class="botao botao-secundario botao-pequeno"><i data-icone="confirmar"></i>Encerrar</button>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="verificacoes" aria-labelledby="t-verificacoes">
+  <h2 class="vitrine-titulo" id="t-verificacoes">Verificações</h2>
+  <p class="vitrine-descricao">Lista de checagens com um ponto de cor por status (ok, informação, aviso e erro), o grupo ao lado do título e a dica de correção.</p>
+  <div class="vitrine-exemplo">
+    <ul class="verificacoes" role="list">
+      <li class="verificacao" data-status="erro"><span class="verificacao-ponto" aria-hidden="true"></span><div class="verificacao-texto"><p class="verificacao-titulo">Migrações<span class="verificacao-grupo">Banco de dados</span></p><p class="verificacao-detalhe">Pendentes: 006_operacao_preferencias.sql.</p><p class="verificacao-dica"><i data-icone="chevron-direita"></i>Rode "npm run migrar" ou reinicie o servidor.</p></div></li>
+      <li class="verificacao" data-status="aviso"><span class="verificacao-ponto" aria-hidden="true"></span><div class="verificacao-texto"><p class="verificacao-titulo">Senhas de demonstração<span class="verificacao-grupo">Segurança</span></p><p class="verificacao-detalhe">2 contas usam a senha padrão.</p></div></li>
+      <li class="verificacao" data-status="info"><span class="verificacao-ponto" aria-hidden="true"></span><div class="verificacao-texto"><p class="verificacao-titulo">Retenção de dados<span class="verificacao-grupo">Operação</span></p><p class="verificacao-detalhe">Notificações 180 dias, relatórios 90 dias.</p></div></li>
+      <li class="verificacao" data-status="ok"><span class="verificacao-ponto" aria-hidden="true"></span><div class="verificacao-texto"><p class="verificacao-titulo">Conexão<span class="verificacao-grupo">Banco de dados</span></p><p class="verificacao-detalhe">PostgreSQL 18, respondeu em 1,2 ms.</p></div></li>
+    </ul>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="entregas" aria-labelledby="t-entregas">
+  <h2 class="vitrine-titulo" id="t-entregas">Histórico de entregas</h2>
+  <p class="vitrine-descricao">Eventos enviados para webhooks e canais, com status, código HTTP, tempo de resposta, tentativas e o botão de reenviar.</p>
+  <div class="vitrine-exemplo">
+    <ul class="entregas-lista" role="list">
+      <li class="entrega" data-status="entregue"><div class="entrega-topo"><span class="emblema emblema-pequeno" data-status="sucesso">Entregue</span><span class="entrega-evento">Transação paga</span><span class="entrega-data">há 2 minutos</span></div><p class="entrega-resumo">Pagamento de R$ 129,00 de Marina Lopes</p><p class="entrega-meta"><span>HTTP 200</span><span>184 ms</span><span>1 tentativa</span></p><button type="button" class="botao botao-fantasma botao-pequeno entrega-reenviar"><i data-icone="repetir"></i>Reenviar</button></li>
+      <li class="entrega" data-status="pendente"><div class="entrega-topo"><span class="emblema emblema-pequeno" data-status="pendente">Nova tentativa</span><span class="entrega-evento">Usuário criado</span><span class="entrega-data">há 6 minutos</span></div><p class="entrega-resumo">Novo usuário: Caio Prado</p><p class="entrega-meta"><span>HTTP 503</span><span>5.002 ms</span><span>2 tentativas</span><span>próxima em 4 minutos</span></p><p class="entrega-erro">O destino respondeu 503</p><button type="button" class="botao botao-fantasma botao-pequeno entrega-reenviar"><i data-icone="repetir"></i>Reenviar</button></li>
+    </ul>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="importacao" aria-labelledby="t-importacao">
+  <h2 class="vitrine-titulo" id="t-importacao">Importação</h2>
+  <p class="vitrine-descricao">Zona para soltar a planilha e o resumo da prévia em três compartimentos: o que será criado, o que fica de fora e o que tem erro.</p>
+  <div class="vitrine-exemplo pilha">
+    <label class="importacao-zona"><input type="file" class="sr-only"><span class="importacao-zona-icone"><i data-icone="importar"></i></span><span class="importacao-zona-titulo">Escolha ou arraste a planilha</span><span class="importacao-zona-texto">CSV separado por vírgula, ponto e vírgula ou tabulação, com cabeçalho.</span></label>
+    <div class="importacao-resumo">
+      <div class="importacao-numero" data-situacao="criar"><span class="importacao-numero-valor">128</span><span class="importacao-numero-rotulo">contas novas</span></div>
+      <div class="importacao-numero" data-situacao="ignorar"><span class="importacao-numero-valor">3</span><span class="importacao-numero-rotulo">ignoradas</span></div>
+      <div class="importacao-numero" data-situacao="erro"><span class="importacao-numero-valor">2</span><span class="importacao-numero-rotulo">com erro</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="vitrine-secao" id="backups" aria-labelledby="t-backups">
+  <h2 class="vitrine-titulo" id="t-backups">Lista de backups</h2>
+  <p class="vitrine-descricao">Arquivos gravados pelo servidor, com tamanho, data relativa, origem automática ou manual e o botão de baixar.</p>
+  <div class="vitrine-exemplo">
+    <ul class="arquivos-backup" role="list">
+      <li class="arquivo-backup"><span class="arquivo-backup-icone"><i data-icone="banco-dados"></i></span><div class="arquivo-backup-texto"><p class="arquivo-backup-nome">bento-backup-20261104-031500-auto.ndjson.gz</p><p class="arquivo-backup-meta">1,4 MB · há 9 horas · automático</p></div><button type="button" class="botao botao-fantasma botao-icone botao-pequeno" aria-label="Baixar"><i data-icone="baixar"></i></button></li>
+      <li class="arquivo-backup"><span class="arquivo-backup-icone"><i data-icone="banco-dados"></i></span><div class="arquivo-backup-texto"><p class="arquivo-backup-nome">bento-backup-20261103-174210-manual.ndjson.gz</p><p class="arquivo-backup-meta">1,4 MB · ontem</p></div><button type="button" class="botao botao-fantasma botao-icone botao-pequeno" aria-label="Baixar"><i data-icone="baixar"></i></button></li>
+    </ul>
+  </div>
+</section>
             </div>
           </div>
         </main>

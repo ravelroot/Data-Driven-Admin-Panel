@@ -3,6 +3,8 @@ import { icone } from "../nucleo/icones.ts";
 import { api, mensagemDeErro } from "../nucleo/api.ts";
 import { moeda, dataHora, dataCurta, rotulos, corAvatar } from "../nucleo/formato.ts";
 import { Gaveta } from "./gaveta.ts";
+import { registrarRecente } from "../nucleo/recentes.ts";
+import { usuarioAtual } from "../nucleo/sessao.ts";
 import type { Pessoa, Referencia, Transacao } from "../nucleo/tipos.ts";
 
 interface AssinaturaTransacao {
@@ -49,6 +51,13 @@ export const abrirTransacao = async (id: string): Promise<Gaveta> => {
   const gaveta = new Gaveta({ titulo: "Transação", subtitulo: "Carregando detalhes…" }).abrir();
   try {
     const transacao = await api.obter<DetalheTransacao>(`/transacoes/${id}`);
+    registrarRecente(usuarioAtual()?.id, {
+      tipo: "transacao",
+      id: transacao.id,
+      titulo: transacao.codigo,
+      detalhe: [moeda(transacao.valor), transacao.usuario?.nome].filter(Boolean).join(" · "),
+      href: `/transacoes?transacao=${encodeURIComponent(transacao.id)}`,
+    });
     gaveta.definirTitulo(transacao.codigo, dataHora(transacao.criadoEm));
     gaveta.definirCorpo(html`
       <section class="gaveta-secao">

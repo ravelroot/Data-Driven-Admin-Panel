@@ -10,6 +10,7 @@ import { hidratarIcones, LOGO_BENTO } from "../nucleo/icones.ts";
 import { api, ErroApi, mensagemDeErro } from "../nucleo/api.ts";
 import { iniciarTema, alternarTema, sincronizarPreferencias } from "../nucleo/tema.ts";
 import { ligarMostrarSenha } from "../componentes/formulario.ts";
+import { hrefPaginaInicial } from "../layout/navegacao.ts";
 import type { Preferencias } from "../nucleo/tipos.ts";
 
 interface CamposEntrar extends HTMLFormControlsCollection {
@@ -24,6 +25,7 @@ interface FormularioEntrar extends HTMLFormElement {
 
 interface RespostaEntrar {
   preferencias?: Partial<Preferencias> | null;
+  permissoes?: string[];
 }
 
 iniciarTema();
@@ -35,11 +37,11 @@ const MENSAGENS: Record<string, string> = {
   LIMITE: "Muitas tentativas seguidas. Aguarde alguns minutos e tente de novo.",
 };
 
-const destinoSeguro = (): string => {
+const destinoSeguro = (contexto?: RespostaEntrar | null): string => {
   const { voltar } = parametrosUrl();
-  // "/\site" é tratado pelos navegadores como "//site" (outro domínio): recusa também a barra invertida.
   if (voltar && voltar.startsWith("/") && !/^\/[/\\]/.test(voltar) && !voltar.startsWith("/entrar")) return voltar;
-  return "/";
+  const permissoes = new Set(contexto?.permissoes ?? []);
+  return hrefPaginaInicial(contexto?.preferencias?.paginaInicial, (permissao) => !permissao || permissoes.has(permissao));
 };
 
 const mostrarErro = (texto: string): void => {
@@ -53,8 +55,8 @@ const iniciar = async (): Promise<void> => {
   ligarMostrarSenha(document);
 
   try {
-    await api.obter("/auth/eu");
-    location.replace(destinoSeguro());
+    const contexto = await api.obter<RespostaEntrar>("/auth/eu");
+    location.replace(destinoSeguro(contexto));
     return;
   } catch {
     document.body.dataset.pronto = "true";
@@ -88,7 +90,7 @@ const iniciar = async (): Promise<void> => {
         lembrar: formulario.elements.lembrar.checked,
       });
       sincronizarPreferencias(resposta.preferencias);
-      location.replace(destinoSeguro());
+      location.replace(destinoSeguro(resposta));
     } catch (erro) {
       carregando(botao, false);
       mostrarErro(erro instanceof ErroApi ? (MENSAGENS[erro.codigo] ?? erro.message) : mensagemDeErro(erro));

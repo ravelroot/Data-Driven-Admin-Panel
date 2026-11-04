@@ -39,11 +39,6 @@ function escapar(texto: string): string {
   return /[";\n\r]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
 }
 
-/**
- * Evita injeção de fórmula (CSV injection): Excel/LibreOffice/Sheets executam células que começam
- * com =, +, -, @, tab ou CR. Prefixamos um apóstrofo para que o valor seja lido como texto.
- * Só vale para colunas de texto; valores numéricos negativos (ex.: "-12,50") continuam intactos.
- */
 export function neutralizarFormula(texto: string): string {
   return /^[=+\-@\t\r]/.test(texto) ? `'${texto}` : texto;
 }

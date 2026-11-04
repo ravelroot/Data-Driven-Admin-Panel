@@ -2,7 +2,7 @@ import { emitir } from "./eventos.ts";
 import type { EstadoConexao } from "./tipos.ts";
 
 const URL_FLUXO = "/api/v1/notificacoes/fluxo";
-const EVENTOS = ["notificacao", "contagem", "transacao", "usuario"] as const;
+const EVENTOS = ["notificacao", "contagem", "transacao", "usuario", "sistema"] as const;
 
 let fonte: EventSource | null = null;
 let estado: EstadoConexao = "desconectado";

@@ -13,4 +13,5 @@
   raiz.dataset.tema = tema;
   raiz.dataset.paleta = ler("paleta", "bento");
   raiz.dataset.densidade = ler("densidade", "confortavel");
+  raiz.dataset.movimento = ler("movimento", "sistema");
 })();

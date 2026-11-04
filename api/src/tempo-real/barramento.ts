@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 import type { FastifyBaseLogger } from 'fastify';
 import type { Banco } from '../banco/conexao.js';
 
-export type TipoEvento = 'notificacao' | 'transacao' | 'usuario';
+export type TipoEvento = 'notificacao' | 'transacao' | 'usuario' | 'sistema';
 
 export interface EventoTempoReal {
   tipo: TipoEvento;
@@ -15,9 +15,8 @@ export interface Barramento {
   parar(): Promise<void>;
   publicar(evento: EventoTempoReal): Promise<void>;
   assinar(ouvinte: (evento: EventoTempoReal) => void): () => void;
-  /** Quantas conexões de tempo real estão ouvindo nesta instância. */
+  assinarInterno(ouvinte: (evento: EventoTempoReal) => void): () => void;
   assinantes(): number;
-  /** Se o canal LISTEN/NOTIFY (ou o emissor do PGlite) está ativo. */
   conectado(): boolean;
 }
 
@@ -32,6 +31,7 @@ export function criarBarramento(banco: Banco, log: FastifyBaseLogger): Barrament
   let tentativa: NodeJS.Timeout | null = null;
 
   const entregar = (evento: EventoTempoReal) => {
+    emissor.emit('interno', evento);
     emissor.emit('evento', evento);
   };
 
@@ -94,6 +94,12 @@ export function criarBarramento(banco: Banco, log: FastifyBaseLogger): Barrament
       emissor.on('evento', ouvinte);
       return () => {
         emissor.off('evento', ouvinte);
+      };
+    },
+    assinarInterno(ouvinte) {
+      emissor.on('interno', ouvinte);
+      return () => {
+        emissor.off('interno', ouvinte);
       };
     },
     assinantes() {

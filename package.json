@@ -1,6 +1,6 @@
 {
   "name": "bento",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
   "type": "module",
   "description": "Painel administrativo SaaS em bento grid com interface e API em TypeScript e Tailwind CSS",
@@ -20,6 +20,12 @@
     "migrar": "npm run migrar -w api",
     "semear": "npm run semear -w api",
     "admin": "npm run admin -w api",
-    "verificar": "npm run verificar -w api && npm run verificar -w web"
+    "diagnostico": "npm run diagnostico -w api --",
+    "backup": "npm run backup -w api --",
+    "restaurar": "npm run restaurar -w api --",
+    "limpar": "npm run limpar -w api --",
+    "verificar": "npm run verificar -w api && npm run verificar -w web",
+    "cobertura": "npm run cobertura -w api",
+    "versao": "node scripts/versao.mjs"
   }
 }

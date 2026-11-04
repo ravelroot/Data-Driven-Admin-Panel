@@ -23,8 +23,6 @@ export async function registrarEstatico(app: FastifyInstance): Promise<boolean> 
     app.log.info({ raiz }, 'Interface web não encontrada; servindo só a API. Rode "npm run build" para gerar web/dist.');
     return false;
   }
-  // Defesa em profundidade contra path traversal: o @fastify/static já não serve nada fora da raiz,
-  // mas caminhos com "..", barra invertida ou byte nulo recebem 404 explícito em vez de cair no redirecionamento.
   app.addHook('onRequest', async (requisicao, resposta) => {
     if (requisicao.url.startsWith('/api/')) return;
     const caminho = requisicao.url.split('?')[0];

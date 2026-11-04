@@ -23,6 +23,7 @@ import {
   type Ator,
 } from './servico.js';
 import { atualizarNota, criarNota, excluirNota, listarNotas } from './notas.js';
+import { importarUsuarios, MODELO_IMPORTACAO } from './importacao.js';
 
 const papel = z.string().trim().regex(/^[a-z][a-z0-9_]{1,31}$/, 'Papel inválido.');
 
@@ -110,6 +111,13 @@ const COLUNAS_USUARIOS: Coluna[] = [
   { campo: 'ultimoAcesso', titulo: 'Último acesso', formato: 'data' },
 ];
 
+const corpoImportar = z.object({
+  csv: z.string().min(1, 'Envie o conteúdo da planilha.').max(900_000, 'A planilha passa de 900 KB; divida em partes menores.'),
+  simular: z.boolean().default(true),
+  papelPadrao: papel.default('cliente'),
+  statusPadrao: z.enum(['ativo', 'pendente', 'inativo']).default('ativo'),
+});
+
 function ator(requisicao: FastifyRequest): Ator {
   return { usuario: usuarioAtual(requisicao), ip: requisicao.ip };
 }
@@ -133,6 +141,30 @@ export async function rotasUsuarios(app: FastifyInstance): Promise<void> {
       const resultado = await criarUsuario(app, ator(requisicao), requisicao.body as z.infer<typeof corpoCriar>);
       return resposta.status(201).send(resultado);
     },
+  );
+
+  app.get(
+    '/usuarios/importar/modelo',
+    { schema: { tags, summary: 'Planilha CSV de exemplo para a importação' }, preHandler: pode('usuarios.importar') },
+    async (_requisicao, resposta) =>
+      resposta
+        .header('content-type', 'text/csv; charset=utf-8')
+        .header('content-disposition', 'attachment; filename="bento-modelo-importacao.csv"')
+        .send(`\uFEFF${MODELO_IMPORTACAO}\r\n`),
+  );
+
+  app.post(
+    '/usuarios/importar',
+    {
+      schema: {
+        tags,
+        summary: 'Importa contas de uma planilha CSV (simular: true só confere, sem gravar)',
+        body: corpoImportar,
+      },
+      preHandler: pode('usuarios.criar', 'usuarios.importar'),
+      config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
+    },
+    async (requisicao) => importarUsuarios(app, ator(requisicao), requisicao.body as z.infer<typeof corpoImportar>),
   );
 
   app.get(

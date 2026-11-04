@@ -32,5 +32,5 @@ RUN mkdir -p dados && chown -R bento:bento /app
 USER bento
 EXPOSE 8080
 HEALTHCHECK --interval=15s --timeout=3s --start-period=20s --retries=5 \
-  CMD wget -qO- http://127.0.0.1:8080/api/v1/saude >/dev/null || exit 1
+  CMD wget -qO- http://127.0.0.1:8080/api/v1/saude/pronto >/dev/null || exit 1
 CMD ["node", "api/dist/servidor.js"]

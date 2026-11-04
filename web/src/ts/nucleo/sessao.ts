@@ -47,7 +47,11 @@ export const atualizarUsuarioAtual = (usuario: Partial<Usuario>): void => {
 
 export const atualizarPreferencias = (preferencias: Partial<Preferencias>): void => {
   estado.preferencias = { ...(estado.preferencias as Preferencias), ...preferencias };
+  emitir("sessao:preferencias", estado.preferencias);
 };
+
+export const preferencia = <K extends keyof Preferencias>(chave: K, padrao: NonNullable<Preferencias[K]>): NonNullable<Preferencias[K]> =>
+  (estado.preferencias?.[chave] ?? padrao) as NonNullable<Preferencias[K]>;
 
 export const atualizarSistema = (sistema: Partial<Sistema>): void => {
   estado.sistema = { ...(estado.sistema as Sistema), ...sistema };

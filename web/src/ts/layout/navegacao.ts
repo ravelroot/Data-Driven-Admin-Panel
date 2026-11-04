@@ -55,18 +55,21 @@ export const NAVEGACAO: GrupoNavegacao[] = [
 
 export const ACOES_RAPIDAS: AcaoRapida[] = [
   { id: "novo-usuario", rotulo: "Cadastrar usuário", icone: "usuario-novo", href: "/usuarios?novo=1", permissao: "usuarios.criar" },
+  { id: "importar-usuarios", rotulo: "Importar usuários de uma planilha CSV", icone: "importar", href: "/usuarios?importar=1", permissao: "usuarios.importar" },
   { id: "gerar-relatorio", rotulo: "Gerar relatório", icone: "arquivo-baixar", href: "/relatorios", permissao: "relatorios.gerar" },
   { id: "exportar-transacoes", rotulo: "Exportar transações em CSV", icone: "arquivo-baixar", href: "/api/v1/transacoes/exportar", permissao: "transacoes.ver", externo: true },
   { id: "enviar-aviso", rotulo: "Enviar aviso para a equipe", icone: "sino", href: "/notificacoes?novo=1", permissao: "notificacoes.enviar" },
   { id: "status-sistema", rotulo: "Ver status do sistema", icone: "atividade", href: "/configuracoes?secao=status", permissao: "configuracoes.sistema" },
+  { id: "manutencao", rotulo: "Manutenção, backups e verificações", icone: "ferramenta", href: "/configuracoes?secao=manutencao", permissao: "configuracoes.sistema" },
   { id: "alternar-tema", rotulo: "Alternar tema claro/escuro", icone: "contraste", acao: "alternar-tema" },
   { id: "aparencia", rotulo: "Ajustar aparência", icone: "paleta", href: "/configuracoes?secao=aparencia" },
+  { id: "preferencias", rotulo: "Preferências: página inicial, linhas por página e atalhos", icone: "ajustes", href: "/configuracoes?secao=preferencias" },
+  { id: "novidades", rotulo: "Ver as novidades desta versão", icone: "novidades", acao: "novidades" },
   { id: "atalhos", rotulo: "Ver atalhos de teclado", icone: "comando", acao: "atalhos", atalho: "?" },
   { id: "documentacao-api", rotulo: "Abrir a documentação da API", icone: "livro", href: "/api/v1/docs", externo: true },
   { id: "sair", rotulo: "Sair da conta", icone: "sair", acao: "sair" },
 ];
 
-/** Atalhos "g" + tecla: a tecla e o id da página em NAVEGACAO que ela abre. */
 export const IR_PARA: Record<string, string> = {
   v: "visao-geral",
   a: "analytics",
@@ -77,6 +80,13 @@ export const IR_PARA: Record<string, string> = {
   d: "auditoria",
   c: "configuracoes",
   k: "componentes",
+};
+
+export const PAGINAS_INICIAIS = ["visao-geral", "analytics", "usuarios", "transacoes", "notificacoes", "relatorios", "auditoria"] as const;
+
+export const hrefPaginaInicial = (id: string | null | undefined, permitido: (permissao?: string) => boolean = () => true): string => {
+  const pagina = (PAGINAS_INICIAIS as readonly string[]).includes(id ?? "") ? paginaPorId(id ?? "") : undefined;
+  return pagina && permitido(pagina.permissao) ? pagina.href : "/";
 };
 
 export const paginaPorId = (id: string): ItemNavegacao | undefined => NAVEGACAO.flatMap((grupo) => grupo.itens).find((item) => item.id === id);

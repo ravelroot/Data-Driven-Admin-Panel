@@ -224,7 +224,6 @@ export interface AtorRelatorio {
   permissoes: Set<string>;
 }
 
-/** O histórico é compartilhado para leitura, mas só o autor (ou um administrador do sistema) apaga ou altera o que é de outra pessoa. */
 function garantirDono(ator: AtorRelatorio, criadoPor: string | null, oQue: string): void {
   if (criadoPor === ator.id || ator.permissoes.has('configuracoes.sistema')) return;
   throw semPermissao(`Só quem criou ${oQue} (ou um administrador) pode fazer isso.`);

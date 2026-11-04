@@ -93,11 +93,27 @@ export interface Pagina<T> {
   paginas: number;
 }
 
+export type PaginaInicial = "visao-geral" | "analytics" | "usuarios" | "transacoes" | "notificacoes" | "relatorios" | "auditoria";
+export type Movimento = "sistema" | "reduzido";
+
 export interface Preferencias {
   tema: Tema;
   paleta: string;
   densidade: Densidade;
   sidebarRecolhida: boolean;
+  paginaInicial?: PaginaInicial;
+  itensPorPagina?: number;
+  movimento?: Movimento;
+  atalhosTeclado?: boolean;
+  primeirosPassosOcultos?: boolean;
+}
+
+export interface EstadoManutencao {
+  ativo: boolean;
+  mensagem: string;
+  desde: string | null;
+  porId: string | null;
+  porNome: string | null;
 }
 
 export interface Sistema {
@@ -106,6 +122,8 @@ export interface Sistema {
   metaMensal: number;
   fuso?: string;
   idiomaPadrao?: string;
+  versao?: string;
+  manutencao?: EstadoManutencao;
 }
 
 export interface Sessao {
@@ -162,4 +180,21 @@ export interface Integracao {
   ultimoEvento: string | null;
   ultimoErro?: string | null;
   campos: CampoIntegracao[];
+}
+
+export type StatusEntrega = "pendente" | "entregue" | "falhou";
+
+export interface EntregaIntegracao {
+  id: string;
+  evento: string;
+  resumo: string;
+  status: StatusEntrega;
+  tentativas: number;
+  proximaTentativa: string | null;
+  codigoHttp: number | null;
+  duracaoMs: number | null;
+  erro: string | null;
+  teste: boolean;
+  criadoEm: string;
+  atualizadoEm: string;
 }

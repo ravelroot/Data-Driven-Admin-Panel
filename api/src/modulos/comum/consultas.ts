@@ -61,16 +61,25 @@ export async function permissoesEfetivas(banco: Banco, usuarioId: string): Promi
   return linhas.map((linha) => linha.permissao);
 }
 
+export const PAGINAS_INICIAIS = ['visao-geral', 'analytics', 'usuarios', 'transacoes', 'notificacoes', 'relatorios', 'auditoria'] as const;
+export const ITENS_POR_PAGINA = [10, 25, 50, 100] as const;
+
 export interface Preferencias {
   tema: 'claro' | 'escuro' | 'sistema';
   paleta: 'bento' | 'oliva' | 'grafite' | 'oceano' | 'terracota' | 'ameixa' | 'floresta' | 'ardosia' | 'vinho' | 'lavanda' | 'cobre' | 'petroleo' | 'girassol' | 'menta' | 'noite' | 'areia';
   densidade: 'confortavel' | 'compacta';
   sidebarRecolhida: boolean;
+  paginaInicial: (typeof PAGINAS_INICIAIS)[number];
+  itensPorPagina: (typeof ITENS_POR_PAGINA)[number];
+  movimento: 'sistema' | 'reduzido';
+  atalhosTeclado: boolean;
+  primeirosPassosOcultos: boolean;
 }
 
 export async function obterPreferencias(banco: Banco, usuarioId: string): Promise<Preferencias> {
   const { linhas } = await banco.consultar<Record<string, unknown>>(
-    'select tema, paleta, densidade, sidebar_recolhida from preferencias_usuario where usuario_id = $1',
+    `select tema, paleta, densidade, sidebar_recolhida, pagina_inicial, itens_por_pagina, movimento, atalhos_teclado, primeiros_passos_ocultos
+       from preferencias_usuario where usuario_id = $1`,
     [usuarioId],
   );
   const linha = linhas[0];
@@ -79,6 +88,11 @@ export async function obterPreferencias(banco: Banco, usuarioId: string): Promis
     paleta: (linha?.paleta as Preferencias['paleta']) ?? 'bento',
     densidade: (linha?.densidade as Preferencias['densidade']) ?? 'confortavel',
     sidebarRecolhida: Boolean(linha?.sidebar_recolhida ?? false),
+    paginaInicial: (linha?.pagina_inicial as Preferencias['paginaInicial']) ?? 'visao-geral',
+    itensPorPagina: (Number(linha?.itens_por_pagina ?? 25) as Preferencias['itensPorPagina']) ?? 25,
+    movimento: (linha?.movimento as Preferencias['movimento']) ?? 'sistema',
+    atalhosTeclado: linha?.atalhos_teclado === undefined || linha?.atalhos_teclado === null ? true : Boolean(linha.atalhos_teclado),
+    primeirosPassosOcultos: Boolean(linha?.primeiros_passos_ocultos ?? false),
   };
 }
 

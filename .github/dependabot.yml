@@ -1,0 +1,54 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    labels:
+      - dependencias
+    groups:
+      interface:
+        patterns:
+          - vite
+          - tailwindcss
+          - "@tailwindcss/*"
+          - lucide
+          - "@fontsource*"
+      api:
+        patterns:
+          - fastify
+          - "@fastify/*"
+          - pg
+          - "@electric-sql/pglite"
+          - zod
+          - pdfkit
+          - bcryptjs
+      ferramentas:
+        patterns:
+          - typescript
+          - tsx
+          - "@types/*"
+    ignore:
+      - dependency-name: apexcharts
+        update-types:
+          - version-update:semver-major
+          - version-update:semver-minor
+          - version-update:semver-patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - dependencias
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+      - dependencias

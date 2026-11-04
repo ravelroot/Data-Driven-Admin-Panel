@@ -11,13 +11,15 @@ export class ErroApi extends Error {
   readonly status: number;
   readonly codigo: string;
   readonly detalhes: DetalheErro[] | undefined;
+  readonly requisicao: string | null;
 
-  constructor(status: number, codigo: string, mensagem: string, detalhes?: DetalheErro[]) {
+  constructor(status: number, codigo: string, mensagem: string, detalhes?: DetalheErro[], requisicao: string | null = null) {
     super(mensagem);
     this.name = "ErroApi";
     this.status = status;
     this.codigo = codigo;
     this.detalhes = detalhes;
+    this.requisicao = requisicao;
   }
 }
 
@@ -26,6 +28,7 @@ const MENSAGENS_PADRAO: Record<number, string> = {
   403: "Você não tem permissão para fazer isso.",
   404: "O item procurado não existe mais.",
   429: "Muitas tentativas seguidas. Aguarde um pouco e tente de novo.",
+  503: "O painel está indisponível no momento. Tente de novo em instantes.",
   500: "A API encontrou um erro inesperado. Tente de novo em instantes.",
 };
 
@@ -73,6 +76,7 @@ const erroDaResposta = async (resposta: Response): Promise<ErroApi> => {
     dados?.erro?.codigo ?? "INTERNO",
     dados?.erro?.mensagem ?? MENSAGENS_PADRAO[resposta.status] ?? MENSAGENS_PADRAO[500],
     dados?.erro?.detalhes,
+    dados?.erro?.requisicao ?? resposta.headers.get("X-Request-Id"),
   );
 };
 
@@ -147,7 +151,12 @@ export const api = {
   url: (caminho: string, consulta?: Consulta | null): string => montarUrl(caminho, consulta).toString(),
 };
 
+export const codigoCurto = (requisicao: string | null | undefined): string => (requisicao ?? "").replace(/-/g, "").slice(0, 8);
+
 export const mensagemDeErro = (erro: unknown): string => {
-  if (erro instanceof ErroApi) return erro.message;
+  if (erro instanceof ErroApi) {
+    if (erro.status >= 500 && erro.codigo !== "MANUTENCAO" && erro.requisicao) return `${erro.message} Código do erro: ${codigoCurto(erro.requisicao)}.`;
+    return erro.message;
+  }
   return MENSAGENS_PADRAO[500];
 };

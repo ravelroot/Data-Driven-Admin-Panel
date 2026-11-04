@@ -4,7 +4,43 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const raizProjeto = fileURLToPath(new URL('../../', import.meta.url));
-export const VERSAO = '1.3.0';
+
+function lerVersao(): string {
+  for (const arquivo of ['VERSION', 'package.json']) {
+    const caminho = path.join(raizProjeto, arquivo);
+    if (!existsSync(caminho)) continue;
+    try {
+      const conteudo = readFileSync(caminho, 'utf8');
+      const versao = arquivo === 'VERSION' ? conteudo.trim() : String((JSON.parse(conteudo) as { version?: unknown }).version ?? '');
+      if (/^\d+\.\d+\.\d+([-+][0-9A-Za-z.-]+)?$/.test(versao)) return versao;
+    } catch {
+      continue;
+    }
+  }
+  return '0.0.0';
+}
+
+export const VERSAO = lerVersao();
+
+export const SEGREDOS_DE_EXEMPLO = new Set(['troque-esta-chave', 'troque-esta-senha', 'changeme', 'secret', 'segredo']);
+export const NIVEIS_LOG = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'] as const;
+export const FREQUENCIAS_BACKUP = ['desligado', 'diario', 'semanal'] as const;
+
+export type FrequenciaBackup = (typeof FREQUENCIAS_BACKUP)[number];
+
+export interface Retencao {
+  notificacoesDias: number;
+  relatoriosDias: number;
+  auditoriaDias: number;
+  sessoesDias: number;
+  entregasDias: number;
+}
+
+export interface ConfigBackup {
+  automatico: FrequenciaBackup;
+  manter: number;
+  pasta: string;
+}
 
 export interface Config {
   porta: number;
@@ -24,9 +60,17 @@ export interface Config {
   tamanhoPool: number;
   proxyConfiavel: boolean;
   admin: { email: string; senha: string; nome: string } | null;
+  producao: boolean;
+  retencao: Retencao;
+  backup: ConfigBackup;
+  metricasToken: string | null;
+  avisos: string[];
 }
 
 export const DADOS_EM_MEMORIA = 'memoria';
+
+const VERDADEIROS = ['1', 'true', 'sim', 'yes', 'on'];
+const FALSOS = ['0', 'false', 'nao', 'não', 'no', 'off'];
 
 function carregarArquivoEnv(): void {
   const arquivo = path.join(raizProjeto, '.env');
@@ -35,14 +79,41 @@ function carregarArquivoEnv(): void {
   }
 }
 
-function booleano(valor: string | undefined, padrao: boolean): boolean {
-  if (valor === undefined || valor.trim() === '') return padrao;
-  return ['1', 'true', 'sim', 'yes', 'on'].includes(valor.trim().toLowerCase());
-}
+function criarLeitor(env: NodeJS.ProcessEnv, avisos: string[]) {
+  const texto = (nome: string): string | undefined => {
+    const valor = env[nome]?.trim();
+    return valor ? valor : undefined;
+  };
 
-function numero(valor: string | undefined, padrao: number): number {
-  const convertido = Number(valor);
-  return Number.isFinite(convertido) && convertido > 0 ? convertido : padrao;
+  const booleano = (nome: string, padrao: boolean): boolean => {
+    const valor = texto(nome)?.toLowerCase();
+    if (valor === undefined) return padrao;
+    if (VERDADEIROS.includes(valor)) return true;
+    if (FALSOS.includes(valor)) return false;
+    avisos.push(`${nome}="${valor}" não é sim ou não; usando ${padrao ? 'true' : 'false'}.`);
+    return padrao;
+  };
+
+  const inteiro = (nome: string, padrao: number, minimo: number, maximo: number): number => {
+    const valor = texto(nome);
+    if (valor === undefined) return padrao;
+    const convertido = Number(valor);
+    if (!Number.isInteger(convertido) || convertido < minimo || convertido > maximo) {
+      avisos.push(`${nome}="${valor}" precisa ser um número inteiro entre ${minimo} e ${maximo}; usando ${padrao}.`);
+      return padrao;
+    }
+    return convertido;
+  };
+
+  const opcao = <T extends string>(nome: string, opcoes: readonly T[], padrao: T): T => {
+    const valor = texto(nome)?.toLowerCase();
+    if (valor === undefined) return padrao;
+    if ((opcoes as readonly string[]).includes(valor)) return valor as T;
+    avisos.push(`${nome}="${valor}" não é uma opção válida (${opcoes.join(', ')}); usando ${padrao}.`);
+    return padrao;
+  };
+
+  return { texto, booleano, inteiro, opcao };
 }
 
 function lerAdministrador(env: NodeJS.ProcessEnv): Config['admin'] {
@@ -64,6 +135,10 @@ function resolverCaminho(valor: string): string {
   return path.isAbsolute(valor) ? valor : path.join(raizProjeto, valor);
 }
 
+export function segredoFraco(segredo: string): boolean {
+  return segredo.length < 32 || SEGREDOS_DE_EXEMPLO.has(segredo.toLowerCase());
+}
+
 function obterSegredo(dirDados: string): { segredo: string; gerado: boolean } {
   const definido = process.env.BENTO_SEGREDO_JWT?.trim();
   if (definido) return { segredo: definido, gerado: false };
@@ -83,32 +158,62 @@ function obterSegredo(dirDados: string): { segredo: string; gerado: boolean } {
 export function lerConfig(sobrescrever: Partial<Config> = {}): Config {
   carregarArquivoEnv();
   const env = process.env;
-  const dirDados = sobrescrever.dirDados ?? resolverCaminho(env.BENTO_DADOS?.trim() || path.join('dados', 'pglite'));
+  const avisos: string[] = [];
+  const ler = criarLeitor(env, avisos);
+  const producao = sobrescrever.producao ?? env.NODE_ENV === 'production';
+  const dirDados = sobrescrever.dirDados ?? resolverCaminho(ler.texto('BENTO_DADOS') ?? path.join('dados', 'pglite'));
   const { segredo, gerado } = sobrescrever.segredoJwt
     ? { segredo: sobrescrever.segredoJwt, gerado: false }
     : obterSegredo(dirDados);
-  const fuso = env.BENTO_FUSO?.trim() || 'America/Sao_Paulo';
+  if (!gerado && !sobrescrever.segredoJwt && segredoFraco(segredo)) {
+    const mensagem = 'BENTO_SEGREDO_JWT é curto ou é o valor de exemplo. Use pelo menos 32 caracteres aleatórios (os scripts iniciar.sh e iniciar.cmd geram um).';
+    if (producao) throw new Error(mensagem);
+    avisos.push(mensagem);
+  }
+  const fuso = ler.texto('BENTO_FUSO') ?? 'America/Sao_Paulo';
   if (!/^[A-Za-z0-9_+\-/]+$/.test(fuso)) {
     throw new Error(`Fuso horário inválido: ${fuso}`);
   }
+  const semear = ler.opcao('BENTO_SEMEAR', ['auto', 'sim', 'nao', 'não'] as const, 'auto');
   const base: Config = {
-    porta: numero(env.BENTO_PORTA, 8080),
-    host: env.BENTO_HOST?.trim() || '0.0.0.0',
-    urlBanco: env.DATABASE_URL?.trim() || null,
+    porta: ler.inteiro('BENTO_PORTA', 8080, 1, 65_535),
+    host: ler.texto('BENTO_HOST') ?? '0.0.0.0',
+    urlBanco: ler.texto('DATABASE_URL') ?? null,
     dirDados,
     segredoJwt: segredo,
     segredoGerado: gerado,
-    https: booleano(env.BENTO_HTTPS, false),
+    https: ler.booleano('BENTO_HTTPS', false),
     origens: (env.BENTO_ORIGENS ?? '').split(',').map((origem) => origem.trim()).filter(Boolean),
-    semear: (env.BENTO_SEMEAR ?? 'auto').trim().toLowerCase() !== 'nao',
-    simulador: booleano(env.BENTO_SIMULADOR, true),
-    intervaloSimulador: numero(env.BENTO_SIMULADOR_INTERVALO, 25),
+    semear: semear !== 'nao' && semear !== 'não',
+    simulador: ler.booleano('BENTO_SIMULADOR', true),
+    intervaloSimulador: ler.inteiro('BENTO_SIMULADOR_INTERVALO', 25, 5, 3_600),
     fuso,
-    log: env.BENTO_LOG?.trim() || 'info',
-    dirWeb: resolverCaminho(env.BENTO_WEB?.trim() || path.join('web', 'dist')),
-    tamanhoPool: numero(env.BENTO_POOL, 10),
-    proxyConfiavel: booleano(env.BENTO_PROXY, false),
+    log: ler.opcao('BENTO_LOG', NIVEIS_LOG, 'info'),
+    dirWeb: resolverCaminho(ler.texto('BENTO_WEB') ?? path.join('web', 'dist')),
+    tamanhoPool: ler.inteiro('BENTO_POOL', 10, 1, 200),
+    proxyConfiavel: ler.booleano('BENTO_PROXY', false),
     admin: lerAdministrador(env),
+    producao,
+    retencao: {
+      notificacoesDias: ler.inteiro('BENTO_RETENCAO_NOTIFICACOES', 180, 0, 3_650),
+      relatoriosDias: ler.inteiro('BENTO_RETENCAO_RELATORIOS', 90, 0, 3_650),
+      auditoriaDias: ler.inteiro('BENTO_RETENCAO_AUDITORIA', 0, 0, 3_650),
+      sessoesDias: ler.inteiro('BENTO_RETENCAO_SESSOES', 30, 1, 3_650),
+      entregasDias: ler.inteiro('BENTO_RETENCAO_ENTREGAS', 30, 1, 3_650),
+    },
+    backup: {
+      automatico: ler.opcao('BENTO_BACKUP_AUTOMATICO', FREQUENCIAS_BACKUP, 'desligado'),
+      manter: ler.inteiro('BENTO_BACKUP_MANTER', 7, 1, 365),
+      pasta: resolverCaminho(ler.texto('BENTO_BACKUP_PASTA') ?? path.join('dados', 'backups')),
+    },
+    metricasToken: ler.texto('BENTO_METRICAS_TOKEN') ?? null,
+    avisos,
   };
-  return { ...base, ...sobrescrever, dirDados, segredoJwt: segredo, segredoGerado: gerado };
+  if (base.metricasToken && base.metricasToken.length < 16) {
+    avisos.push('BENTO_METRICAS_TOKEN tem menos de 16 caracteres; use um valor longo e aleatório.');
+  }
+  if (base.origens.some((origem) => !/^https?:\/\/[^/\s]+$/.test(origem))) {
+    avisos.push('BENTO_ORIGENS deve listar origens completas separadas por vírgula, como https://painel.suaempresa.com (sem barra no fim).');
+  }
+  return { ...base, ...sobrescrever, dirDados, segredoJwt: segredo, segredoGerado: gerado, avisos: [...avisos, ...(sobrescrever.avisos ?? [])] };
 }

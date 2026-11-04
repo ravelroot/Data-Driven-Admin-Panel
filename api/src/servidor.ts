@@ -18,6 +18,7 @@ try {
   if (config.admin && (await garantirAdministrador(app.banco, config.admin)) === 'criado') {
     app.log.info({ email: config.admin.email.toLowerCase() }, 'Conta de administrador criada');
   }
+  for (const aviso of config.avisos) app.log.warn(aviso);
   if (config.segredoGerado) {
     app.log.warn('BENTO_SEGREDO_JWT não definido: usando um segredo gerado em dados/segredo. Defina o seu em produção.');
   }
@@ -36,6 +37,7 @@ for (const sinal of ['SIGINT', 'SIGTERM'] as const) {
   process.on(sinal, () => {
     if (encerrando) return;
     encerrando = true;
+    app.estado.encerrando = true;
     app.log.info(`Recebido ${sinal}; encerrando`);
     app
       .close()

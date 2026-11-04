@@ -12,6 +12,8 @@ import { carregarSessao, pode, sessao } from "../nucleo/sessao.ts";
 import { iniciarTema, sincronizarPreferencias } from "../nucleo/tema.ts";
 import { conectarTempoReal } from "../nucleo/tempo-real.ts";
 import { montarCasca } from "./casca.ts";
+import { iniciarAvisoManutencao } from "./manutencao.ts";
+import { mostrarNovidadesSeNecessario } from "./novidades.ts";
 import { paginaPorId } from "./navegacao.ts";
 import type { Sessao } from "../nucleo/tipos.ts";
 
@@ -71,6 +73,7 @@ export const iniciarPagina = async ({ pagina, permissao, aoIniciar }: OpcoesPagi
 
   sincronizarPreferencias(sessao().preferencias);
   montarCasca({ pagina, titulo });
+  iniciarAvisoManutencao();
   conectarTempoReal();
 
   if (permissao && !pode(permissao)) {
@@ -87,5 +90,6 @@ export const iniciarPagina = async ({ pagina, permissao, aoIniciar }: OpcoesPagi
   } finally {
     hidratarIcones(conteudo);
     document.body.dataset.pronto = "true";
+    mostrarNovidadesSeNecessario();
   }
 };

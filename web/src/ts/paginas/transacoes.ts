@@ -6,7 +6,7 @@ import { api, mensagemDeErro, ErroApi } from "../nucleo/api.ts";
 import { pode } from "../nucleo/sessao.ts";
 import { ouvir } from "../nucleo/eventos.ts";
 import { moeda, numero, percentual, dataCurta, dataHora, relativo, rotulos, plural } from "../nucleo/formato.ts";
-import { TabelaDados, botaoAcoesLinha } from "../componentes/tabela.ts";
+import { TabelaDados, botaoAcoesLinha, tamanhoPreferido } from "../componentes/tabela.ts";
 import type { ColunaTabela, Direcao, ParametrosTabela, ValorFiltro } from "../componentes/tabela.ts";
 import { Gaveta } from "../componentes/gaveta.ts";
 import { confirmar } from "../componentes/modal.ts";
@@ -66,7 +66,7 @@ const traduzir = (grupo: Record<string, string>, chave: string): string => grupo
 const negativo = (transacao: Pick<Transacao, "tipo" | "status">): boolean => transacao.tipo === "reembolso" || transacao.status === "reembolsada";
 
 const COLUNAS: ColunaTabela<Transacao>[] = [
-  { campo: "codigo", titulo: "Código", ordenavel: true, classe: "celula-codigo", render: (transacao) => transacao.codigo },
+  { campo: "codigo", titulo: "Código", ordenavel: true, fixa: true, classe: "celula-codigo", render: (transacao) => transacao.codigo },
   {
     campo: "criadoEm",
     titulo: "Data",
@@ -120,7 +120,7 @@ const sincronizarUrl = (): void => {
     ordenar: ordenar && ordenar !== "criadoEm" ? ordenar : null,
     direcao: direcao !== "desc" ? direcao : null,
     pagina: pagina > 1 ? pagina : null,
-    porPagina: porPagina !== 10 ? porPagina : null,
+    porPagina: porPagina !== tamanhoPreferido() ? porPagina : null,
   });
   const temFiltro = Object.keys(filtros).length > 0;
   exigir<HTMLButtonElement>('[data-acao="limpar"]').hidden = !temFiltro;
@@ -323,9 +323,10 @@ iniciarPagina({
     tabelaAtual = new TabelaDados<Transacao, RespostaTransacoes>(exigir<HTMLElement>("[data-tabela]"), {
       colunas: COLUNAS,
       legenda: "Lista de transações",
+      idColunas: "transacoes",
       ordenacao: { campo: ordenar, direcao },
       filtros,
-      porPagina: POR_PAGINA.has(Number(url.porPagina)) ? Number(url.porPagina) : 10,
+      porPagina: POR_PAGINA.has(Number(url.porPagina)) ? Number(url.porPagina) : tamanhoPreferido(),
       buscar: (parametros: ParametrosTabela, sinal: AbortSignal) => api.obter<RespostaTransacoes>("/transacoes", parametros, { sinal }),
       aoClicarLinha: (transacao: Transacao) => abrirDetalhe(transacao.id),
       acoesLinha: acoesDaTransacao,

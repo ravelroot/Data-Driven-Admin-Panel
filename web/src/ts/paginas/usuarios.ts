@@ -4,6 +4,7 @@ import { icone, hidratarIcones } from "../nucleo/icones.ts";
 import { api, mensagemDeErro, ErroApi } from "../nucleo/api.ts";
 import { pode, usuarioAtual } from "../nucleo/sessao.ts";
 import { ouvir } from "../nucleo/eventos.ts";
+import { registrarRecente } from "../nucleo/recentes.ts";
 import { moeda, numero, relativo, dataCurta, dataHora, rotulos, corAvatar, plural } from "../nucleo/formato.ts";
 import { TabelaDados, botaoAcoesLinha } from "../componentes/tabela.ts";
 import type { ParametrosTabela } from "../componentes/tabela.ts";
@@ -14,6 +15,7 @@ import type { TipoModal } from "../componentes/modal.ts";
 import { avisar, avisoSucesso } from "../componentes/aviso.ts";
 import { lerFormulario, mostrarErros, limparErros, semVazios } from "../componentes/formulario.ts";
 import { emblemaStatusTransacao } from "../componentes/transacao.ts";
+import { abrirImportacaoUsuarios } from "../componentes/importacao-usuarios.ts";
 import type { Seguro } from "../nucleo/dom.ts";
 import type { Atividade, Pagina, Referencia, Transacao, Usuario } from "../nucleo/tipos.ts";
 
@@ -84,6 +86,7 @@ interface ColunaUsuario {
   titulo: string;
   ordenavel?: boolean;
   oculto?: boolean;
+  fixa?: boolean;
   direcaoInicial?: "asc" | "desc";
   classe?: string;
   render: (usuario: Usuario) => Seguro | string;
@@ -138,6 +141,7 @@ const COLUNAS: ColunaUsuario[] = [
     campo: "nome",
     titulo: "Usuário",
     ordenavel: true,
+    fixa: true,
     render: (usuario) => html`<div class="celula-usuario">${avatarUsuario(usuario)}<div class="celula-usuario-texto"><span class="celula-usuario-nome">${usuario.nome}</span><span class="celula-usuario-email">${usuario.email}</span></div></div>`,
   },
   { campo: "papel", titulo: "Papel", ordenavel: true, render: (usuario) => emblemaPapel(usuario.papel) },
@@ -308,6 +312,14 @@ const camposUsuario = (usuario: Partial<Usuario> = {}, { novo = false }: { novo?
       : ""}
   </div>
 `;
+
+const abrirImportacao = (): void =>
+  abrirImportacaoUsuarios({
+    papeis: estado.papeis,
+    aoImportar: () => {
+      void tabela().recarregar({ voltarInicio: true });
+    },
+  });
 
 const abrirNovo = (): void => {
   const gaveta = new Gaveta({ titulo: "Novo usuário", subtitulo: "A conta fica disponível assim que você salvar." }).abrir();
@@ -716,6 +728,7 @@ const abrirDetalhes = async (id: string, abaInicial: Aba = "resumo"): Promise<vo
     return;
   }
   const { usuario } = detalhe;
+  registrarRecente(usuarioAtual()?.id, { tipo: "usuario", id: usuario.id, titulo: usuario.nome, detalhe: usuario.email, href: `/usuarios?usuario=${encodeURIComponent(usuario.id)}` });
   gaveta.definirTitulo(usuario.nome, `Conta criada ${relativo(usuario.criadoEm)}`);
   gaveta.definirAbas(html`
     <div class="abas" role="tablist" aria-label="Seções do usuário">
@@ -897,6 +910,7 @@ iniciarPagina({
     estado.tabela = new TabelaDados<Usuario, RespostaUsuarios>(exigir<HTMLElement>("[data-tabela]"), {
       colunas: COLUNAS,
       legenda: "Lista de usuários",
+      idColunas: "usuarios",
       selecionavel: podeEmMassa,
       ordenacao: { campo: "criadoEm", direcao: "desc" },
       buscar: (parametros: ParametrosTabela, sinal: AbortSignal) => api.obter<RespostaUsuarios>("/usuarios", parametros, { sinal }),
@@ -931,9 +945,10 @@ iniciarPagina({
     });
     $$<HTMLSelectElement>("[data-filtro]").forEach((selecao) => selecao.addEventListener("change", () => tabela().definirFiltro(selecao.dataset.filtro ?? "", selecao.value)));
     document.addEventListener("click", (evento) => {
-      const botao = (evento.target as Element | null)?.closest<HTMLButtonElement>('[data-acao="novo"], [data-acao="exportar"]');
+      const botao = (evento.target as Element | null)?.closest<HTMLButtonElement>('[data-acao="novo"], [data-acao="exportar"], [data-acao="importar"]');
       if (!botao) return;
       if (botao.dataset.acao === "novo") abrirNovo();
+      else if (botao.dataset.acao === "importar") abrirImportacao();
       else exportar(botao);
     });
 
@@ -944,12 +959,31 @@ iniciarPagina({
       lista.inserirNoTopo(usuario);
     });
 
+    const inicial = parametrosUrl();
+    if (inicial.papel && estado.papeis.some((papel) => papel.codigo === inicial.papel)) {
+      exigir<HTMLSelectElement>('[data-filtro="papel"]').value = inicial.papel;
+      tabela().estado.filtros.papel = inicial.papel;
+    }
+    if (inicial.status && ["ativo", "bloqueado", "pendente", "inativo"].includes(inicial.status)) {
+      estado.filtroStatus = inicial.status;
+      $$("[data-status-filtro] [data-status]").forEach((botao) => botao.setAttribute("aria-pressed", String(botao.dataset.status === inicial.status)));
+      tabela().estado.filtros.status = inicial.status;
+    }
+    if (inicial.q) {
+      exigir<HTMLInputElement>("[data-busca]").value = inicial.q.slice(0, 120);
+      tabela().estado.q = inicial.q.slice(0, 120).trim();
+    }
+    if (inicial.papel || inicial.status || inicial.q) atualizarUrl({ papel: null, status: null, q: null });
+
     await tabela().recarregar();
 
     const parametros = parametrosUrl();
     if (parametros.novo && pode("usuarios.criar")) {
       atualizarUrl({ novo: null });
       abrirNovo();
+    } else if (parametros.importar && pode("usuarios.importar") && pode("usuarios.criar")) {
+      atualizarUrl({ importar: null });
+      abrirImportacao();
     } else if (parametros.usuario) abrirDetalhes(parametros.usuario);
   },
 });

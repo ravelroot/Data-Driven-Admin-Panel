@@ -24,7 +24,17 @@ describe('autenticação, permissões e CSRF', () => {
     assert.equal(corpo.usuario.email, 'admin@bento.local');
     assert.equal(corpo.usuario.papel.codigo, 'admin');
     assert.ok(corpo.permissoes.includes('configuracoes.sistema'));
-    assert.deepEqual(Object.keys(corpo.preferencias).sort(), ['densidade', 'paleta', 'sidebarRecolhida', 'tema']);
+    assert.deepEqual(Object.keys(corpo.preferencias).sort(), [
+      'atalhosTeclado',
+      'densidade',
+      'itensPorPagina',
+      'movimento',
+      'paginaInicial',
+      'paleta',
+      'primeirosPassosOcultos',
+      'sidebarRecolhida',
+      'tema',
+    ]);
     const nomes = resposta.cookies.map((cookie) => cookie.name).sort();
     assert.deepEqual(nomes, ['bento_renovacao', 'bento_sessao']);
     assert.ok(resposta.cookies.every((cookie) => cookie.httpOnly));

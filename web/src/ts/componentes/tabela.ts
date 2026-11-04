@@ -1,11 +1,19 @@
-import { html, atrasar, type Atrasada, type Marcacao } from "../nucleo/dom.ts";
+import { html, atrasar, type Atrasada, type Marcacao, type Seguro } from "../nucleo/dom.ts";
 import { icone } from "../nucleo/icones.ts";
 import { numero } from "../nucleo/formato.ts";
 import { mensagemDeErro } from "../nucleo/api.ts";
-import { abrirMenuAcoes, type EntradaMenu } from "./menu-suspenso.ts";
+import { abrirMenuAcoes, abrirMenuMarcacao, type EntradaMenu } from "./menu-suspenso.ts";
+import { alternarOculta, configuraveis, gravarOcultas, lerOcultas, ocultasPadrao } from "../nucleo/colunas.ts";
+import { preferencia } from "../nucleo/sessao.ts";
+import { movimentoReduzido } from "../nucleo/tema.ts";
 import type { Pagina } from "../nucleo/tipos.ts";
 
-const TAMANHOS = [10, 25, 50, 100];
+export const TAMANHOS = [10, 25, 50, 100];
+
+export const tamanhoPreferido = (): number => {
+  const valor = Number(preferencia("itensPorPagina", 25));
+  return TAMANHOS.includes(valor) ? valor : 25;
+};
 
 export type Direcao = "asc" | "desc";
 
@@ -14,6 +22,8 @@ export interface ColunaTabela<T> {
   titulo: string;
   ordenavel?: boolean;
   oculto?: boolean;
+  fixa?: boolean;
+  escondidaPorPadrao?: boolean;
   classe?: string;
   largura?: string;
   direcaoInicial?: Direcao;
@@ -42,6 +52,7 @@ export interface OpcoesTabela<T, R extends Pagina<T> = Pagina<T>> {
   buscar: (parametros: ParametrosTabela, sinal: AbortSignal) => Promise<R>;
   chave?: string;
   porPagina?: number;
+  idColunas?: string;
   selecionavel?: boolean;
   legenda?: string;
   classeTabela?: string;
@@ -88,6 +99,7 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
   itens: T[];
   resposta: R | null;
   readonly selecionados: Set<string>;
+  private ocultas: Set<string>;
   private controlador: AbortController | null;
   private readonly buscarAtrasado: Atrasada<[]>;
   private corpo!: HTMLTableSectionElement;
@@ -100,7 +112,7 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
     this.raiz = raiz;
     this.opcoes = {
       chave: "id",
-      porPagina: 10,
+      porPagina: tamanhoPreferido(),
       selecionavel: false,
       vazio: { titulo: "Nada por aqui", texto: "Nenhum registro corresponde aos filtros." },
       ...opcoes,
@@ -116,6 +128,7 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
     this.itens = [];
     this.resposta = null;
     this.selecionados = new Set();
+    this.ocultas = new Set(this.opcoes.idColunas ? lerOcultas(this.opcoes.idColunas, this.opcoes.colunas) : []);
     this.controlador = null;
     this.buscarAtrasado = atrasar(() => {
       void this.recarregar({ voltarInicio: true });
@@ -123,12 +136,69 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
     this.montar();
   }
 
+  private colunasVisiveis(): ColunaTabela<T>[] {
+    return this.opcoes.colunas.filter((coluna) => !this.ocultas.has(coluna.campo));
+  }
+
+  private totalColunas(): number {
+    return this.colunasVisiveis().length + (this.opcoes.selecionavel ? 1 : 0);
+  }
+
+  colunasOcultas(): string[] {
+    return [...this.ocultas];
+  }
+
+  definirColunasOcultas(ocultas: string[]): void {
+    const id = this.opcoes.idColunas;
+    const normalizadas = id ? gravarOcultas(id, this.opcoes.colunas, ocultas) : ocultas;
+    this.ocultas = new Set(normalizadas);
+    const linha = this.raiz.querySelector<HTMLElement>("[data-cabecalho]");
+    if (linha) linha.innerHTML = String(this.linhaCabecalho());
+    this.renderizarCabecalho();
+    if (this.resposta) this.renderizarLinhas();
+    else this.renderizarEsqueleto();
+    this.atualizarSelecao();
+  }
+
+  private abrirColunas(origem: HTMLElement): void {
+    const opcoes = () =>
+      configuraveis(this.opcoes.colunas).map((coluna) => {
+        const marcado = !this.ocultas.has(coluna.campo);
+        const ultima = marcado && configuraveis(this.opcoes.colunas).filter((item) => !this.ocultas.has(item.campo)).length === 1;
+        return { valor: coluna.campo, rotulo: coluna.titulo, marcado, desativado: ultima };
+      });
+    abrirMenuMarcacao(origem, {
+      titulo: "Colunas visíveis",
+      opcoes: opcoes(),
+      rodape: { rotulo: "Restaurar o padrão", executar: () => this.definirColunasOcultas(ocultasPadrao(this.opcoes.colunas)) },
+      aoAlterar: (campo) => {
+        this.definirColunasOcultas(alternarOculta([...this.ocultas], campo));
+        return opcoes();
+      },
+    });
+  }
+
   private chaveDe(item: T): string {
     return String((item as Record<string, unknown>)[this.opcoes.chave]);
   }
 
+  private linhaCabecalho(): Seguro {
+    const colunas = this.colunasVisiveis();
+    return html`
+      ${this.opcoes.selecionavel ? html`<th scope="col" class="celula-selecao"><input type="checkbox" class="caixa-marcacao" data-selecionar-todos aria-label="Selecionar todos desta página"></th>` : ""}
+      ${colunas.map(
+        (coluna) => html`<th scope="col" class="${coluna.classe ?? ""}" ${coluna.largura ? html`style="width:${coluna.largura}"` : ""} data-campo="${coluna.campo}">
+          ${coluna.ordenavel
+            ? html`<button type="button" class="tabela-ordenavel" data-ordenar="${coluna.campo}">${coluna.titulo}${html([icone("seta-cima", "tabela-ordem-icone")])}</button>`
+            : coluna.oculto
+              ? html`<span class="sr-only">${coluna.titulo}</span>`
+              : coluna.titulo}
+        </th>`,
+      )}
+    `;
+  }
+
   private montar(): void {
-    const { colunas, selecionavel } = this.opcoes;
     this.raiz.innerHTML = String(html`
       <div class="tabela-selecao-barra" data-selecao hidden>
         <strong data-selecao-total>0 selecionados</strong>
@@ -139,18 +209,7 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
         <table class="tabela ${this.opcoes.classeTabela ?? ""}">
           ${this.opcoes.legenda ? html`<caption class="sr-only">${this.opcoes.legenda}</caption>` : ""}
           <thead>
-            <tr>
-              ${selecionavel ? html`<th scope="col" class="celula-selecao"><input type="checkbox" class="caixa-marcacao" data-selecionar-todos aria-label="Selecionar todos desta página"></th>` : ""}
-              ${colunas.map(
-                (coluna) => html`<th scope="col" class="${coluna.classe ?? ""}" ${coluna.largura ? html`style="width:${coluna.largura}"` : ""} data-campo="${coluna.campo}">
-                  ${coluna.ordenavel
-                    ? html`<button type="button" class="tabela-ordenavel" data-ordenar="${coluna.campo}">${coluna.titulo}${html([icone("seta-cima", "tabela-ordem-icone")])}</button>`
-                    : coluna.oculto
-                      ? html`<span class="sr-only">${coluna.titulo}</span>`
-                      : coluna.titulo}
-                </th>`,
-              )}
-            </tr>
+            <tr data-cabecalho>${this.linhaCabecalho()}</tr>
           </thead>
           <tbody data-corpo></tbody>
         </table>
@@ -162,16 +221,19 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
     this.moldura = this.raiz.querySelector<HTMLElement>(".tabela-moldura") as HTMLElement;
     this.rodape = this.raiz.querySelector<HTMLElement>("[data-rodape]") as HTMLElement;
     this.barraSelecao = this.raiz.querySelector<HTMLElement>("[data-selecao]");
+    const cabecalho = this.raiz.querySelector<HTMLElement>("thead") as HTMLElement;
 
-    this.raiz.querySelectorAll<HTMLElement>("[data-ordenar]").forEach((botao) => {
-      botao.addEventListener("click", () => this.ordenarPor(botao.dataset.ordenar ?? ""));
+    cabecalho.addEventListener("click", (evento) => {
+      const botao = (evento.target as Element | null)?.closest<HTMLElement>("[data-ordenar]");
+      if (botao) this.ordenarPor(botao.dataset.ordenar ?? "");
     });
 
-    this.raiz.querySelector<HTMLInputElement>("[data-selecionar-todos]")?.addEventListener("change", (evento) => {
-      const marcado = (evento.target as HTMLInputElement).checked;
+    cabecalho.addEventListener("change", (evento) => {
+      const caixa = (evento.target as Element | null)?.closest<HTMLInputElement>("[data-selecionar-todos]");
+      if (!caixa) return;
       for (const item of this.itens) {
         const chave = this.chaveDe(item);
-        if (marcado) this.selecionados.add(chave);
+        if (caixa.checked) this.selecionados.add(chave);
         else this.selecionados.delete(chave);
       }
       this.atualizarSelecao();
@@ -214,6 +276,12 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
     });
 
     this.rodape.addEventListener("click", (evento) => {
+      const colunas = (evento.target as Element | null)?.closest<HTMLButtonElement>("[data-colunas]");
+      if (colunas) {
+        evento.stopPropagation();
+        this.abrirColunas(colunas);
+        return;
+      }
       const botao = (evento.target as Element | null)?.closest<HTMLButtonElement>("[data-pagina]");
       if (!botao || botao.disabled) return;
       this.irParaPagina(Number(botao.dataset.pagina));
@@ -239,14 +307,15 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
   }
 
   private renderizarEsqueleto(): void {
-    const colunas = this.opcoes.colunas.length + (this.opcoes.selecionavel ? 1 : 0);
+    const colunas = this.totalColunas();
     const linhas = Math.min(this.estado.porPagina, 8);
     this.corpo.innerHTML = Array.from({ length: linhas }, () => `<tr class="tabela-esqueleto">${"<td></td>".repeat(colunas)}</tr>`).join("");
   }
 
   private renderizarLinhas(): void {
-    const { colunas, selecionavel, chave, aoClicarLinha, vazio } = this.opcoes;
-    const totalColunas = colunas.length + (selecionavel ? 1 : 0);
+    const { selecionavel, chave, aoClicarLinha, vazio } = this.opcoes;
+    const colunas = this.colunasVisiveis();
+    const totalColunas = this.totalColunas();
     if (!this.itens.length) {
       this.corpo.innerHTML = String(html`
         <tr class="tabela-vazia">
@@ -283,6 +352,9 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
       <nav class="paginacao" aria-label="Paginação">
         <p class="paginacao-info"><strong>${numero(inicio)}–${numero(fim)}</strong> de <strong>${numero(total)}</strong></p>
         <div class="paginacao-lado">
+          ${this.opcoes.idColunas && configuraveis(this.opcoes.colunas).length > 1
+            ? html`<button type="button" class="botao botao-fantasma botao-pequeno paginacao-colunas" data-colunas aria-haspopup="menu" aria-expanded="false">${html([icone("colunas")])}Colunas${this.ocultas.size ? html`<span class="contador">${this.colunasVisiveis().filter((coluna) => configuraveis([coluna]).length).length}/${configuraveis(this.opcoes.colunas).length}</span>` : ""}</button>`
+            : ""}
           <label class="paginacao-tamanho">Por página
             <select class="selecao" data-por-pagina aria-label="Itens por página">
               ${TAMANHOS.map((tamanho) => html`<option value="${tamanho}" ${tamanho === this.estado.porPagina ? "selected" : ""}>${tamanho}</option>`)}
@@ -351,7 +423,7 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
   irParaPagina(pagina: number): void {
     this.estado.pagina = Math.max(1, pagina);
     void this.recarregar();
-    this.raiz.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    this.raiz.scrollIntoView({ block: "nearest", behavior: movimentoReduzido() ? "auto" : "smooth" });
   }
 
   buscar(texto: string): void {
@@ -392,7 +464,7 @@ export class TabelaDados<T = any, R extends Pagina<T> = Pagina<T>> {
       this.opcoes.aoCarregar?.(resposta);
     } catch (erro) {
       if (erro instanceof DOMException && erro.name === "AbortError") return null;
-      const colunas = this.opcoes.colunas.length + (this.opcoes.selecionavel ? 1 : 0);
+      const colunas = this.totalColunas();
       this.corpo.innerHTML = String(html`
         <tr class="tabela-vazia"><td colspan="${colunas}">
           <div class="vazio vazio-compacto vazio-erro">
