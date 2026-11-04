@@ -1,4 +1,4 @@
-FROM node:22-alpine AS construcao
+FROM node:26-alpine AS construcao
 
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -11,7 +11,7 @@ COPY web ./web
 COPY api ./api
 RUN npm run build && npm prune --omit=dev --no-audit --no-fund
 
-FROM node:22-alpine
+FROM node:26-alpine
 
 ENV NODE_ENV=production \
     BENTO_HOST=0.0.0.0 \
