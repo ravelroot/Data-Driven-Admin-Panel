@@ -36,10 +36,10 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0",
+    "@types/node": "^26.6.6",
     "@types/pdfkit": "^0.17.7",
     "@types/pg": "^8.23.1",
     "tsx": "^4.23.0",
-    "typescript": "~5.9.3"
+    "typescript": "~7.0.2"
   }
 }
