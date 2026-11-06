@@ -24,10 +24,12 @@ describe('autenticação, permissões e CSRF', () => {
     assert.equal(corpo.usuario.email, 'admin@bento.local');
     assert.equal(corpo.usuario.papel.codigo, 'admin');
     assert.ok(corpo.permissoes.includes('configuracoes.sistema'));
+    assert.deepEqual(corpo.doisFatores, { ativo: false, ativadoEm: null, codigosRestantes: 0, obrigatorio: false, pendente: false });
     assert.deepEqual(Object.keys(corpo.preferencias).sort(), [
       'atalhosTeclado',
       'densidade',
       'itensPorPagina',
+      'layoutVisaoGeral',
       'movimento',
       'paginaInicial',
       'paleta',

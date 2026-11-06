@@ -90,7 +90,7 @@ export async function garantirDestinoExterno(bruto: string): Promise<URL> {
   return url;
 }
 
-export type EventoNegocio = 'transacao.paga' | 'usuario.criado' | 'usuario.bloqueado' | 'relatorio.gerado';
+export type EventoNegocio = 'transacao.paga' | 'usuario.criado' | 'usuario.bloqueado' | 'relatorio.gerado' | 'alerta.disparado';
 
 export type Provedor = 'webhook' | 'slack' | 'discord' | 'google-analytics' | 'stripe';
 

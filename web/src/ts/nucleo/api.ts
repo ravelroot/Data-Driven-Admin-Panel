@@ -108,14 +108,18 @@ async function requisitar(metodo: Metodo, caminho: string, { corpo, consulta, si
     throw new ErroApi(0, "SEM_CONEXAO", MENSAGENS_PADRAO[0]);
   }
 
-  if (resposta.status === 401 && !semRenovar && tentativa === 0 && !caminho.startsWith("/auth/entrar")) {
+  if (resposta.status === 401 && !semRenovar && tentativa === 0 && !caminho.startsWith("/auth/entrar") && !caminho.startsWith("/auth/dois-fatores")) {
     const renovou = await renovarSessao();
     if (renovou) return requisitar(metodo, caminho, { corpo, consulta, sinal, bruto, semRenovar }, 1);
     irParaEntrar();
     throw await erroDaResposta(resposta);
   }
 
-  if (!resposta.ok) throw await erroDaResposta(resposta);
+  if (!resposta.ok) {
+    const erro = await erroDaResposta(resposta);
+    if (erro.codigo === "DOIS_FATORES" && !location.pathname.startsWith("/configuracoes")) location.replace("/configuracoes?secao=seguranca&obrigatorio=1");
+    throw erro;
+  }
   if (bruto) return resposta;
   if (resposta.status === 204) return null;
   const texto = await resposta.text();

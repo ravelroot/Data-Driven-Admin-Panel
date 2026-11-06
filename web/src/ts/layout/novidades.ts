@@ -11,51 +11,48 @@ export interface Novidade {
   permissao?: string;
 }
 
-export const VERSAO_NOVIDADES = "1.4.0";
+export const VERSAO_NOVIDADES = "1.5.0";
 
 export const NOVIDADES: Novidade[] = [
   {
-    icone: "ajustes",
-    titulo: "Preferências de uso",
-    texto: "Escolha a página inicial, quantas linhas cada tabela mostra, se as animações ficam reduzidas e se os atalhos de uma tecla ficam ligados.",
-    href: "/configuracoes?secao=preferencias",
+    icone: "escudo-ok",
+    titulo: "Verificação em duas etapas",
+    texto: "Depois da senha, o painel pede o código de um aplicativo autenticador. Dez códigos de recuperação garantem o acesso se o celular sumir.",
+    href: "/configuracoes?secao=seguranca",
   },
   {
-    icone: "colunas",
-    titulo: "Colunas visíveis",
-    texto: "Em Usuários, Transações e Auditoria, o botão Colunas no rodapé da tabela esconde o que você não usa. Fica salvo neste navegador.",
+    icone: "sirene",
+    titulo: "Alertas de métricas",
+    texto: "Regras sobre receita, falhas de pagamento, reembolsos, cancelamentos e conversão avisam a equipe nas notificações e nas integrações.",
+    href: "/alertas",
+    permissao: "alertas.ver",
   },
   {
-    icone: "historico",
-    titulo: "Recentes na paleta de comandos",
-    texto: "Ctrl + K mostra os últimos usuários e transações que você abriu, para voltar a eles com um Enter.",
-  },
-  {
-    icone: "importar",
-    titulo: "Importação de usuários por CSV",
-    texto: "Envie uma planilha, veja a prévia linha a linha e só então confirme. Há um modelo pronto para baixar.",
-    href: "/usuarios?importar=1",
-    permissao: "usuarios.importar",
-  },
-  {
-    icone: "webhook",
-    titulo: "Histórico de entregas das integrações",
-    texto: "Cada evento enviado fica registrado com o código HTTP e o tempo de resposta. Falhas são reenviadas sozinhas e dá para reenviar na hora.",
-    href: "/configuracoes?secao=integracoes",
-    permissao: "configuracoes.integracoes",
-  },
-  {
-    icone: "ferramenta",
-    titulo: "Manutenção",
-    texto: "Verificações do ambiente, modo somente leitura, backups e limpeza de dados antigos em Configurações › Manutenção.",
-    href: "/configuracoes?secao=manutencao",
-    permissao: "configuracoes.sistema",
-  },
-  {
-    icone: "foguete",
-    titulo: "Primeiros passos",
-    texto: "A visão geral mostra o que falta para deixar o painel pronto: empresa, senhas, equipe, integrações, relatórios e backups.",
+    icone: "previsao",
+    titulo: "Previsão do mês",
+    texto: "A visão geral projeta a receita até o fim do mês, com a faixa provável e a chance de bater a meta.",
     href: "/",
+    permissao: "painel.ver",
+  },
+  {
+    icone: "lampada",
+    titulo: "Insights automáticos",
+    texto: "Dias fora do padrão em receita, pagamentos, cadastros e conversão aparecem sozinhos, com atalho para investigar e criar um alerta.",
+    href: "/",
+    permissao: "painel.ver",
+  },
+  {
+    icone: "grade",
+    titulo: "Visão geral do seu jeito",
+    texto: "Em Personalizar, esconda, arraste e redimensione os cartões ou escolha um layout pronto. Fica salvo na sua conta.",
+    href: "/?personalizar=1",
+    permissao: "painel.ver",
+  },
+  {
+    icone: "escudo",
+    titulo: "Regra de segurança da empresa",
+    texto: "Administradores podem exigir a verificação em duas etapas por papel em Configurações › Empresa.",
+    href: "/configuracoes?secao=sistema",
     permissao: "configuracoes.sistema",
   },
 ];
@@ -73,7 +70,7 @@ export const abrirNovidades = (): void => {
           <div class="modal-textos">
             <p class="versao-rotulo">Versão ${VERSAO_NOVIDADES}</p>
             <h2 class="modal-titulo" id="versao-titulo">O que há de novo no Bento</h2>
-            <p class="modal-texto">Melhorias de uso, configuração e manutenção. Esta janela aparece uma vez por versão.</p>
+            <p class="modal-texto">Segurança, alertas, previsão e uma visão geral sob medida. Esta janela aparece uma vez por versão.</p>
           </div>
         </div>
         <ul class="versao-lista" role="list" tabindex="-1">

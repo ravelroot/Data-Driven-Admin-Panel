@@ -34,6 +34,7 @@ export interface Retencao {
   auditoriaDias: number;
   sessoesDias: number;
   entregasDias: number;
+  alertasDias: number;
 }
 
 export interface ConfigBackup {
@@ -200,6 +201,7 @@ export function lerConfig(sobrescrever: Partial<Config> = {}): Config {
       auditoriaDias: ler.inteiro('BENTO_RETENCAO_AUDITORIA', 0, 0, 3_650),
       sessoesDias: ler.inteiro('BENTO_RETENCAO_SESSOES', 30, 1, 3_650),
       entregasDias: ler.inteiro('BENTO_RETENCAO_ENTREGAS', 30, 1, 3_650),
+      alertasDias: ler.inteiro('BENTO_RETENCAO_ALERTAS', 180, 1, 3_650),
     },
     backup: {
       automatico: ler.opcao('BENTO_BACKUP_AUTOMATICO', FREQUENCIAS_BACKUP, 'desligado'),

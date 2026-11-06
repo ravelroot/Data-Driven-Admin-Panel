@@ -19,6 +19,7 @@ export interface Usuario {
   atualizadoEm: string | null;
   bloqueadoEm: string | null;
   motivoBloqueio: string | null;
+  doisFatores: boolean;
 }
 
 export interface Transacao {
@@ -58,7 +59,7 @@ export interface Notificacao {
 export const SELECAO_USUARIO = `
   select u.id, u.nome, u.email, u.papel, p.nome as papel_nome, u.status, u.cargo, u.empresa, u.telefone,
          u.pais, u.cidade, pl.codigo as plano_codigo, pl.nome as plano_nome, u.ultimo_acesso, u.criado_em,
-         u.atualizado_em, u.bloqueado_em, u.motivo_bloqueio
+         u.atualizado_em, u.bloqueado_em, u.motivo_bloqueio, (u.totp_ativado_em is not null) as dois_fatores
   from usuarios u
   join papeis p on p.codigo = u.papel
   left join assinaturas a on a.usuario_id = u.id and a.status in ('ativa', 'teste', 'inadimplente')
@@ -105,6 +106,7 @@ export function mapearUsuario(linha: Linha): Usuario {
     atualizadoEm: paraIso(linha.atualizado_em),
     bloqueadoEm: paraIso(linha.bloqueado_em),
     motivoBloqueio: texto(linha.motivo_bloqueio),
+    doisFatores: Boolean(linha.dois_fatores),
   };
 }
 

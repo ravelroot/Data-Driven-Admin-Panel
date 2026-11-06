@@ -1,7 +1,7 @@
 import type { Banco } from '../banco/conexao.js';
 import type { Retencao } from '../config.js';
 
-export type CategoriaLimpeza = 'sessoes' | 'notificacoes' | 'relatorios' | 'entregas' | 'auditoria';
+export type CategoriaLimpeza = 'sessoes' | 'notificacoes' | 'relatorios' | 'entregas' | 'alertas' | 'auditoria';
 
 export interface ItemLimpeza {
   categoria: CategoriaLimpeza;
@@ -50,6 +50,14 @@ const REGRAS: Regra[] = [
     contar: `select count(*)::int as registros, 0::float8 as bytes from entregas_integracao
               where status <> 'pendente' and criado_em < now() - make_interval(days => $1::int)`,
     apagar: `delete from entregas_integracao where status <> 'pendente' and criado_em < now() - make_interval(days => $1::int)`,
+  },
+  {
+    categoria: 'alertas',
+    nome: 'Histórico de disparos dos alertas',
+    dias: (retencao) => retencao.alertasDias,
+    contar: `select count(*)::int as registros, 0::float8 as bytes from disparos_alerta
+              where resolvido_em is not null and criado_em < now() - make_interval(days => $1::int)`,
+    apagar: `delete from disparos_alerta where resolvido_em is not null and criado_em < now() - make_interval(days => $1::int)`,
   },
   {
     categoria: 'auditoria',

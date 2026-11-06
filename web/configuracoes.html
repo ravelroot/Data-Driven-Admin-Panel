@@ -252,9 +252,16 @@
                 <header class="config-secao-cabecalho">
                   <div>
                     <h2 class="config-secao-titulo">Segurança</h2>
-                    <p class="config-secao-descricao">Troque a senha e encerre acessos que você não reconhece.</p>
+                    <p class="config-secao-descricao">Troque a senha, ative a verificação em duas etapas e encerre acessos que você não reconhece.</p>
                   </div>
                 </header>
+                <div class="alerta alerta-alerta mb-6" role="alert" data-aviso-dois-fatores hidden>
+                  <i data-icone="escudo-alerta"></i>
+                  <div class="alerta-textos">
+                    <p class="alerta-titulo">A verificação em duas etapas é obrigatória para o seu papel</p>
+                    <p class="alerta-texto">Ative abaixo para voltar a usar o painel. Leva um minuto com o aplicativo autenticador do celular.</p>
+                  </div>
+                </div>
                 <div class="config-linha">
                   <div class="config-linha-rotulo">
                     <p class="config-linha-titulo">Senha</p>
@@ -275,6 +282,13 @@
                       <button type="submit" class="botao botao-primario" data-salvar><i data-icone="cadeado"></i>Trocar senha</button>
                     </div>
                   </form>
+                </div>
+                <div class="config-linha" id="dois-fatores">
+                  <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Verificação em duas etapas</p>
+                    <p class="config-linha-texto">Um código do aplicativo autenticador depois da senha. Funciona com Google Authenticator, Microsoft Authenticator, 1Password, Authy e outros.</p>
+                  </div>
+                  <div data-dois-fatores><div class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span></div></div>
                 </div>
                 <div class="config-linha">
                   <div class="config-linha-rotulo">
@@ -348,11 +362,20 @@
                       <span class="campo-rotulo">Idioma padrão</span>
                       <select class="selecao" name="idiomaPadrao">
                         <option value="pt-BR">Português (Brasil)</option>
-                        <option value="pt-PT">Português (Portugal)</option>
-                        <option value="en">English</option>
-                        <option value="es">Español</option>
+                        <option value="en-US">English (US)</option>
+                        <option value="es-ES">Español</option>
                       </select>
                     </label>
+                    <fieldset class="campo campo-inteiro" data-campo-dois-fatores>
+                      <legend class="campo-rotulo mb-2">Verificação em duas etapas obrigatória para</legend>
+                      <div class="opcoes-papeis">
+                        <label class="opcao"><input type="checkbox" class="caixa-marcacao" name="doisFatoresPapeis" value="admin" data-lista><span class="opcao-texto"><span class="opcao-titulo">Administradores</span></span></label>
+                        <label class="opcao"><input type="checkbox" class="caixa-marcacao" name="doisFatoresPapeis" value="gerente" data-lista><span class="opcao-texto"><span class="opcao-titulo">Gerentes</span></span></label>
+                        <label class="opcao"><input type="checkbox" class="caixa-marcacao" name="doisFatoresPapeis" value="analista" data-lista><span class="opcao-texto"><span class="opcao-titulo">Analistas</span></span></label>
+                        <label class="opcao"><input type="checkbox" class="caixa-marcacao" name="doisFatoresPapeis" value="suporte" data-lista><span class="opcao-texto"><span class="opcao-titulo">Suporte</span></span></label>
+                      </div>
+                      <span class="campo-ajuda">Quem tiver um destes papéis e ainda não usar o aplicativo autenticador só acessa a aba Segurança até ativar. Chaves de API não são afetadas.</span>
+                    </fieldset>
                   </div>
                   <p class="campo-ajuda" data-aviso-sistema hidden>Só administradores alteram estes dados.</p>
                   <div class="config-rodape">

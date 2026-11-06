@@ -14,6 +14,7 @@ export interface UsuarioSessao {
   sessaoId: string | null;
   viaCookie: boolean;
   escopos: string[] | null;
+  doisFatoresPendente: boolean;
 }
 
 export interface EstadoApp {

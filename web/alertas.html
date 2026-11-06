@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Alertas de métricas: regras que vigiam receita, pagamentos, cancelamentos e conversão e avisam a equipe na hora.">
+    <title>Alertas | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/ts/paginas/alertas.ts"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Alertas</h1>
+              <p class="pagina-descricao" data-descricao-alertas>Regras que vigiam as métricas e avisam a equipe quando algo sai do esperado.</p>
+            </div>
+            <div class="pagina-acoes">
+              <a class="botao botao-secundario" href="/notificacoes?categoria=metrica"><i data-icone="sino"></i>Notificações</a>
+              <button type="button" class="botao botao-primario" data-acao="novo-alerta" data-permissao="alertas.gerenciar"><i data-icone="adicionar"></i>Novo alerta</button>
+            </div>
+          </div>
+
+          <div class="bento-kpis">
+            <article class="kpi" data-resumo="ativos">
+              <div class="kpi-topo"><h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="oliva"><i data-icone="radar"></i></span>Regras ativas</h2></div>
+              <p class="kpi-valor" data-kpi-valor>—</p>
+              <p class="kpi-rodape" data-kpi-comparacao>&nbsp;</p>
+            </article>
+            <article class="kpi" data-resumo="disparados">
+              <div class="kpi-topo"><h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="brasa"><i data-icone="sirene"></i></span>Disparadas agora</h2></div>
+              <p class="kpi-valor" data-kpi-valor>—</p>
+              <p class="kpi-rodape" data-kpi-comparacao>&nbsp;</p>
+            </article>
+            <article class="kpi" data-resumo="disparos7d">
+              <div class="kpi-topo"><h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="ouro"><i data-icone="historico"></i></span>Disparos em 7 dias</h2></div>
+              <p class="kpi-valor" data-kpi-valor>—</p>
+              <p class="kpi-rodape" data-kpi-comparacao>&nbsp;</p>
+            </article>
+            <article class="kpi" data-resumo="frequencia">
+              <div class="kpi-topo"><h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="casca"><i data-icone="relogio"></i></span>Avaliação</h2></div>
+              <p class="kpi-valor" data-kpi-valor>5 min</p>
+              <p class="kpi-rodape" data-kpi-comparacao>Cada regra é medida de novo nesse intervalo.</p>
+            </article>
+          </div>
+
+          <div class="bento">
+            <section class="cartao cartao-sem-espaco bento-dois-tercos bento-alto" aria-labelledby="titulo-regras">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-regras">Regras</h2>
+                  <p class="cartao-subtitulo">As disparadas aparecem primeiro</p>
+                </div>
+                <div class="cartao-acoes">
+                  <span class="entrada-caixa alertas-busca">
+                    <i data-icone="buscar" class="entrada-caixa-icone"></i>
+                    <input class="entrada entrada-pequena" type="search" placeholder="Filtrar regras" aria-label="Filtrar regras pelo nome ou pela métrica" data-filtro-regras>
+                  </span>
+                </div>
+              </div>
+              <div class="alertas-lista" data-regras aria-live="polite">
+                <div class="esqueleto-linhas p-6"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span><span class="esqueleto-texto"></span></div>
+              </div>
+            </section>
+            <section class="cartao bento-terco bento-alto" aria-labelledby="titulo-disparos">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-disparos">Histórico de disparos</h2>
+                  <p class="cartao-subtitulo" data-subtitulo-disparos>Todas as regras</p>
+                </div>
+                <div class="cartao-acoes">
+                  <button type="button" class="botao botao-fantasma botao-pequeno" data-limpar-filtro-disparos hidden><i data-icone="fechar"></i>Todas</button>
+                </div>
+              </div>
+              <ol class="linha-tempo linha-tempo-compacta" data-disparos>
+                <li class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span></li>
+              </ol>
+              <button type="button" class="botao botao-secundario botao-pequeno mt-4" data-mais-disparos hidden>Carregar mais</button>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 import type { ApexOptions } from "apexcharts";
 import { iniciarPagina } from "../layout/inicio.ts";
-import { html, $, $$, exigir, renderizar, parametrosUrl } from "../nucleo/dom.ts";
+import { html, $, $$, exigir, renderizar, parametrosUrl, atualizarUrl } from "../nucleo/dom.ts";
 import { icone, hidratarIcones } from "../nucleo/icones.ts";
 import { api, mensagemDeErro } from "../nucleo/api.ts";
 import { atualizarPreferencias, pode, preferencia, usuarioAtual } from "../nucleo/sessao.ts";
@@ -11,7 +11,9 @@ import { Grafico, eixoMoeda, gradienteArea, coresDoTema } from "../componentes/g
 import { preencherKpi, tendencia, valorGrande } from "../componentes/indicadores.ts";
 import { linhaTransacao, abrirTransacao } from "../componentes/transacao.ts";
 import { avisar } from "../componentes/aviso.ts";
-import type { Atividade, EstadoConexao, Kpi, Preferencias, Transacao, Usuario } from "../nucleo/tipos.ts";
+import { BentoPersonalizavel } from "../componentes/bento-personalizavel.ts";
+import type { DefinicaoCartao, ModeloLayout } from "../nucleo/layout.ts";
+import type { Atividade, EstadoConexao, ItemLayout, Kpi, Preferencias, Transacao, Usuario } from "../nucleo/tipos.ts";
 
 type Periodo = "7d" | "30d" | "90d" | "12m";
 type Cores = ReturnType<typeof coresDoTema>;
@@ -70,6 +72,101 @@ interface ContextoTotal {
   globals: { seriesTotals: number[] };
 }
 
+interface PrevisaoMes {
+  fim: string;
+  hoje: string;
+  diasRestantes: number;
+  realizado: number;
+  projetado: number;
+  minimo: number;
+  maximo: number;
+  meta: number;
+  percentualProjetado: number;
+  probabilidadeMeta: number | null;
+  ritmoAtual: number;
+  ritmoNecessario: number;
+  confiavel: boolean;
+  serie: { rotulos: string[]; realizado: (number | null)[]; projetado: (number | null)[]; minimo: (number | null)[]; maximo: (number | null)[]; meta: number[] };
+}
+
+interface Anomalia {
+  id: string;
+  metrica: string;
+  nome: string;
+  unidade: "moeda" | "numero" | "percentual";
+  dia: string;
+  valor: number;
+  esperado: number;
+  desvioPercentual: number;
+  sentido: "alta" | "queda";
+  gravidade: "media" | "alta";
+  positiva: boolean;
+  link: string;
+}
+
+interface Destaque {
+  id: string;
+  icone: string;
+  titulo: string;
+  texto: string;
+  tom: "positivo" | "negativo" | "neutro";
+  link: string | null;
+}
+
+interface Insights {
+  previsao: PrevisaoMes;
+  mrr: { atual: number; em30: number; em90: number; variacaoSemanal: number };
+  anomalias: Anomalia[];
+  destaques: Destaque[];
+}
+
+const CARTOES: DefinicaoCartao[] = [
+  { id: "receita", nome: "Receita no período", larguras: ["metade", "sete-doze", "dois-tercos", "tres-quartos", "inteiro"], alturas: ["normal", "alto"], largura: "dois-tercos", altura: "alto" },
+  { id: "usuarios-assinaturas", nome: "Usuários e assinaturas", larguras: ["terco"], alturas: ["alto"], largura: "terco", altura: "alto" },
+  { id: "crescimento", nome: "Crescimento do MRR", larguras: ["quarto", "terco", "metade"], alturas: ["normal"], largura: "quarto", altura: "normal" },
+  { id: "mrr", nome: "Receita recorrente", larguras: ["quarto", "terco", "metade"], alturas: ["normal"], largura: "quarto", altura: "normal" },
+  { id: "churn", nome: "Cancelamentos", larguras: ["quarto", "terco", "metade"], alturas: ["normal"], largura: "quarto", altura: "normal" },
+  { id: "meta", nome: "Meta do mês", larguras: ["quarto", "terco", "metade"], alturas: ["normal"], largura: "quarto", altura: "normal" },
+  { id: "previsao", nome: "Previsão do mês", larguras: ["metade", "sete-doze", "dois-tercos", "inteiro"], alturas: ["normal", "alto"], largura: "sete-doze", altura: "normal" },
+  { id: "insights", nome: "Insights", larguras: ["terco", "cinco-doze", "metade", "sete-doze"], alturas: ["normal", "alto"], largura: "cinco-doze", altura: "normal" },
+  { id: "mensal", nome: "Receita mês a mês", larguras: ["metade", "sete-doze", "dois-tercos", "inteiro"], alturas: ["normal", "alto"], largura: "sete-doze", altura: "normal" },
+  { id: "planos", nome: "Assinaturas por plano", larguras: ["terco", "cinco-doze", "metade"], alturas: ["normal"], largura: "cinco-doze", altura: "normal" },
+  { id: "transacoes", nome: "Transações recentes", larguras: ["sete-doze", "dois-tercos", "inteiro"], alturas: ["normal", "alto"], largura: "dois-tercos", altura: "normal" },
+  { id: "atividades", nome: "Atividades recentes", larguras: ["terco", "cinco-doze", "metade"], alturas: ["normal", "alto"], largura: "terco", altura: "alto" },
+  { id: "canais", nome: "Canais de aquisição", larguras: ["metade", "sete-doze", "dois-tercos", "inteiro"], alturas: ["normal"], largura: "dois-tercos", altura: "normal" },
+];
+
+const item = (id: string, largura: ItemLayout["largura"], altura: ItemLayout["altura"] = "normal"): ItemLayout => ({ id, largura, altura, oculto: false });
+
+const MODELOS_LAYOUT: ModeloLayout[] = [
+  {
+    id: "financeiro",
+    nome: "Financeiro",
+    descricao: "Receita, meta, previsão e transações em primeiro lugar",
+    itens: [item("receita", "dois-tercos", "alto"), item("meta", "terco"), item("mrr", "terco"), item("previsao", "inteiro"), item("mensal", "sete-doze"), item("planos", "cinco-doze"), item("transacoes", "inteiro")],
+  },
+  {
+    id: "crescimento",
+    nome: "Crescimento",
+    descricao: "Usuários, assinaturas, canais e cancelamentos",
+    itens: [item("usuarios-assinaturas", "terco", "alto"), item("crescimento", "terco"), item("churn", "terco"), item("insights", "dois-tercos"), item("canais", "dois-tercos"), item("planos", "terco"), item("atividades", "terco"), item("previsao", "dois-tercos")],
+  },
+  {
+    id: "operacao",
+    nome: "Operação do dia",
+    descricao: "Transações, atividades e o que saiu do padrão",
+    itens: [item("transacoes", "dois-tercos", "alto"), item("insights", "terco", "alto"), item("crescimento", "quarto"), item("mrr", "quarto"), item("churn", "quarto"), item("meta", "quarto"), item("atividades", "terco", "alto"), item("receita", "dois-tercos", "alto")],
+  },
+  {
+    id: "enxuto",
+    nome: "Enxuto",
+    descricao: "Só os números principais e a previsão",
+    itens: [item("crescimento", "quarto"), item("mrr", "quarto"), item("churn", "quarto"), item("meta", "quarto"), item("previsao", "sete-doze"), item("insights", "cinco-doze")],
+  },
+];
+
+const ROTULO_METRICA_ALERTA: Record<string, string> = { receita: "receita", pagas: "transacoes_pagas", taxa_falha: "taxa_falha", reembolsos: "reembolsos", novos_usuarios: "novos_usuarios", conversao: "conversao" };
+
 const DESCRICOES: Record<Periodo, string> = {
   "7d": "Receita, usuários e assinaturas nos últimos 7 dias.",
   "30d": "Receita, usuários e assinaturas nos últimos 30 dias.",
@@ -80,7 +177,7 @@ const DESCRICOES: Record<Periodo, string> = {
 const COMPARACOES: Record<Periodo, string> = { "7d": "7 dias antes", "30d": "30 dias antes", "90d": "90 dias antes", "12m": "12 meses antes" };
 
 const TONS_ATIVIDADE: Record<string, string> = { bloqueado: "brasa", excluido: "brasa", desbloqueado: "oliva", criado: "oliva", gerado: "ouro", enviado: "anil", permissoes: "ouro" };
-const ICONES_ATIVIDADE: Record<string, string> = { usuario: "usuario", relatorio: "arquivo", notificacao: "megafone", integracao: "integracao", configuracao: "configuracoes", sessao: "chave", transacao: "recibo" };
+const ICONES_ATIVIDADE: Record<string, string> = { usuario: "usuario", relatorio: "arquivo", notificacao: "megafone", integracao: "integracao", configuracao: "configuracoes", sessao: "chave", transacao: "recibo", alerta: "sirene" };
 
 const ehAborto = (erro: unknown): boolean => (erro as { name?: string } | null)?.name === "AbortError";
 
@@ -143,10 +240,36 @@ const graficoPlanos = (planos: PlanoResumo[] | null | undefined, cores: Cores): 
   tooltip: { y: { formatter: (valor: number) => `${numero(valor)} assinaturas` } },
 });
 
+const tetoBonito = (valor: number): number => {
+  if (valor <= 0) return 100;
+  const potencia = 10 ** Math.floor(Math.log10(valor));
+  const fator = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find((candidato) => candidato * potencia >= valor * 1.04) ?? 10;
+  return fator * potencia;
+};
+
+const graficoPrevisao = (previsao: PrevisaoMes | null | undefined, cores: Cores): ApexOptions => ({
+  chart: { type: "line", height: 240 },
+  series: [
+    { name: "Realizado", type: "area", data: previsao?.serie.realizado ?? [] },
+    { name: "Projeção", type: "line", data: previsao?.serie.projetado ?? [] },
+    { name: "Mínimo provável", type: "line", data: previsao?.serie.minimo ?? [] },
+    { name: "Máximo provável", type: "line", data: previsao?.serie.maximo ?? [] },
+    { name: "Ritmo da meta", type: "line", data: previsao?.serie.meta ?? [] },
+  ],
+  colors: [cores.primaria, cores.destaque, cores.destaqueSuave, cores.destaqueSuave, cores.grade],
+  stroke: { curve: "straight", width: [1.75, 2, 1, 1, 1.25], dashArray: [0, 5, 2, 2, 4] },
+  fill: { type: ["gradient", "solid", "solid", "solid", "solid"], gradient: { shadeIntensity: 0, opacityFrom: 0.28, opacityTo: 0, stops: [0, 100] }, opacity: [1, 1, 1, 1, 1] },
+  markers: { size: 0, hover: { size: 4 } },
+  xaxis: { categories: previsao?.serie.rotulos ?? [], tickAmount: Math.min(window.innerWidth < 640 ? 4 : 6, (previsao?.serie.rotulos ?? []).length) },
+  yaxis: { min: 0, max: tetoBonito(Math.max(previsao?.meta ?? 0, previsao?.maximo ?? 0)), tickAmount: 4, labels: { formatter: eixoMoeda } },
+  tooltip: { shared: true, intersect: false, y: { formatter: (valor: number | null) => (valor === null || valor === undefined ? "—" : moeda(valor)) } },
+});
+
 const criarGraficos = () => ({
   receita: new Grafico($("[data-grafico-receita]"), graficoReceita),
   mensal: new Grafico($("[data-grafico-mensal]"), graficoMensal),
   planos: new Grafico($("[data-grafico-planos]"), graficoPlanos),
+  previsao: new Grafico($("[data-grafico-previsao]"), graficoPrevisao),
 });
 
 interface Estado {
@@ -161,6 +284,112 @@ const estado: Estado = {
   dados: null,
   graficos: null,
   controlador: null,
+};
+
+const formatarAnomalia = (valor: number, unidade: Anomalia["unidade"]): string =>
+  unidade === "moeda" ? moeda(valor, { compacto: valor >= 1_000_000 }) : unidade === "percentual" ? percentual(valor) : numero(valor, { casas: Number.isInteger(valor) ? 0 : 1 });
+
+const diaCurto = (dia: string): string => data(`${dia}T12:00:00`, { day: "2-digit", month: "2-digit" });
+
+const renderizarPrevisao = (insights: Insights): void => {
+  const { previsao, mrr } = insights;
+  exigir("[data-previsao-valor]").innerHTML = String(valorGrande(previsao.projetado, "moeda"));
+  exigir("[data-previsao-faixa]").textContent = previsao.meta
+    ? `${percentual(previsao.percentualProjetado, 0)} da meta de ${moeda(previsao.meta, { compacto: true })} · faixa provável de ${moeda(previsao.minimo, { compacto: true })} a ${moeda(previsao.maximo, { compacto: true })}`
+    : `Faixa provável de ${moeda(previsao.minimo, { compacto: true })} a ${moeda(previsao.maximo, { compacto: true })}`;
+  exigir("[data-previsao-subtitulo]").textContent = previsao.confiavel
+    ? `Até ${diaCurto(previsao.fim)}, com o ritmo dos últimos 28 dias ajustado por dia da semana`
+    : "Pouco histórico ainda: a projeção fica mais precisa depois de 3 semanas de vendas";
+  const chance = exigir("[data-previsao-chance]");
+  if (previsao.probabilidadeMeta !== null && previsao.meta) {
+    const valor = previsao.probabilidadeMeta;
+    chance.hidden = false;
+    chance.className = `emblema emblema-pequeno ${valor >= 70 ? "emblema-oliva" : valor >= 35 ? "emblema-ouro" : "emblema-brasa"}`;
+    chance.textContent = `${valor >= 99.5 ? "Meta garantida" : valor < 0.5 ? "Meta improvável" : `${percentual(valor, 0)} de chance de bater a meta`}`;
+  } else {
+    chance.hidden = true;
+  }
+  const mini = (chave: string, texto: string): void => {
+    exigir(`[data-previsao-mini="${chave}"]`).textContent = texto;
+  };
+  mini("realizado", moeda(previsao.realizado, { compacto: true }));
+  mini("ritmoAtual", moeda(previsao.ritmoAtual, { compacto: true }));
+  mini("ritmoNecessario", previsao.realizado >= previsao.meta ? "Meta batida" : moeda(previsao.ritmoNecessario, { compacto: true }));
+  mini("mrr90", moeda(mrr.em90, { compacto: true }));
+  estado.graficos?.previsao.atualizar(previsao);
+};
+
+const renderizarInsights = (insights: Insights): void => {
+  const alvo = exigir("[data-insights]");
+  const podeAlertar = pode("alertas.gerenciar");
+  const anomalias = insights.anomalias.slice(0, 3);
+  const destaques = insights.destaques.slice(0, Math.max(1, 4 - anomalias.length));
+  if (!anomalias.length && !destaques.length) {
+    renderizar(alvo, html`<li class="vazio vazio-compacto"><span class="vazio-icone">${html([icone("lampada")])}</span><p class="vazio-titulo">Nada fora do padrão</p><p class="vazio-texto">As métricas dos últimos 7 dias ficaram dentro do esperado.</p></li>`);
+    return;
+  }
+  renderizar(
+    alvo,
+    html`${anomalias.map((anomalia) => {
+      const metricaAlerta = ROTULO_METRICA_ALERTA[anomalia.metrica];
+      return html`<li class="insight" data-tom="${anomalia.positiva ? "positivo" : "negativo"}">
+        <span class="insight-icone">${html([icone(anomalia.sentido === "alta" ? "tendencia-alta" : "tendencia-baixa")])}</span>
+        <div class="insight-textos">
+          <p class="insight-titulo">${anomalia.nome} ${anomalia.sentido === "alta" ? "acima" : "abaixo"} do esperado em ${diaCurto(anomalia.dia)}${anomalia.gravidade === "alta" ? html`<span class="emblema emblema-pequeno ${anomalia.positiva ? "emblema-oliva" : "emblema-brasa"}">Forte</span>` : ""}</p>
+          <p class="insight-texto">${formatarAnomalia(anomalia.valor, anomalia.unidade)} contra ${formatarAnomalia(anomalia.esperado, anomalia.unidade)} esperados (${anomalia.desvioPercentual > 0 ? "+" : "−"}${percentual(Math.abs(anomalia.desvioPercentual), 0)})</p>
+          <p class="insight-links"><a href="${anomalia.link}">Ver o dia${html([icone("chevron-direita")])}</a>${podeAlertar && metricaAlerta ? html`<a href="/alertas?novo=1&metrica=${metricaAlerta}">${html([icone("sirene")])}Criar alerta</a>` : ""}</p>
+        </div>
+      </li>`;
+    })}
+    ${destaques.map(
+      (destaque) => html`<li class="insight" data-tom="${destaque.tom}">
+        <span class="insight-icone">${html([icone(destaque.icone)])}</span>
+        <div class="insight-textos">
+          <p class="insight-titulo">${destaque.titulo}</p>
+          <p class="insight-texto">${destaque.texto}</p>
+          ${destaque.link ? html`<p class="insight-links"><a href="${destaque.link}">Detalhes${html([icone("chevron-direita")])}</a></p>` : ""}
+        </div>
+      </li>`,
+    )}`,
+  );
+};
+
+const carregarInsights = async (): Promise<void> => {
+  try {
+    const insights = await api.obter<Insights>("/insights");
+    renderizarPrevisao(insights);
+    renderizarInsights(insights);
+  } catch (erro) {
+    renderizar(exigir("[data-insights]"), html`<li class="vazio vazio-compacto vazio-erro"><span class="vazio-icone">${html([icone("alerta")])}</span><p class="vazio-texto">${mensagemDeErro(erro)}</p></li>`);
+    exigir("[data-previsao-valor]").textContent = "—";
+    estado.graficos?.previsao.atualizar(null);
+  }
+};
+
+const iniciarPersonalizacao = (): void => {
+  const grade = exigir("[data-bento-visao-geral]");
+  const personalizavel = new BentoPersonalizavel({
+    grade,
+    barra: exigir("[data-barra-personalizacao]"),
+    botao: $<HTMLButtonElement>("[data-personalizar]"),
+    definicoes: CARTOES,
+    modelos: MODELOS_LAYOUT,
+    salvo: preferencia("layoutVisaoGeral", [] as ItemLayout[]),
+    aoSalvar: async (layout) => {
+      try {
+        const salvas = await api.substituir<Preferencias>("/configuracoes/preferencias", { layoutVisaoGeral: layout });
+        atualizarPreferencias(salvas);
+        avisar({ tipo: "sucesso", titulo: layout ? "Layout salvo" : "Layout padrão restaurado", texto: "Vale para a sua conta em qualquer navegador." });
+      } catch (erro) {
+        avisar({ tipo: "erro", titulo: "Não foi possível salvar o layout", texto: mensagemDeErro(erro) });
+        throw erro;
+      }
+    },
+  });
+  if (parametrosUrl().personalizar !== undefined) {
+    atualizarUrl({ personalizar: null });
+    personalizavel.entrar();
+  }
 };
 
 const saudacao = (): string => {
@@ -431,8 +660,10 @@ iniciarPagina({
       if (linha && evento.key === "Enter") abrirTransacao(linha.dataset.chave ?? "");
     });
 
+    iniciarPersonalizacao();
     aoVivo();
     void carregarPrimeirosPassos();
+    void carregarInsights();
     await carregar();
 
     const { transacao } = parametrosUrl();

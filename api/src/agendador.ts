@@ -2,6 +2,7 @@ import path from 'node:path';
 import type { FastifyInstance } from 'fastify';
 import type { Banco } from './banco/conexao.js';
 import { processarEntregasPendentes } from './integracoes.js';
+import { avaliarAlertas } from './modulos/alertas/servico.js';
 import { registrarAtividade } from './modulos/comum/auditoria.js';
 import { podarBackups, salvarBackup } from './operacao/backup.js';
 import { executarLimpeza, totalRemovido } from './operacao/retencao.js';
@@ -107,6 +108,7 @@ export async function rodarCiclo(app: FastifyInstance): Promise<void> {
   const tarefas: [string, () => Promise<unknown>][] = [
     ['relatórios agendados', () => (app.estado.manutencao.ativo ? Promise.resolve(0) : executarVencidos(app))],
     ['entregas das integrações', () => processarEntregasPendentes(app.banco, app.config.segredoJwt, app.log)],
+    ['alertas de métricas', () => avaliarAlertas(app)],
     ['retenção de dados', () => executarRetencao(app)],
     ['backup automático', () => executarBackupAutomatico(app)],
   ];

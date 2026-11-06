@@ -23,15 +23,17 @@ export async function primeirosPassos(app: FastifyInstance): Promise<PrimeirosPa
   const [sistema, demonstracao, contagens] = await Promise.all([
     obterConfigSistema(banco),
     contasComSenhaDeDemonstracao(banco),
-    banco.consultar<{ equipe: number; integracoes: number; agendamentos: number; chaves: number }>(
+    banco.consultar<{ equipe: number; integracoes: number; agendamentos: number; chaves: number; doisFatores: number; alertas: number }>(
       `select
+         (select count(*) from usuarios where papel = 'admin' and status = 'ativo' and totp_ativado_em is not null)::int as "doisFatores",
+         (select count(*) from alertas_metricas where ativo)::int as alertas,
          (select count(*) from usuarios u join papeis p on p.codigo = u.papel where p.acesso_painel and u.status = 'ativo')::int as equipe,
          (select count(*) from integracoes where ativo)::int as integracoes,
          (select count(*) from relatorios_agendados where ativo)::int as agendamentos,
          (select count(*) from chaves_api where revogada_em is null)::int as chaves`,
     ),
   ]);
-  const totais = contagens.linhas[0] ?? { equipe: 0, integracoes: 0, agendamentos: 0, chaves: 0 };
+  const totais = contagens.linhas[0] ?? { equipe: 0, integracoes: 0, agendamentos: 0, chaves: 0, doisFatores: 0, alertas: 0 };
   const temBackup = config.backup.automatico !== 'desligado' || listarBackups(config.backup.pasta).length > 0;
   const passos: PassoInicial[] = [
     {
@@ -51,6 +53,14 @@ export async function primeirosPassos(app: FastifyInstance): Promise<PrimeirosPa
       feito: demonstracao.length === 0,
       href: '/usuarios?papel=admin',
       acao: 'Revisar contas',
+    },
+    {
+      id: 'dois-fatores',
+      titulo: 'Verificação em duas etapas',
+      texto: 'Proteja as contas de administrador com o código de um aplicativo autenticador.',
+      feito: totais.doisFatores > 0,
+      href: '/configuracoes?secao=seguranca',
+      acao: 'Ativar',
     },
     {
       id: 'equipe',
@@ -75,6 +85,14 @@ export async function primeirosPassos(app: FastifyInstance): Promise<PrimeirosPa
       feito: totais.agendamentos > 0,
       href: '/relatorios',
       acao: 'Agendar',
+    },
+    {
+      id: 'alerta',
+      titulo: 'Um alerta de métrica',
+      texto: 'Seja avisado quando a receita cair ou a taxa de falha dos pagamentos subir.',
+      feito: totais.alertas > 0,
+      href: '/alertas?novo=1',
+      acao: 'Criar alerta',
     },
     {
       id: 'backup',

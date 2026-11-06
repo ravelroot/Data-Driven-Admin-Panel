@@ -34,6 +34,7 @@ const GRUPOS_ACAO: GrupoAcao[] = [
   { valor: "assinatura", rotulo: "Assinaturas", tom: "salvia" },
   { valor: "transacao", rotulo: "Transações", tom: "anil" },
   { valor: "relatorio", rotulo: "Relatórios", tom: "ouro" },
+  { valor: "alerta", rotulo: "Alertas", tom: "brasa" },
   { valor: "notificacao", rotulo: "Notificações", tom: "casca" },
   { valor: "integracao", rotulo: "Integrações", tom: "anil" },
   { valor: "perfil,seguranca", rotulo: "Perfil e segurança", tom: "brasa" },
@@ -41,6 +42,11 @@ const GRUPOS_ACAO: GrupoAcao[] = [
 ];
 
 const ROTULOS_ACAO: Record<string, string> = {
+  "alerta.atualizado": "Alerta alterado",
+  "alerta.criado": "Alerta criado",
+  "alerta.excluido": "Alerta excluído",
+  "alerta.pausado": "Alerta pausado",
+  "alerta.retomado": "Alerta retomado",
   "assinatura.cancelada": "Assinatura cancelada",
   "assinatura.criada": "Assinatura criada",
   "auth.bloqueio_temporario": "Bloqueio temporário",
@@ -55,6 +61,9 @@ const ROTULOS_ACAO: Record<string, string> = {
   "relatorio.excluido": "Relatório excluído",
   "relatorio.gerado": "Relatório gerado",
   "seguranca.chave_criada": "Chave de API criada",
+  "seguranca.codigos_gerados": "Códigos de recuperação gerados",
+  "seguranca.dois_fatores_ativado": "Duas etapas ativadas",
+  "seguranca.dois_fatores_desativado": "Duas etapas desativadas",
   "seguranca.chave_revogada": "Chave de API revogada",
   "seguranca.senha_alterada": "Senha alterada",
   "sistema.configurado": "Sistema configurado",
@@ -65,6 +74,7 @@ const ROTULOS_ACAO: Record<string, string> = {
   "usuario.cadastrado": "Novo cadastro",
   "usuario.criado": "Usuário criado",
   "usuario.desbloqueado": "Conta desbloqueada",
+  "usuario.dois_fatores_redefinido": "Duas etapas redefinidas",
   "usuario.editado": "Usuário editado",
   "usuario.excluido": "Usuário excluído",
   "usuario.nota_adicionada": "Nota adicionada",

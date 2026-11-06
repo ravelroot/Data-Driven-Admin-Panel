@@ -63,6 +63,15 @@ export async function permissoesEfetivas(banco: Banco, usuarioId: string): Promi
 
 export const PAGINAS_INICIAIS = ['visao-geral', 'analytics', 'usuarios', 'transacoes', 'notificacoes', 'relatorios', 'auditoria'] as const;
 export const ITENS_POR_PAGINA = [10, 25, 50, 100] as const;
+export const LARGURAS_CARTAO = ['quarto', 'terco', 'cinco-doze', 'metade', 'sete-doze', 'dois-tercos', 'tres-quartos', 'inteiro'] as const;
+export const ALTURAS_CARTAO = ['normal', 'alto'] as const;
+
+export interface ItemLayout {
+  id: string;
+  largura: (typeof LARGURAS_CARTAO)[number];
+  altura: (typeof ALTURAS_CARTAO)[number];
+  oculto: boolean;
+}
 
 export interface Preferencias {
   tema: 'claro' | 'escuro' | 'sistema';
@@ -74,11 +83,13 @@ export interface Preferencias {
   movimento: 'sistema' | 'reduzido';
   atalhosTeclado: boolean;
   primeirosPassosOcultos: boolean;
+  layoutVisaoGeral: ItemLayout[] | null;
 }
 
 export async function obterPreferencias(banco: Banco, usuarioId: string): Promise<Preferencias> {
   const { linhas } = await banco.consultar<Record<string, unknown>>(
-    `select tema, paleta, densidade, sidebar_recolhida, pagina_inicial, itens_por_pagina, movimento, atalhos_teclado, primeiros_passos_ocultos
+    `select tema, paleta, densidade, sidebar_recolhida, pagina_inicial, itens_por_pagina, movimento, atalhos_teclado, primeiros_passos_ocultos,
+            layout_visao_geral
        from preferencias_usuario where usuario_id = $1`,
     [usuarioId],
   );
@@ -93,6 +104,7 @@ export async function obterPreferencias(banco: Banco, usuarioId: string): Promis
     movimento: (linha?.movimento as Preferencias['movimento']) ?? 'sistema',
     atalhosTeclado: linha?.atalhos_teclado === undefined || linha?.atalhos_teclado === null ? true : Boolean(linha.atalhos_teclado),
     primeirosPassosOcultos: Boolean(linha?.primeiros_passos_ocultos ?? false),
+    layoutVisaoGeral: Array.isArray(linha?.layout_visao_geral) ? (linha.layout_visao_geral as ItemLayout[]) : null,
   };
 }
 
@@ -102,6 +114,7 @@ export interface ConfigSistema {
   fuso: string;
   metaMensal: number;
   idiomaPadrao: string;
+  doisFatoresPapeis: string[];
 }
 
 export async function obterConfigSistema(banco: Banco): Promise<ConfigSistema> {
@@ -115,5 +128,8 @@ export async function obterConfigSistema(banco: Banco): Promise<ConfigSistema> {
     fuso: String(mapa.get('fuso') ?? 'America/Sao_Paulo'),
     metaMensal: Number(mapa.get('metaMensal') ?? 0),
     idiomaPadrao: String(mapa.get('idiomaPadrao') ?? 'pt-BR'),
+    doisFatoresPapeis: Array.isArray(mapa.get('doisFatoresPapeis'))
+      ? (mapa.get('doisFatoresPapeis') as unknown[]).filter((item): item is string => typeof item === 'string')
+      : [],
   };
 }

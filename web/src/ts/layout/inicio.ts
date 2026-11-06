@@ -71,6 +71,11 @@ export const iniciarPagina = async ({ pagina, permissao, aoIniciar }: OpcoesPagi
     return;
   }
 
+  if (sessao().doisFatores?.pendente && pagina !== "configuracoes") {
+    location.replace("/configuracoes?secao=seguranca&obrigatorio=1");
+    return;
+  }
+
   sincronizarPreferencias(sessao().preferencias);
   montarCasca({ pagina, titulo });
   iniciarAvisoManutencao();

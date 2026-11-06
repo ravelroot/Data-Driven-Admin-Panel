@@ -32,14 +32,16 @@
                 <button type="button" data-periodo="90d" aria-pressed="false">90 dias</button>
                 <button type="button" data-periodo="12m" aria-pressed="false">12 meses</button>
               </div>
+              <button type="button" class="botao botao-secundario" data-personalizar aria-pressed="false"><i data-icone="grade"></i>Personalizar</button>
               <a class="botao botao-secundario" href="/relatorios" data-permissao="relatorios.ver"><i data-icone="arquivo-baixar"></i>Exportar</a>
             </div>
           </div>
 
           <section class="primeiros-passos" data-primeiros-passos aria-labelledby="titulo-primeiros-passos" hidden></section>
 
-          <div class="bento">
-            <section class="cartao-destaque receita-destaque bento-dois-tercos bento-alto" aria-labelledby="titulo-receita">
+          <div class="barra-personalizacao" data-barra-personalizacao hidden></div>
+          <div class="bento" data-bento-visao-geral>
+            <section class="cartao-destaque receita-destaque bento-dois-tercos bento-alto" data-cartao="receita" aria-labelledby="titulo-receita">
               <div class="receita-topo">
                 <div>
                   <h2 class="receita-rotulo" id="titulo-receita"><i data-icone="carteira"></i>Receita no período</h2>
@@ -60,7 +62,7 @@
               </dl>
             </section>
 
-            <div class="bento-pilha bento-alto">
+            <div class="bento-pilha bento-alto" data-cartao="usuarios-assinaturas">
               <article class="kpi kpi-pilha kpi-carregando" data-kpi="usuarios">
                 <div class="kpi-topo">
                   <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="salvia"><i data-icone="usuarios"></i></span>Usuários ativos</h2>
@@ -85,7 +87,7 @@
               </article>
             </div>
 
-            <article class="kpi kpi-carregando bento-quarto" data-kpi="crescimento">
+            <article class="kpi kpi-carregando bento-quarto" data-kpi="crescimento" data-cartao="crescimento">
               <div class="kpi-topo">
                 <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="ouro"><i data-icone="tendencia-alta"></i></span>Crescimento do MRR</h2>
                 <span data-kpi-tendencia></span>
@@ -97,7 +99,7 @@
               <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
             </article>
 
-            <article class="kpi kpi-carregando bento-quarto" data-kpi="mrr">
+            <article class="kpi kpi-carregando bento-quarto" data-kpi="mrr" data-cartao="mrr">
               <div class="kpi-topo">
                 <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="casca"><i data-icone="dinheiro"></i></span>Receita recorrente</h2>
                 <span data-kpi-tendencia></span>
@@ -109,7 +111,7 @@
               <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
             </article>
 
-            <article class="kpi kpi-carregando bento-quarto" data-kpi="churn">
+            <article class="kpi kpi-carregando bento-quarto" data-kpi="churn" data-cartao="churn">
               <div class="kpi-topo">
                 <h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="brasa"><i data-icone="usuario-x"></i></span>Cancelamentos</h2>
                 <span data-kpi-tendencia></span>
@@ -121,7 +123,7 @@
               <p class="kpi-rodape" data-kpi-comparacao>vs. período anterior</p>
             </article>
 
-            <article class="cartao-ouro meta-mes bento-quarto" aria-labelledby="titulo-meta">
+            <article class="cartao-ouro meta-mes bento-quarto" data-cartao="meta" aria-labelledby="titulo-meta">
               <div class="cartao-cabecalho">
                 <div class="cartao-titulos">
                   <h2 class="cartao-titulo" id="titulo-meta">Meta do mês</h2>
@@ -138,7 +140,46 @@
               </div>
             </article>
 
-            <section class="cartao bento-sete-doze" aria-labelledby="titulo-mensal">
+            <section class="cartao previsao bento-sete-doze" data-cartao="previsao" aria-labelledby="titulo-previsao">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-previsao">Previsão do mês</h2>
+                  <p class="cartao-subtitulo" data-previsao-subtitulo>Projeção da receita até o fim do mês</p>
+                </div>
+                <span class="emblema emblema-pequeno emblema-neutro" data-previsao-chance hidden></span>
+              </div>
+              <div class="previsao-topo">
+                <div>
+                  <p class="previsao-valor" data-previsao-valor><span class="esqueleto esqueleto-numero"></span></p>
+                  <p class="previsao-faixa" data-previsao-faixa>&nbsp;</p>
+                </div>
+                <div class="grafico-legenda">
+                  <span class="legenda-item"><span class="legenda-linha" style="--cor: var(--color-primaria-700)"></span>Realizado</span>
+                  <span class="legenda-item"><span class="legenda-tracejada" style="--cor: var(--color-destaque-500); --cor-escura: var(--color-destaque-400)"></span>Projeção</span>
+                  <span class="legenda-item"><span class="legenda-tracejada" style="--cor: var(--color-neutra-400); --cor-escura: var(--color-neutra-500)"></span>Ritmo da meta</span>
+                </div>
+              </div>
+              <div class="grafico grafico-baixo" data-grafico-previsao data-carregando="true"></div>
+              <dl class="previsao-rodape">
+                <div class="kpi-mini"><dt class="kpi-mini-rotulo">Realizado</dt><dd class="kpi-mini-valor" data-previsao-mini="realizado">—</dd></div>
+                <div class="kpi-mini"><dt class="kpi-mini-rotulo">Ritmo atual por dia</dt><dd class="kpi-mini-valor" data-previsao-mini="ritmoAtual">—</dd></div>
+                <div class="kpi-mini"><dt class="kpi-mini-rotulo">Para bater a meta</dt><dd class="kpi-mini-valor" data-previsao-mini="ritmoNecessario">—</dd></div>
+                <div class="kpi-mini"><dt class="kpi-mini-rotulo">MRR em 90 dias</dt><dd class="kpi-mini-valor" data-previsao-mini="mrr90">—</dd></div>
+              </dl>
+            </section>
+            <section class="cartao insights bento-cinco-doze" data-cartao="insights" aria-labelledby="titulo-insights">
+              <div class="cartao-cabecalho">
+                <div class="cartao-titulos">
+                  <h2 class="cartao-titulo" id="titulo-insights">Insights</h2>
+                  <p class="cartao-subtitulo">Fora do padrão nos últimos 7 dias e destaques</p>
+                </div>
+                <i data-icone="lampada" class="size-5 texto-suave"></i>
+              </div>
+              <ul class="insights-lista" data-insights role="list">
+                <li class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span><span class="esqueleto-texto"></span></li>
+              </ul>
+            </section>
+            <section class="cartao bento-sete-doze" data-cartao="mensal" aria-labelledby="titulo-mensal">
               <div class="cartao-cabecalho">
                 <div class="cartao-titulos">
                   <h2 class="cartao-titulo" id="titulo-mensal">Receita mês a mês</h2>
@@ -153,7 +194,7 @@
               <div class="grafico grafico-medio" data-grafico-mensal data-carregando="true"></div>
             </section>
 
-            <section class="cartao bento-cinco-doze" aria-labelledby="titulo-planos">
+            <section class="cartao bento-cinco-doze" data-cartao="planos" aria-labelledby="titulo-planos">
               <div class="cartao-cabecalho">
                 <div class="cartao-titulos">
                   <h2 class="cartao-titulo" id="titulo-planos">Assinaturas por plano</h2>
@@ -168,7 +209,7 @@
               </div>
             </section>
 
-            <section class="cartao cartao-sem-espaco bento-dois-tercos" aria-labelledby="titulo-transacoes">
+            <section class="cartao cartao-sem-espaco bento-dois-tercos" data-cartao="transacoes" aria-labelledby="titulo-transacoes">
               <div class="cartao-cabecalho">
                 <div class="cartao-titulos">
                   <h2 class="cartao-titulo" id="titulo-transacoes">Transações recentes</h2>
@@ -200,7 +241,7 @@
               </div>
             </section>
 
-            <section class="cartao bento-terco bento-alto" aria-labelledby="titulo-atividades">
+            <section class="cartao bento-terco bento-alto" data-cartao="atividades" aria-labelledby="titulo-atividades">
               <div class="cartao-cabecalho">
                 <div class="cartao-titulos">
                   <h2 class="cartao-titulo" id="titulo-atividades">Atividades recentes</h2>
@@ -212,7 +253,7 @@
               </ol>
             </section>
 
-            <section class="cartao bento-dois-tercos" aria-labelledby="titulo-canais">
+            <section class="cartao bento-dois-tercos" data-cartao="canais" aria-labelledby="titulo-canais">
               <div class="cartao-cabecalho">
                 <div class="cartao-titulos">
                   <h2 class="cartao-titulo" id="titulo-canais">Canais de aquisição</h2>

@@ -61,14 +61,15 @@ export async function atualizarPerfil(banco: Banco, usuarioId: string, dados: Da
 export async function salvarPreferencias(banco: Banco, usuarioId: string, dados: Partial<Preferencias>): Promise<Preferencias> {
   const atual = await obterPreferencias(banco, usuarioId);
   const final = { ...atual, ...Object.fromEntries(Object.entries(dados).filter(([, valor]) => valor !== undefined)) } as Preferencias;
+  if (final.layoutVisaoGeral && final.layoutVisaoGeral.length === 0) final.layoutVisaoGeral = null;
   await banco.consultar(
     `insert into preferencias_usuario (usuario_id, tema, paleta, densidade, sidebar_recolhida, pagina_inicial, itens_por_pagina,
-                                       movimento, atalhos_teclado, primeiros_passos_ocultos, atualizado_em)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, now())
+                                       movimento, atalhos_teclado, primeiros_passos_ocultos, layout_visao_geral, atualizado_em)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::jsonb, now())
      on conflict (usuario_id) do update set tema = excluded.tema, paleta = excluded.paleta, densidade = excluded.densidade,
        sidebar_recolhida = excluded.sidebar_recolhida, pagina_inicial = excluded.pagina_inicial,
        itens_por_pagina = excluded.itens_por_pagina, movimento = excluded.movimento, atalhos_teclado = excluded.atalhos_teclado,
-       primeiros_passos_ocultos = excluded.primeiros_passos_ocultos, atualizado_em = now()`,
+       primeiros_passos_ocultos = excluded.primeiros_passos_ocultos, layout_visao_geral = excluded.layout_visao_geral, atualizado_em = now()`,
     [
       usuarioId,
       final.tema,
@@ -80,6 +81,7 @@ export async function salvarPreferencias(banco: Banco, usuarioId: string, dados:
       final.movimento,
       final.atalhosTeclado,
       final.primeirosPassosOcultos,
+      final.layoutVisaoGeral ? JSON.stringify(final.layoutVisaoGeral) : null,
     ],
   );
   return final;
@@ -236,4 +238,23 @@ export async function salvarConfigSistema(
     });
   });
   return obterConfigSistema(banco);
+}
+
+export async function validarPapeisDoisFatores(banco: Banco, usuarioId: string, papel: string, papeis: string[]): Promise<string[]> {
+  const unicos = [...new Set(papeis)];
+  const { linhas } = await banco.consultar<{ codigo: string }>('select codigo from papeis where acesso_painel and codigo = any($1::text[])', [unicos]);
+  const validos = new Set(linhas.map((linha) => linha.codigo));
+  const invalidos = unicos.filter((codigo) => !validos.has(codigo));
+  if (invalidos.length) {
+    throw validacao(`Papel sem acesso ao painel ou inexistente: ${invalidos.join(', ')}.`, [{ campo: 'doisFatoresPapeis', mensagem: 'Escolha papéis do painel.' }]);
+  }
+  if (unicos.includes(papel)) {
+    const { linhas: atual } = await banco.consultar<{ ativo: boolean }>('select totp_ativado_em is not null as ativo from usuarios where id = $1', [usuarioId]);
+    if (!atual[0]?.ativo) {
+      throw validacao('Ative a sua verificação em duas etapas em Segurança antes de exigir para o seu próprio papel.', [
+        { campo: 'doisFatoresPapeis', mensagem: 'Ative a sua primeiro.' },
+      ]);
+    }
+  }
+  return unicos;
 }

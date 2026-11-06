@@ -185,7 +185,7 @@ export const fecharTodos = (): void => {
 document.addEventListener("click", (evento) => {
   const alvo = evento.target as Element | null;
   if (menuFlutuante && !menuFlutuante.elemento.contains(alvo) && !menuFlutuante.origem.contains(alvo)) fecharFlutuante();
-  if (!alvo?.closest(".menu, .central-notificacoes, .popover, [data-menu]")) fecharTodos();
+  if (!alvo?.closest(".menu, .central-notificacoes, .popover, [data-menu]") && !(alvo && menuFlutuante?.origem.contains(alvo))) fecharTodos();
 });
 
 document.addEventListener("keydown", (evento) => {

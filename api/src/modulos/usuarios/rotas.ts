@@ -18,6 +18,7 @@ import {
   listarPermissoes,
   listarUsuarios,
   obterPermissoesUsuario,
+  redefinirDoisFatores,
   redefinirSenha,
   salvarPermissoesUsuario,
   type Ator,
@@ -223,6 +224,15 @@ export async function rotasUsuarios(app: FastifyInstance): Promise<void> {
     '/usuarios/:id/redefinir-senha',
     { schema: { tags, summary: 'Gera uma senha temporária', params: paramId }, preHandler: pode('usuarios.editar') },
     async (requisicao) => redefinirSenha(app, ator(requisicao), id(requisicao)),
+  );
+
+  app.post(
+    '/usuarios/:id/redefinir-dois-fatores',
+    {
+      schema: { tags, summary: 'Remove o aplicativo autenticador de uma conta que perdeu o acesso', params: paramId },
+      preHandler: pode('usuarios.editar'),
+    },
+    async (requisicao) => redefinirDoisFatores(app, ator(requisicao), id(requisicao)),
   );
 
   app.get(

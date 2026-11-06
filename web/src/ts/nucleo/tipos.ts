@@ -4,7 +4,7 @@ export type EstadoConexao = "desconectado" | "conectando" | "conectado" | "recon
 export type StatusUsuario = "ativo" | "bloqueado" | "pendente" | "inativo";
 export type StatusTransacao = "paga" | "pendente" | "falhou" | "reembolsada";
 export type TipoNotificacao = "info" | "sucesso" | "alerta" | "erro";
-export type CategoriaNotificacao = "transacao" | "usuario" | "sistema" | "seguranca" | "relatorio";
+export type CategoriaNotificacao = "transacao" | "usuario" | "sistema" | "seguranca" | "relatorio" | "metrica";
 export type FormatoRelatorio = "csv" | "pdf";
 export type TipoRelatorio = "receita" | "transacoes" | "usuarios" | "assinaturas" | "crescimento";
 export type FormatoValor = "texto" | "moeda" | "numero" | "data" | "percentual";
@@ -41,6 +41,7 @@ export interface Usuario {
   atualizadoEm: string;
   bloqueadoEm: string | null;
   motivoBloqueio: string | null;
+  doisFatores?: boolean;
 }
 
 export interface Transacao {
@@ -106,6 +107,26 @@ export interface Preferencias {
   movimento?: Movimento;
   atalhosTeclado?: boolean;
   primeirosPassosOcultos?: boolean;
+  layoutVisaoGeral?: ItemLayout[] | null;
+}
+
+export type LarguraCartao = "quarto" | "terco" | "cinco-doze" | "metade" | "sete-doze" | "dois-tercos" | "tres-quartos" | "inteiro";
+
+export type AlturaCartao = "normal" | "alto";
+
+export interface ItemLayout {
+  id: string;
+  largura: LarguraCartao;
+  altura: AlturaCartao;
+  oculto: boolean;
+}
+
+export interface EstadoDoisFatores {
+  ativo: boolean;
+  ativadoEm: string | null;
+  codigosRestantes: number;
+  obrigatorio: boolean;
+  pendente: boolean;
 }
 
 export interface EstadoManutencao {
@@ -122,6 +143,7 @@ export interface Sistema {
   metaMensal: number;
   fuso?: string;
   idiomaPadrao?: string;
+  doisFatoresPapeis?: string[];
   versao?: string;
   manutencao?: EstadoManutencao;
 }
@@ -131,6 +153,7 @@ export interface Sessao {
   permissoes: Set<string>;
   preferencias: Preferencias | null;
   sistema: Sistema | null;
+  doisFatores: EstadoDoisFatores | null;
 }
 
 export interface Relatorio {

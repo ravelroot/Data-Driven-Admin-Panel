@@ -26,6 +26,9 @@ interface FormularioEntrar extends HTMLFormElement {
 interface RespostaEntrar {
   preferencias?: Partial<Preferencias> | null;
   permissoes?: string[];
+  doisFatores?: boolean | { pendente?: boolean };
+  expiraEm?: string;
+  codigosRestantes?: number | null;
 }
 
 iniciarTema();
@@ -47,6 +50,63 @@ const destinoSeguro = (contexto?: RespostaEntrar | null): string => {
 const mostrarErro = (texto: string): void => {
   exigir("[data-erro-texto]").textContent = texto;
   exigir("[data-erro]").hidden = !texto;
+};
+
+const mostrarErroCodigo = (texto: string): void => {
+  exigir("[data-erro-codigo-texto]").textContent = texto;
+  exigir("[data-erro-codigo]").hidden = !texto;
+};
+
+const destinoAposEntrar = (resposta: RespostaEntrar): string => {
+  if (typeof resposta.doisFatores === "object" && resposta.doisFatores?.pendente) return "/configuracoes?secao=seguranca&obrigatorio=1";
+  if (typeof resposta.codigosRestantes === "number" && resposta.codigosRestantes <= 2) return "/configuracoes?secao=seguranca";
+  return destinoSeguro(resposta);
+};
+
+let temporizadorDesafio = 0;
+
+const mostrarEtapa = (etapa: "senha" | "codigo"): void => {
+  exigir('[data-etapa="senha"]').hidden = etapa !== "senha";
+  exigir('[data-etapa="codigo"]').hidden = etapa !== "codigo";
+  const campo = exigir<HTMLInputElement>(etapa === "senha" ? 'input[name="senha"]' : "[data-campo-codigo]");
+  requestAnimationFrame(() => campo.focus());
+};
+
+const definirModoRecuperacao = (ativo: boolean): void => {
+  const campo = exigir<HTMLInputElement>("[data-campo-codigo]");
+  const botao = exigir<HTMLButtonElement>("[data-alternar-recuperacao]");
+  campo.value = "";
+  campo.dataset.recuperacao = String(ativo);
+  campo.inputMode = ativo ? "text" : "numeric";
+  campo.autocomplete = ativo ? "off" : "one-time-code";
+  campo.maxLength = ativo ? 9 : 7;
+  campo.pattern = ativo ? "[A-Za-z0-9]{4}-?[A-Za-z0-9]{4}" : "[0-9 ]{6,7}";
+  campo.placeholder = ativo ? "XXXX-XXXX" : "000 000";
+  exigir("[data-codigo-rotulo]").textContent = ativo ? "Código de recuperação" : "Código do aplicativo";
+  exigir("[data-codigo-instrucao]").textContent = ativo
+    ? "Digite um dos códigos de recuperação que você guardou ao ativar a verificação. Cada um vale uma vez."
+    : "Abra o aplicativo autenticador e digite o código de 6 dígitos do Bento.";
+  botao.querySelector("span")!.textContent = ativo ? "Usar o código do aplicativo" : "Usar um código de recuperação";
+  mostrarErroCodigo("");
+  campo.focus();
+};
+
+const iniciarContagem = (expiraEm: string | undefined, aoExpirar: () => void): void => {
+  window.clearInterval(temporizadorDesafio);
+  const limite = expiraEm ? new Date(expiraEm).getTime() : Date.now() + 300_000;
+  const validade = exigir("[data-codigo-validade]");
+  const atualizar = (): void => {
+    const restante = Math.max(0, Math.round((limite - Date.now()) / 1000));
+    if (restante === 0) {
+      window.clearInterval(temporizadorDesafio);
+      aoExpirar();
+      return;
+    }
+    const minutos = Math.floor(restante / 60);
+    validade.textContent = `O código do aplicativo muda a cada 30 segundos. Esta etapa vale por mais ${minutos}:${String(restante % 60).padStart(2, "0")}.`;
+  };
+  atualizar();
+  temporizadorDesafio = window.setInterval(atualizar, 1000);
 };
 
 const iniciar = async (): Promise<void> => {
@@ -89,13 +149,72 @@ const iniciar = async (): Promise<void> => {
         senha: formulario.elements.senha.value,
         lembrar: formulario.elements.lembrar.checked,
       });
+      if (resposta.doisFatores === true) {
+        carregando(botao, false);
+        definirModoRecuperacao(false);
+        mostrarEtapa("codigo");
+        iniciarContagem(resposta.expiraEm, () => {
+          mostrarEtapa("senha");
+          mostrarErro("A verificação expirou. Entre com a senha de novo.");
+          formulario.elements.senha.value = "";
+        });
+        return;
+      }
       sincronizarPreferencias(resposta.preferencias);
-      location.replace(destinoSeguro(resposta));
+      location.replace(destinoAposEntrar(resposta));
     } catch (erro) {
       carregando(botao, false);
       mostrarErro(erro instanceof ErroApi ? (MENSAGENS[erro.codigo] ?? erro.message) : mensagemDeErro(erro));
       formulario.elements.senha.select();
     }
+  });
+
+  const formularioCodigo = exigir<HTMLFormElement>("[data-form-codigo]");
+  const campoCodigo = exigir<HTMLInputElement>("[data-campo-codigo]");
+  const enviarCodigo = async (): Promise<void> => {
+    mostrarErroCodigo("");
+    const recuperacao = campoCodigo.dataset.recuperacao === "true";
+    const codigo = recuperacao ? campoCodigo.value.trim().toUpperCase() : campoCodigo.value.replace(/\D/g, "");
+    if (recuperacao ? !/^[A-Z0-9]{4}-?[A-Z0-9]{4}$/.test(codigo) : codigo.length !== 6) {
+      mostrarErroCodigo(recuperacao ? "Use o formato XXXX-XXXX." : "Digite os 6 dígitos do aplicativo.");
+      campoCodigo.focus();
+      return;
+    }
+    const botao = exigir<HTMLButtonElement>("[data-botao-codigo]");
+    carregando(botao, true);
+    try {
+      const resposta = await api.criar<RespostaEntrar>("/auth/dois-fatores", { codigo }, { semRenovar: true });
+      window.clearInterval(temporizadorDesafio);
+      sincronizarPreferencias(resposta.preferencias);
+      location.replace(destinoAposEntrar(resposta));
+    } catch (erro) {
+      carregando(botao, false);
+      if (erro instanceof ErroApi && erro.codigo === "NAO_AUTENTICADO") {
+        window.clearInterval(temporizadorDesafio);
+        mostrarEtapa("senha");
+        mostrarErro(erro.message);
+        return;
+      }
+      mostrarErroCodigo(erro instanceof ErroApi ? (erro.codigo === "LIMITE" ? MENSAGENS.LIMITE : erro.message) : mensagemDeErro(erro));
+      campoCodigo.select();
+    }
+  };
+
+  formularioCodigo.addEventListener("submit", (evento) => {
+    evento.preventDefault();
+    void enviarCodigo();
+  });
+  campoCodigo.addEventListener("input", () => {
+    if (campoCodigo.dataset.recuperacao === "true") return;
+    const digitos = campoCodigo.value.replace(/\D/g, "").slice(0, 6);
+    campoCodigo.value = digitos.length > 3 ? `${digitos.slice(0, 3)} ${digitos.slice(3)}` : digitos;
+    if (digitos.length === 6) void enviarCodigo();
+  });
+  exigir("[data-alternar-recuperacao]").addEventListener("click", () => definirModoRecuperacao(campoCodigo.dataset.recuperacao !== "true"));
+  exigir("[data-voltar-senha]").addEventListener("click", () => {
+    window.clearInterval(temporizadorDesafio);
+    mostrarErroCodigo("");
+    mostrarEtapa("senha");
   });
 };
 

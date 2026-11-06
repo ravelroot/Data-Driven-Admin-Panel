@@ -102,6 +102,10 @@ jobs:
             -d '{"email":"admin@bento.local","senha":"bento123"}' http://localhost:8080/api/v1/auth/entrar > /dev/null
           curl -fsS -b cookies.txt "http://localhost:8080/api/v1/visao-geral?periodo=30d" | grep -q '"kpis"'
           curl -fsS -b cookies.txt "http://localhost:8080/api/v1/usuarios?porPagina=5" | grep -q '"itens"'
+          curl -fsS -b cookies.txt "http://localhost:8080/api/v1/insights" | grep -q '"previsao"'
+          curl -fsS -b cookies.txt -H "Content-Type: application/json" -H "X-Bento: 1" \
+            -d '{"metrica":"taxa_falha","janela":"24h","modo":"valor","operador":"maior","limite":5}' http://localhost:8080/api/v1/alertas/simular | grep -q '"dispararia"'
+          curl -fsS -b cookies.txt "http://localhost:8080/api/v1/configuracoes/seguranca/dois-fatores" | grep -q '"ativo":false'
 
   docker:
     name: Imagem Docker

@@ -12,6 +12,7 @@ export const PAGINAS: Record<string, string> = {
   '/auditoria': 'auditoria.html',
   '/notificacoes': 'notificacoes.html',
   '/relatorios': 'relatorios.html',
+  '/alertas': 'alertas.html',
   '/configuracoes': 'configuracoes.html',
   '/componentes': 'componentes.html',
   '/entrar': 'entrar.html',

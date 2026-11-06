@@ -156,7 +156,7 @@ export const rotulos: Record<string, Record<string, string>> = {
   assinatura: { ativa: "Ativa", teste: "Em teste", cancelada: "Cancelada", inadimplente: "Inadimplente" },
   metodo: { cartao: "Cartão", pix: "Pix", boleto: "Boleto" },
   tipoTransacao: { assinatura: "Assinatura", upgrade: "Upgrade", avulsa: "Avulsa", reembolso: "Reembolso" },
-  categoria: { transacao: "Transações", usuario: "Usuários", sistema: "Sistema", seguranca: "Segurança", relatorio: "Relatórios" },
+  categoria: { transacao: "Transações", usuario: "Usuários", sistema: "Sistema", seguranca: "Segurança", relatorio: "Relatórios", metrica: "Alertas de métricas" },
   frequencia: { diaria: "Diária", semanal: "Semanal", mensal: "Mensal" },
   periodo: { "7d": "Últimos 7 dias", "30d": "Últimos 30 dias", "mes-anterior": "Mês anterior" },
   ciclo: { mensal: "Mensal", anual: "Anual" },

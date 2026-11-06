@@ -3,7 +3,16 @@ import { z } from 'zod';
 import { exigir } from '../../plugins/autenticacao.js';
 import { usuarioAtual } from '../../tipos.js';
 import { opcional, paramId, textoOpcional } from '../../util/validacao.js';
-import { buscarUsuario, ITENS_POR_PAGINA, type Preferencias, obterConfigSistema, obterPreferencias, PAGINAS_INICIAIS } from '../comum/consultas.js';
+import {
+  ALTURAS_CARTAO,
+  buscarUsuario,
+  ITENS_POR_PAGINA,
+  LARGURAS_CARTAO,
+  type Preferencias,
+  obterConfigSistema,
+  obterPreferencias,
+  PAGINAS_INICIAIS,
+} from '../comum/consultas.js';
 import {
   atualizarPerfil,
   criarChave,
@@ -14,6 +23,7 @@ import {
   salvarPreferencias,
   salvarConfigSistema,
   trocarSenha,
+  validarPapeisDoisFatores,
 } from './servico.js';
 
 const corpoPerfil = z
@@ -28,6 +38,21 @@ const corpoPerfil = z
     senhaAtual: opcional(z.string().max(200)),
   })
   .strict();
+
+const itemLayout = z
+  .object({
+    id: z.string().regex(/^[a-z][a-z0-9-]{1,39}$/, 'Identificador de cartão inválido.'),
+    largura: z.enum(LARGURAS_CARTAO),
+    altura: z.enum(ALTURAS_CARTAO),
+    oculto: z.boolean(),
+  })
+  .strict();
+
+const layoutVisaoGeral = z
+  .array(itemLayout)
+  .max(40)
+  .refine((itens) => new Set(itens.map((item) => item.id)).size === itens.length, 'Cada cartão aparece uma vez só.')
+  .nullable();
 
 const corpoAparencia = z
   .object({
@@ -44,6 +69,7 @@ const corpoAparencia = z
     movimento: z.enum(['sistema', 'reduzido']).optional(),
     atalhosTeclado: z.boolean().optional(),
     primeirosPassosOcultos: z.boolean().optional(),
+    layoutVisaoGeral: layoutVisaoGeral.optional(),
   })
   .strict();
 
@@ -68,6 +94,7 @@ const corpoSistema = z
       .optional(),
     metaMensal: z.number().int().min(100).max(100_000_000_000).optional(),
     idiomaPadrao: z.enum(['pt-BR', 'en-US', 'es-ES']).optional(),
+    doisFatoresPapeis: z.array(z.string().trim().regex(/^[a-z][a-z0-9_]{1,31}$/, 'Papel inválido.')).max(20).optional(),
   })
   .strict();
 
@@ -96,7 +123,7 @@ export async function rotasConfiguracoes(app: FastifyInstance): Promise<void> {
       {
         schema: {
           tags,
-          summary: 'Salva tema, paleta, densidade, menu, página inicial, itens por página, movimento, atalhos e primeiros passos',
+          summary: 'Salva tema, paleta, densidade, menu, página inicial, itens por página, movimento, atalhos, primeiros passos e o layout da visão geral',
           body: corpoAparencia,
         },
         preHandler: autenticado,
@@ -186,13 +213,11 @@ export async function rotasConfiguracoes(app: FastifyInstance): Promise<void> {
       schema: { tags, summary: 'Altera as configurações gerais', body: corpoSistema },
       preHandler: [app.autenticar, exigir('configuracoes.sistema')],
     },
-    async (requisicao) =>
-      salvarConfigSistema(
-        app.banco,
-        app.config.fuso,
-        usuarioAtual(requisicao).id,
-        requisicao.body as z.infer<typeof corpoSistema>,
-        requisicao.ip,
-      ),
+    async (requisicao) => {
+      const usuario = usuarioAtual(requisicao);
+      const corpo = requisicao.body as z.infer<typeof corpoSistema>;
+      if (corpo.doisFatoresPapeis) corpo.doisFatoresPapeis = await validarPapeisDoisFatores(app.banco, usuario.id, usuario.papel, corpo.doisFatoresPapeis);
+      return salvarConfigSistema(app.banco, app.config.fuso, usuario.id, corpo, requisicao.ip);
+    },
   );
 }

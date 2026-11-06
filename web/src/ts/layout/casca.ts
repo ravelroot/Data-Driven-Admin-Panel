@@ -22,7 +22,7 @@ export interface OpcoesCasca {
 
 const ROTULOS_PAPEL: Record<string, string> = { admin: "Administrador", gerente: "Gerente", analista: "Analista", suporte: "Suporte", cliente: "Cliente" };
 const ROTULOS_CONEXAO: Record<EstadoConexao, string> = { conectado: "Ao vivo", conectando: "Conectando…", reconectando: "Reconectando…", desconectado: "Sem conexão" };
-const ICONES_CATEGORIA: Record<string, string> = { transacao: "recibo", usuario: "usuario", sistema: "megafone", seguranca: "escudo", relatorio: "arquivo" };
+const ICONES_CATEGORIA: Record<string, string> = { transacao: "recibo", usuario: "usuario", sistema: "megafone", seguranca: "escudo", relatorio: "arquivo", metrica: "sirene" };
 
 let naoLidas = 0;
 

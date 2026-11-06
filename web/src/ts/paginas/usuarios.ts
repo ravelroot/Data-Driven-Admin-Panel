@@ -167,6 +167,7 @@ const acoesDoUsuario = (usuario: Usuario): ItemAcao[] => [
   pode("usuarios.ver") && { rotulo: "Permissões", icone: "escudo", executar: () => abrirDetalhes(usuario.id, "permissoes") },
   pode("usuarios.ver") && { rotulo: "Notas internas", icone: "nota", executar: () => abrirDetalhes(usuario.id, "notas") },
   pode("usuarios.editar") && { rotulo: "Redefinir senha", icone: "chave", executar: () => redefinirSenha(usuario) },
+  pode("usuarios.editar") && Boolean(usuario.doisFatores) && !ehEuMesmo(usuario) && { rotulo: "Redefinir verificação em duas etapas", icone: "escudo-alerta", executar: () => redefinirDoisFatores(usuario) },
   pode("usuarios.bloquear") && "separador",
   pode("usuarios.bloquear") &&
     (usuario.status === "bloqueado"
@@ -248,6 +249,24 @@ const redefinirSenha = async (usuario: Usuario): Promise<void> => {
     await mostrarSegredo({ titulo: "Senha temporária gerada", texto: "Ela aparece só desta vez. Copie e envie para a pessoa.", segredo: senhaTemporaria });
   } catch (erro) {
     avisar({ tipo: "erro", titulo: "Não foi possível gerar a senha", texto: mensagemDeErro(erro) });
+  }
+};
+
+const redefinirDoisFatores = async (usuario: Usuario): Promise<boolean> => {
+  const ok = await confirmar({
+    titulo: `Redefinir a verificação em duas etapas de ${usuario.nome}?`,
+    texto: "Use quando a pessoa perdeu o celular e os códigos de recuperação. O aplicativo autenticador é desvinculado, as sessões abertas são encerradas e ela entra só com a senha até configurar de novo.",
+    tipo: "alerta",
+    confirmar: "Redefinir",
+  });
+  if (!ok) return false;
+  try {
+    await api.criar(`/usuarios/${usuario.id}/redefinir-dois-fatores`);
+    avisoSucesso("Verificação redefinida", `${usuario.nome} foi avisada e pode configurar de novo em Configurações › Segurança.`);
+    return true;
+  } catch (erro) {
+    avisar({ tipo: "erro", titulo: "Não foi possível redefinir", texto: mensagemDeErro(erro) });
+    return false;
   }
 };
 
@@ -381,7 +400,7 @@ const painelResumo = (detalhe: DetalheUsuario): Seguro => {
       <div class="perfil-textos">
         <p class="perfil-nome">${usuario.nome}</p>
         <p class="perfil-email">${usuario.email}</p>
-        <div class="perfil-emblemas">${emblemaPapel(usuario.papel)}${emblemaStatus(usuario.status)}</div>
+        <div class="perfil-emblemas">${emblemaPapel(usuario.papel)}${emblemaStatus(usuario.status)}${usuario.doisFatores ? html`<span class="emblema emblema-oliva" title="Entra com senha e código do aplicativo autenticador">${html([icone("escudo-ok")])}Duas etapas</span>` : ""}</div>
       </div>
     </div>
     ${usuario.status === "bloqueado"
@@ -758,6 +777,7 @@ const abrirDetalhes = async (id: string, abaInicial: Aba = "resumo"): Promise<vo
               : html`<button type="button" class="botao botao-perigo-suave" data-rodape="bloquear"><i data-icone="cadeado"></i>Bloquear</button>`
             : ""}
         </div>
+        ${pode("usuarios.editar") && usuario.doisFatores && !ehEuMesmo(usuario) ? html`<button type="button" class="botao botao-secundario" data-rodape="dois-fatores" title="Redefinir a verificação em duas etapas"><i data-icone="escudo-alerta"></i>Redefinir 2 etapas</button>` : ""}
         ${pode("usuarios.editar") ? html`<button type="button" class="botao botao-secundario" data-rodape="senha"><i data-icone="chave"></i>Redefinir senha</button>` : ""}
         ${pode("usuarios.editar") ? html`<button type="button" class="botao botao-primario" data-rodape="ir-editar"><i data-icone="editar"></i>Editar</button>` : ""}`,
     editar: () => html`<button type="button" class="botao botao-secundario" data-rodape="cancelar">Cancelar</button><button type="submit" form="form-editar-usuario" class="botao botao-primario" data-salvar><i data-icone="salvar"></i>Salvar alterações</button>`,
@@ -825,6 +845,9 @@ const abrirDetalhes = async (id: string, abaInicial: Aba = "resumo"): Promise<vo
     if (acao === "ir-editar") abas?.selecionar("editar");
     else if (acao === "cancelar") abas?.selecionar("resumo");
     else if (acao === "senha") redefinirSenha(usuario);
+    else if (acao === "dois-fatores" && (await redefinirDoisFatores(usuario))) {
+      gaveta.fechar();
+    }
     else if (acao === "bloquear" && (await bloquear(usuario))) {
       gaveta.fechar();
     } else if (acao === "desbloquear" && (await desbloquear(usuario))) {

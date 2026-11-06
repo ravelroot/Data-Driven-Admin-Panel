@@ -17,8 +17,10 @@ import type { Usuario } from '../comum/mapeadores.js';
 import { criarNotificacao } from '../notificacoes/servico.js';
 import { VERSAO } from '../../config.js';
 import { lerManutencao, type EstadoManutencao } from '../../operacao/manutencao.js';
+import { conferirSegundoFator, estadoDoisFatores, type EstadoDoisFatores, type MetodoSegundoFator } from '../seguranca/dois-fatores.js';
 
 export const CUSTO_BCRYPT = 10;
+export const DURACAO_DESAFIO = '5m';
 const LIMITE_TENTATIVAS = 5;
 const MINUTOS_BLOQUEIO = 15;
 let hashFicticio: string | null = null;
@@ -65,21 +67,24 @@ export interface Contexto {
   permissoes: string[];
   preferencias: Preferencias;
   sistema: Pick<ConfigSistema, 'nomeEmpresa' | 'moeda' | 'metaMensal'> & { versao: string; manutencao: EstadoManutencao };
+  doisFatores: EstadoDoisFatores;
 }
 
 export async function montarContexto(banco: Banco, usuarioId: string): Promise<Contexto> {
-  const [usuario, permissoes, preferencias, sistema, manutencao] = await Promise.all([
+  const [usuario, permissoes, preferencias, sistema, manutencao, doisFatores] = await Promise.all([
     buscarUsuario(banco, usuarioId),
     permissoesEfetivas(banco, usuarioId),
     obterPreferencias(banco, usuarioId),
     obterConfigSistema(banco),
     lerManutencao(banco),
+    estadoDoisFatores(banco, usuarioId),
   ]);
   return {
     usuario,
     permissoes,
     preferencias,
     sistema: { nomeEmpresa: sistema.nomeEmpresa, moeda: sistema.moeda, metaMensal: sistema.metaMensal, versao: VERSAO, manutencao },
+    doisFatores,
   };
 }
 
@@ -98,68 +103,129 @@ function validadeSessao(lembrar: boolean): Date {
   return new Date(Date.now() + horas * 3_600_000);
 }
 
+export interface DesafioDoisFatores {
+  etapa: 'dois-fatores';
+  desafio: string;
+  lembrar: boolean;
+}
+
+export type ResultadoEntrar = DesafioDoisFatores | (Contexto & ResultadoSessao & { etapa: 'sessao' });
+
+interface CargaDesafio {
+  sub: string;
+  tipo: 'dois-fatores';
+  lembrar: boolean;
+}
+
+interface ContaLogin {
+  id: string;
+  nome: string;
+  email: string;
+  status: string;
+  tentativas_falhas: number;
+  bloqueio_temporario_ate: Date | null;
+}
+
+function lancarSeBloqueado(bloqueadoAte: number | null): void {
+  if (bloqueadoAte && bloqueadoAte > Date.now()) {
+    const minutos = Math.ceil((bloqueadoAte - Date.now()) / 60_000);
+    throw new ErroApi('LIMITE', `Muitas tentativas sem sucesso. Tente de novo em ${minutos} min.`);
+  }
+}
+
+async function registrarFalha(app: FastifyInstance, conta: ContaLogin, ip: string, motivo: string): Promise<void> {
+  const { banco } = app;
+  const { linhas } = await banco.consultar<{ tentativas: number }>(
+    `update usuarios set tentativas_falhas = tentativas_falhas + 1 where id = $1 returning tentativas_falhas as tentativas`,
+    [conta.id],
+  );
+  if ((linhas[0]?.tentativas ?? 0) < LIMITE_TENTATIVAS) return;
+  const { total } = await banco.consultar(
+    `update usuarios set tentativas_falhas = 0, bloqueio_temporario_ate = now() + interval '${MINUTOS_BLOQUEIO} minutes'
+      where id = $1 and tentativas_falhas >= $2`,
+    [conta.id, LIMITE_TENTATIVAS],
+  );
+  if (total === 0) return;
+  await criarNotificacao(banco, app.barramento, {
+    destinatarioId: null,
+    tipo: 'alerta',
+    categoria: 'seguranca',
+    titulo: 'Tentativas de acesso bloqueadas',
+    mensagem: `${LIMITE_TENTATIVAS} ${motivo} sem sucesso para ${conta.email}. O acesso ficou suspenso por ${MINUTOS_BLOQUEIO} minutos.`,
+    link: '/usuarios',
+  });
+  await registrarAtividade(banco, {
+    usuarioId: null,
+    acao: 'auth.bloqueio_temporario',
+    entidade: 'usuario',
+    entidadeId: conta.id,
+    descricao: `Acesso de ${conta.nome} suspenso por ${MINUTOS_BLOQUEIO} minutos após tentativas sem sucesso`,
+    ip,
+  });
+}
+
+async function abrirSessao(
+  app: FastifyInstance,
+  conta: { id: string },
+  lembrar: boolean,
+  ip: string,
+  agente: string | null,
+  metodo: MetodoSegundoFator | null,
+): Promise<Contexto & ResultadoSessao & { etapa: 'sessao' }> {
+  const { banco } = app;
+  const tokenRenovacao = tokenAleatorio();
+  const sessao = await banco.transacao(async (tx) => {
+    await tx.consultar(
+      `update usuarios set tentativas_falhas = 0, bloqueio_temporario_ate = null, ultimo_acesso = now() where id = $1`,
+      [conta.id],
+    );
+    const { linhas: criadas } = await tx.consultar<{ id: string }>(
+      `insert into sessoes (usuario_id, token_hash, agente, ip, lembrar, expira_em)
+       values ($1, $2, $3, $4, $5, $6) returning id`,
+      [conta.id, hashSha256(tokenRenovacao), agente?.slice(0, 400) ?? null, ip, lembrar, validadeSessao(lembrar)],
+    );
+    await registrarAtividade(tx, {
+      usuarioId: conta.id,
+      acao: 'auth.entrou',
+      descricao: metodo === 'recuperacao' ? 'entrou no painel com um código de recuperação' : 'entrou no painel',
+      entidade: 'sessao',
+      entidadeId: criadas[0].id,
+      detalhes: metodo ? { doisFatores: metodo } : {},
+      ip,
+    });
+    return criadas[0];
+  });
+  const contexto = await montarContexto(banco, conta.id);
+  return {
+    etapa: 'sessao',
+    ...contexto,
+    tokenAcesso: assinarAcesso(app, { sub: conta.id, sid: sessao.id }),
+    tokenRenovacao,
+    lembrar,
+  };
+}
+
 export async function entrar(
   app: FastifyInstance,
   dados: { email: string; senha: string; lembrar: boolean },
   ip: string,
   agente: string | null,
-): Promise<Contexto & ResultadoSessao> {
+): Promise<ResultadoEntrar> {
   const { banco } = app;
-  const { linhas } = await banco.consultar<{
-    id: string;
-    nome: string;
-    senha_hash: string | null;
-    status: string;
-    tentativas_falhas: number;
-    bloqueio_temporario_ate: Date | null;
-  }>(
-    `select id, nome, senha_hash, status, tentativas_falhas, bloqueio_temporario_ate
+  const { linhas } = await banco.consultar<ContaLogin & { senha_hash: string | null; totp_ativado_em: Date | null }>(
+    `select id, nome, email, senha_hash, status, tentativas_falhas, bloqueio_temporario_ate, totp_ativado_em
        from usuarios where lower(email) = lower($1)`,
     [dados.email],
   );
   const conta = linhas[0];
   const emailNormalizado = dados.email.trim().toLowerCase();
-  const bloqueadoAte = conta?.bloqueio_temporario_ate
-    ? new Date(conta.bloqueio_temporario_ate).getTime()
-    : conta
-      ? null
-      : bloqueioDesconhecido(emailNormalizado);
-  if (bloqueadoAte && bloqueadoAte > Date.now()) {
-    const minutos = Math.ceil((bloqueadoAte - Date.now()) / 60_000);
-    throw new ErroApi('LIMITE', `Muitas tentativas sem sucesso. Tente de novo em ${minutos} min.`);
-  }
+  lancarSeBloqueado(
+    conta?.bloqueio_temporario_ate ? new Date(conta.bloqueio_temporario_ate).getTime() : conta ? null : bloqueioDesconhecido(emailNormalizado),
+  );
   const senhaCorreta = await conferirSenha(dados.senha, conta?.senha_hash ?? null);
   if (!conta || !senhaCorreta) {
-    if (conta) {
-      const tentativas = conta.tentativas_falhas + 1;
-      if (tentativas >= LIMITE_TENTATIVAS) {
-        await banco.consultar(
-          `update usuarios set tentativas_falhas = 0, bloqueio_temporario_ate = now() + interval '${MINUTOS_BLOQUEIO} minutes'
-            where id = $1`,
-          [conta.id],
-        );
-        await criarNotificacao(banco, app.barramento, {
-          destinatarioId: null,
-          tipo: 'alerta',
-          categoria: 'seguranca',
-          titulo: 'Tentativas de acesso bloqueadas',
-          mensagem: `${LIMITE_TENTATIVAS} tentativas de login sem sucesso para ${dados.email}. O acesso ficou suspenso por ${MINUTOS_BLOQUEIO} minutos.`,
-          link: '/usuarios',
-        });
-        await registrarAtividade(banco, {
-          usuarioId: null,
-          acao: 'auth.bloqueio_temporario',
-          entidade: 'usuario',
-          entidadeId: conta.id,
-          descricao: `Acesso de ${conta.nome} suspenso por ${MINUTOS_BLOQUEIO} minutos após tentativas sem sucesso`,
-          ip,
-        });
-      } else {
-        await banco.consultar('update usuarios set tentativas_falhas = $2 where id = $1', [conta.id, tentativas]);
-      }
-    } else {
-      registrarFalhaDesconhecida(emailNormalizado);
-    }
+    if (conta) await registrarFalha(app, conta, ip, 'tentativas de login');
+    else registrarFalhaDesconhecida(emailNormalizado);
     throw new ErroApi('CREDENCIAIS', 'E-mail ou senha incorretos.');
   }
   if (conta.status === 'bloqueado') throw new ErroApi('BLOQUEADO', 'Esta conta está bloqueada. Fale com um administrador.');
@@ -170,34 +236,53 @@ export async function entrar(
   if (!permissoes.includes('painel.ver')) {
     throw new ErroApi('SEM_ACESSO_PAINEL', 'Esta conta não tem acesso ao painel administrativo.');
   }
-  const tokenRenovacao = tokenAleatorio();
-  const sessao = await banco.transacao(async (tx) => {
-    await tx.consultar(
-      `update usuarios set tentativas_falhas = 0, bloqueio_temporario_ate = null, ultimo_acesso = now() where id = $1`,
-      [conta.id],
-    );
-    const { linhas: criadas } = await tx.consultar<{ id: string }>(
-      `insert into sessoes (usuario_id, token_hash, agente, ip, lembrar, expira_em)
-       values ($1, $2, $3, $4, $5, $6) returning id`,
-      [conta.id, hashSha256(tokenRenovacao), agente?.slice(0, 400) ?? null, ip, dados.lembrar, validadeSessao(dados.lembrar)],
-    );
-    await registrarAtividade(tx, {
-      usuarioId: conta.id,
-      acao: 'auth.entrou',
-      descricao: 'entrou no painel',
-      entidade: 'sessao',
-      entidadeId: criadas[0].id,
-      ip,
+  if (conta.totp_ativado_em) {
+    const carga: CargaDesafio = { sub: conta.id, tipo: 'dois-fatores', lembrar: dados.lembrar };
+    return { etapa: 'dois-fatores', desafio: app.jwt.sign(carga, { expiresIn: DURACAO_DESAFIO }), lembrar: dados.lembrar };
+  }
+  return abrirSessao(app, conta, dados.lembrar, ip, agente, null);
+}
+
+export async function concluirDoisFatores(
+  app: FastifyInstance,
+  desafio: string | undefined,
+  codigo: string,
+  ip: string,
+  agente: string | null,
+): Promise<Contexto & ResultadoSessao & { etapa: 'sessao'; codigosRestantes: number | null }> {
+  const { banco } = app;
+  let carga: CargaDesafio;
+  try {
+    carga = app.jwt.verify<CargaDesafio>(desafio ?? '');
+  } catch {
+    throw naoAutenticado('A verificação expirou. Entre com a senha de novo.');
+  }
+  if (carga.tipo !== 'dois-fatores' || typeof carga.sub !== 'string') throw naoAutenticado('A verificação expirou. Entre com a senha de novo.');
+  const { linhas } = await banco.consultar<ContaLogin & { totp_ativado_em: Date | null }>(
+    `select id, nome, email, status, tentativas_falhas, bloqueio_temporario_ate, totp_ativado_em from usuarios where id = $1`,
+    [carga.sub],
+  );
+  const conta = linhas[0];
+  if (!conta || !conta.totp_ativado_em) throw naoAutenticado('A verificação expirou. Entre com a senha de novo.');
+  lancarSeBloqueado(conta.bloqueio_temporario_ate ? new Date(conta.bloqueio_temporario_ate).getTime() : null);
+  if (conta.status !== 'ativo') throw new ErroApi(conta.status === 'bloqueado' ? 'BLOQUEADO' : 'SEM_ACESSO_PAINEL', 'Esta conta não está ativa.');
+  const resultado = await conferirSegundoFator(banco, app.config, conta.id, codigo);
+  if (!resultado) {
+    await registrarFalha(app, conta, ip, 'códigos de verificação');
+    throw new ErroApi('CREDENCIAIS', 'Código incorreto ou já usado. Confira o aplicativo e tente de novo.');
+  }
+  if (resultado.metodo === 'recuperacao') {
+    await criarNotificacao(banco, app.barramento, {
+      destinatarioId: conta.id,
+      tipo: resultado.restantes && resultado.restantes > 2 ? 'info' : 'alerta',
+      categoria: 'seguranca',
+      titulo: 'Código de recuperação usado',
+      mensagem: `Você entrou com um código de recuperação. Restam ${resultado.restantes ?? 0}. Gere novos códigos em Configurações › Segurança.`,
+      link: '/configuracoes?secao=seguranca',
     });
-    return criadas[0];
-  });
-  const contexto = await montarContexto(banco, conta.id);
-  return {
-    ...contexto,
-    tokenAcesso: assinarAcesso(app, { sub: conta.id, sid: sessao.id }),
-    tokenRenovacao,
-    lembrar: dados.lembrar,
-  };
+  }
+  const sessao = await abrirSessao(app, conta, Boolean(carga.lembrar), ip, agente, resultado.metodo);
+  return { ...sessao, codigosRestantes: resultado.restantes };
 }
 
 export async function renovar(app: FastifyInstance, tokenRenovacao: string | undefined): Promise<ResultadoSessao> {

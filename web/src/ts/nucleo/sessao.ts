@@ -1,13 +1,14 @@
 import { api } from "./api.ts";
 import { definirMoeda } from "./formato.ts";
 import { emitir } from "./eventos.ts";
-import type { Preferencias, Sessao, Sistema, Usuario } from "./tipos.ts";
+import type { EstadoDoisFatores, Preferencias, Sessao, Sistema, Usuario } from "./tipos.ts";
 
 interface RespostaEu {
   usuario: Usuario;
   permissoes?: string[];
   preferencias?: Preferencias | null;
   sistema?: Sistema | null;
+  doisFatores?: EstadoDoisFatores | null;
 }
 
 const estado: Sessao = {
@@ -15,6 +16,7 @@ const estado: Sessao = {
   permissoes: new Set<string>(),
   preferencias: null,
   sistema: null,
+  doisFatores: null,
 };
 
 export const carregarSessao = async (): Promise<Sessao> => {
@@ -23,6 +25,7 @@ export const carregarSessao = async (): Promise<Sessao> => {
   estado.permissoes = new Set(dados.permissoes ?? []);
   estado.preferencias = dados.preferencias ?? null;
   estado.sistema = dados.sistema ?? null;
+  estado.doisFatores = dados.doisFatores ?? null;
   definirMoeda(estado.sistema?.moeda);
   return sessao();
 };
@@ -32,7 +35,13 @@ export const sessao = (): Sessao => ({
   permissoes: estado.permissoes,
   preferencias: estado.preferencias,
   sistema: estado.sistema,
+  doisFatores: estado.doisFatores,
 });
+
+export const atualizarDoisFatores = (doisFatores: EstadoDoisFatores): void => {
+  estado.doisFatores = doisFatores;
+  emitir("sessao:dois-fatores", doisFatores);
+};
 
 export const usuarioAtual = (): Usuario | null => estado.usuario;
 

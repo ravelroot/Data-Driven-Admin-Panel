@@ -10,6 +10,7 @@ import { registrarAtividade } from '../comum/auditoria.js';
 import { atividadesRecentes, buscarUsuario, transacoesRecentes } from '../comum/consultas.js';
 import { mapearUsuario, SELECAO_USUARIO, type Usuario } from '../comum/mapeadores.js';
 import { criarNotificacao } from '../notificacoes/servico.js';
+import { removerDoisFatores } from '../seguranca/dois-fatores.js';
 import { contarNotas } from './notas.js';
 
 export interface Ator {
@@ -434,6 +435,37 @@ export async function redefinirSenha(app: FastifyInstance, ator: Ator, id: strin
     });
   });
   return { senhaTemporaria: temporaria };
+}
+
+export async function redefinirDoisFatores(app: FastifyInstance, ator: Ator, id: string): Promise<{ ok: true }> {
+  const { banco } = app;
+  if (id === ator.usuario.id) throw validacao('Para a sua conta, use Configurações › Segurança.');
+  const alvo = await buscarUsuario(banco, id);
+  await garantirHierarquia(banco, ator, alvo);
+  const removido = await banco.transacao(async (tx) => {
+    const alterou = await removerDoisFatores(tx, id);
+    if (!alterou) return false;
+    await revogarSessoesDoUsuario(tx, id);
+    await registrarAtividade(tx, {
+      usuarioId: ator.usuario.id,
+      acao: 'usuario.dois_fatores_redefinido',
+      entidade: 'usuario',
+      entidadeId: id,
+      descricao: `redefiniu a verificação em duas etapas de ${alvo.nome}`,
+      ip: ator.ip,
+    });
+    return true;
+  });
+  if (!removido) throw conflito(`${alvo.nome} não usa a verificação em duas etapas.`);
+  await criarNotificacao(banco, app.barramento, {
+    destinatarioId: id,
+    tipo: 'alerta',
+    categoria: 'seguranca',
+    titulo: 'Verificação em duas etapas redefinida',
+    mensagem: `${ator.usuario.nome} removeu o aplicativo autenticador da sua conta. Configure de novo em Configurações › Segurança.`,
+    link: '/configuracoes?secao=seguranca',
+  });
+  return { ok: true };
 }
 
 export async function obterPermissoesUsuario(banco: Banco, id: string) {

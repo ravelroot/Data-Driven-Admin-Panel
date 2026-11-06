@@ -31,6 +31,7 @@ export const NAVEGACAO: GrupoNavegacao[] = [
     itens: [
       { id: "visao-geral", rotulo: "Visão geral", icone: "painel", href: "/", permissao: "painel.ver", descricao: "KPIs de receita, usuários e assinaturas" },
       { id: "analytics", rotulo: "Analytics", icone: "grafico-linha", href: "/analytics", permissao: "analytics.ver", descricao: "Gráficos com filtros por período" },
+      { id: "alertas", rotulo: "Alertas", icone: "sirene", href: "/alertas", permissao: "alertas.ver", descricao: "Regras sobre as métricas e histórico de disparos" },
     ],
   },
   {
@@ -56,6 +57,9 @@ export const NAVEGACAO: GrupoNavegacao[] = [
 export const ACOES_RAPIDAS: AcaoRapida[] = [
   { id: "novo-usuario", rotulo: "Cadastrar usuário", icone: "usuario-novo", href: "/usuarios?novo=1", permissao: "usuarios.criar" },
   { id: "importar-usuarios", rotulo: "Importar usuários de uma planilha CSV", icone: "importar", href: "/usuarios?importar=1", permissao: "usuarios.importar" },
+  { id: "novo-alerta", rotulo: "Criar alerta de métrica", icone: "sirene", href: "/alertas?novo=1", permissao: "alertas.gerenciar" },
+  { id: "personalizar-visao", rotulo: "Personalizar a visão geral: esconder, mover e redimensionar cartões", icone: "grade", href: "/?personalizar=1", permissao: "painel.ver" },
+  { id: "dois-fatores", rotulo: "Verificação em duas etapas", icone: "escudo-ok", href: "/configuracoes?secao=seguranca" },
   { id: "gerar-relatorio", rotulo: "Gerar relatório", icone: "arquivo-baixar", href: "/relatorios", permissao: "relatorios.gerar" },
   { id: "exportar-transacoes", rotulo: "Exportar transações em CSV", icone: "arquivo-baixar", href: "/api/v1/transacoes/exportar", permissao: "transacoes.ver", externo: true },
   { id: "enviar-aviso", rotulo: "Enviar aviso para a equipe", icone: "sino", href: "/notificacoes?novo=1", permissao: "notificacoes.enviar" },
@@ -78,6 +82,7 @@ export const IR_PARA: Record<string, string> = {
   n: "notificacoes",
   r: "relatorios",
   d: "auditoria",
+  l: "alertas",
   c: "configuracoes",
   k: "componentes",
 };

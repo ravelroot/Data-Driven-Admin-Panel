@@ -111,3 +111,25 @@
     @apply truncate text-xs text-neutra-600 dark:text-neutra-400;
   }
 }
+
+@layer components {
+  .verificacao-selo {
+    @apply mb-6 grid size-12 place-items-center rounded-full bg-(--parede) text-(--texto);
+  }
+
+  .verificacao-selo svg {
+    @apply size-6;
+  }
+
+  .entrada-codigo {
+    @apply text-center font-mono text-2xl tracking-[0.35em] tabular-nums;
+  }
+
+  .entrada-codigo[data-recuperacao="true"] {
+    @apply text-xl tracking-[0.2em] uppercase;
+  }
+
+  .verificacao-opcoes {
+    @apply mt-5 flex flex-wrap items-center justify-between gap-2;
+  }
+}

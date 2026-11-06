@@ -149,7 +149,7 @@ export async function executarDiagnostico(config: Config, banco: Banco | null): 
     grupo: 'Operação',
     titulo: 'Retenção de dados',
     status: 'info',
-    detalhe: `Notificações ${retencao.notificacoesDias || 'sem limite'}${retencao.notificacoesDias ? ' dias' : ''}, relatórios ${retencao.relatoriosDias || 'sem limite'}${retencao.relatoriosDias ? ' dias' : ''}, auditoria ${retencao.auditoriaDias || 'sem limite'}${retencao.auditoriaDias ? ' dias' : ''}, sessões ${retencao.sessoesDias} dias e entregas ${retencao.entregasDias} dias.`,
+    detalhe: `Notificações ${retencao.notificacoesDias || 'sem limite'}${retencao.notificacoesDias ? ' dias' : ''}, relatórios ${retencao.relatoriosDias || 'sem limite'}${retencao.relatoriosDias ? ' dias' : ''}, auditoria ${retencao.auditoriaDias || 'sem limite'}${retencao.auditoriaDias ? ' dias' : ''}, sessões ${retencao.sessoesDias} dias, entregas ${retencao.entregasDias} dias e disparos de alertas ${retencao.alertasDias} dias.`,
   });
 
   if (config.backup.automatico !== 'desligado') {
@@ -264,6 +264,24 @@ export async function executarDiagnostico(config: Config, banco: Banco | null): 
     status: totalAdmins > 0 ? 'ok' : 'erro',
     detalhe: totalAdmins > 0 ? plural(totalAdmins, 'administrador ativo', 'administradores ativos') + '.' : 'Nenhum administrador ativo.',
     dica: totalAdmins > 0 ? undefined : 'Defina BENTO_ADMIN_EMAIL e BENTO_ADMIN_SENHA e rode "npm run admin".',
+  });
+
+  const { linhas: semDoisFatores } = await banco.consultar<{ total: number; obrigatorio: boolean }>(
+    `select count(*) filter (where totp_ativado_em is null)::int as total,
+            coalesce((select valor from configuracoes_sistema where chave = 'doisFatoresPapeis'), '[]'::jsonb) ? 'admin' as obrigatorio
+       from usuarios where papel = 'admin' and status = 'ativo'`,
+  );
+  const adminsSemDoisFatores = semDoisFatores[0]?.total ?? 0;
+  adicionar({
+    id: 'dois-fatores',
+    grupo: 'Segurança',
+    titulo: 'Verificação em duas etapas',
+    status: adminsSemDoisFatores === 0 ? 'ok' : semDoisFatores[0]?.obrigatorio ? 'info' : 'aviso',
+    detalhe:
+      adminsSemDoisFatores === 0
+        ? 'Todos os administradores ativos usam o aplicativo autenticador.'
+        : `${plural(adminsSemDoisFatores, 'administrador ainda entra', 'administradores ainda entram')} só com a senha.${semDoisFatores[0]?.obrigatorio ? ' A regra da empresa vai pedir a configuração no próximo acesso.' : ''}`,
+    dica: adminsSemDoisFatores && !semDoisFatores[0]?.obrigatorio ? 'Exija a verificação para administradores em Configurações › Empresa.' : undefined,
   });
 
   const demonstracao = await contasComSenhaDeDemonstracao(banco);

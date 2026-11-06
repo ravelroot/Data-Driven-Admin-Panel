@@ -2,7 +2,7 @@ import { iniciarPagina } from "../layout/inicio.ts";
 import { html, $, $$, exigir, renderizar, parametrosUrl, atualizarUrl, carregando } from "../nucleo/dom.ts";
 import { icone, hidratarIcones } from "../nucleo/icones.ts";
 import { api, mensagemDeErro, ErroApi } from "../nucleo/api.ts";
-import { pode, atualizarUsuarioAtual, atualizarPreferencias, atualizarSistema, usuarioAtual } from "../nucleo/sessao.ts";
+import { pode, atualizarUsuarioAtual, atualizarPreferencias, atualizarSistema, usuarioAtual, sessao } from "../nucleo/sessao.ts";
 import { aplicarTema, aplicarPaleta, aplicarDensidade, aplicarMovimento, definirBarraRecolhida, preferenciasLocais } from "../nucleo/tema.ts";
 import { relativo, corAvatar, moeda, dataHora, numero } from "../nucleo/formato.ts";
 import { limparRecentes } from "../nucleo/recentes.ts";
@@ -14,7 +14,9 @@ import { iniciarAbas } from "../componentes/abas.ts";
 import { confirmar, mostrarSegredo } from "../componentes/modal.ts";
 import { avisar, avisoSucesso } from "../componentes/aviso.ts";
 import { lerFormulario, mostrarErros, limparErros, ligarForcaSenha, ligarMostrarSenha } from "../componentes/formulario.ts";
-import type { EntregaIntegracao, EstadoManutencao, Integracao, Pagina, Preferencias, Sistema, StatusEntrega, Usuario } from "../nucleo/tipos.ts";
+import { iniciarDoisFatores } from "../componentes/dois-fatores.ts";
+import type { EntregaIntegracao, EstadoDoisFatores, EstadoManutencao, Integracao, Pagina, Preferencias, Sistema, StatusEntrega, Usuario } from "../nucleo/tipos.ts";
+import { ouvir } from "../nucleo/eventos.ts";
 
 interface SessaoAtiva {
   id: string;
@@ -64,6 +66,7 @@ const preencherFormulario = (formulario: HTMLFormElement, dados: object): void =
     if (!elemento.name || !(elemento.name in valores)) continue;
     const valor = valores[elemento.name];
     if (elemento instanceof HTMLInputElement && elemento.type === "radio") elemento.checked = elemento.value === String(valor);
+    else if (elemento instanceof HTMLInputElement && elemento.type === "checkbox" && Array.isArray(valor)) elemento.checked = valor.includes(elemento.value);
     else if (elemento instanceof HTMLInputElement && elemento.type === "checkbox") elemento.checked = Boolean(valor);
     else if (elemento.dataset.moeda !== undefined) elemento.value = valor === null || valor === undefined ? "" : (Number(valor) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 });
     else elemento.value = String(valor ?? "");
@@ -226,6 +229,11 @@ const carregarSessoes = async (): Promise<void> => {
 };
 
 const secaoSeguranca = async (): Promise<void> => {
+  exigir("[data-aviso-dois-fatores]").hidden = !sessao().doisFatores?.pendente;
+  ouvir<EstadoDoisFatores>("sessao:dois-fatores", (estado) => {
+    exigir("[data-aviso-dois-fatores]").hidden = !estado?.pendente;
+    if (estado && !estado.pendente && parametrosUrl().obrigatorio) atualizarUrl({ obrigatorio: null });
+  });
   const formulario = exigir<HTMLFormElement>("[data-form-senha]");
   ligarForcaSenha($<HTMLInputElement>("[data-nova-senha]"), $<HTMLElement>("[data-forca]"));
   ligarMostrarSenha(formulario);
@@ -273,7 +281,7 @@ const secaoSeguranca = async (): Promise<void> => {
       carregando($<HTMLButtonElement>('[data-acao="encerrar-outras"]'), false);
     }
   });
-  await carregarSessoes();
+  await Promise.all([carregarSessoes(), iniciarDoisFatores(exigir("[data-dois-fatores]"))]);
 };
 
 const carregarChaves = async (): Promise<void> => {
@@ -387,6 +395,7 @@ const ROTULOS_EVENTO: Record<string, string> = {
   "usuario.criado": "Usuário criado",
   "usuario.bloqueado": "Usuário bloqueado",
   "relatorio.gerado": "Relatório gerado",
+  "alerta.disparado": "Alerta de métrica disparado",
   "integracao.teste": "Teste",
 };
 
@@ -968,7 +977,7 @@ iniciarPagina({
     $$("[data-permissao]").forEach((elemento) => {
       if (!pode(elemento.dataset.permissao)) elemento.remove();
     });
-    const inicial = parametrosUrl().secao;
+    const inicial = sessao().doisFatores?.pendente ? "seguranca" : parametrosUrl().secao;
     iniciarAbas($("[data-secoes]"), { inicial: inicial && SECOES[inicial] ? inicial : "perfil", aoTrocar: abrirSecao });
   },
 });

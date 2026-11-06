@@ -238,3 +238,63 @@
     @apply rounded-md bg-neutra-200 px-2 py-1 font-mono text-xs text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
   }
 }
+
+@layer components {
+  .dois-fatores {
+    @apply flex flex-wrap items-center gap-3 py-1;
+  }
+
+  .dois-fatores .sessao-textos {
+    @apply min-w-[14rem] flex-1;
+  }
+
+  .dois-fatores-acoes {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .opcoes-papeis {
+    @apply grid gap-3 sm:grid-cols-2 xl:grid-cols-4;
+  }
+
+  .qr-configuracao {
+    @apply grid items-start gap-5 sm:grid-cols-[11rem_minmax(0,1fr)];
+  }
+
+  .qr-imagem {
+    @apply m-0 w-44 overflow-hidden rounded-controle border border-(--parede) bg-white p-1;
+  }
+
+  .qr-imagem svg {
+    @apply block h-auto w-full;
+  }
+
+  .segredo-compacto code {
+    @apply font-mono text-xs tracking-wider whitespace-normal break-all;
+  }
+
+  .entrada-codigo-config {
+    @apply max-w-56 font-mono text-lg tracking-[0.25em] tabular-nums;
+  }
+
+  .codigos-recuperacao {
+    @apply m-0 grid list-none grid-cols-2 gap-2 p-0;
+  }
+
+  .codigos-recuperacao li {
+    @apply rounded-controle border border-(--parede) px-3 py-2 text-center;
+  }
+
+  .codigos-recuperacao code {
+    @apply bg-transparent p-0 font-mono text-sm font-semibold tracking-wider text-(--texto);
+  }
+}
+
+@layer components {
+  .dois-fatores-aviso {
+    @apply whitespace-normal text-brasa-600 dark:text-brasa-400;
+  }
+
+  .dois-fatores .sessao-detalhe {
+    @apply whitespace-normal;
+  }
+}

@@ -8,6 +8,7 @@ import type { Gancho, UsuarioSessao } from '../tipos.js';
 
 export const COOKIE_SESSAO = 'bento_sessao';
 export const COOKIE_RENOVACAO = 'bento_renovacao';
+export const COOKIE_DESAFIO = 'bento_desafio';
 export const CAMINHO_RENOVACAO = '/api/v1/auth';
 export const DURACAO_ACESSO = '15m';
 export const DIAS_LEMBRAR = 30;
@@ -16,6 +17,18 @@ export const HORAS_SEM_LEMBRAR = 12;
 export interface CargaJwt {
   sub: string;
   sid: string;
+}
+
+const LIBERADAS_SEM_DOIS_FATORES = [
+  /^\/api\/v1\/auth\//,
+  /^\/api\/v1\/configuracoes\/seguranca(\/|$)/,
+  /^\/api\/v1\/configuracoes\/(perfil|preferencias|aparencia)$/,
+  /^\/api\/v1\/notificacoes\/(contagem|fluxo)$/,
+];
+
+export function liberadaSemDoisFatores(url: string): boolean {
+  const caminho = url.split('?')[0] ?? '';
+  return LIBERADAS_SEM_DOIS_FATORES.some((padrao) => padrao.test(caminho));
 }
 
 const METODOS_LEITURA = new Set(['GET', 'HEAD', 'OPTIONS']);
@@ -33,6 +46,7 @@ export function opcoesCookie(config: Config, caminho: string, segundos: number |
 export function limparCookies(config: Config, resposta: FastifyReply): void {
   resposta.clearCookie(COOKIE_SESSAO, opcoesCookie(config, '/', null));
   resposta.clearCookie(COOKIE_RENOVACAO, opcoesCookie(config, CAMINHO_RENOVACAO, null));
+  resposta.clearCookie(COOKIE_DESAFIO, opcoesCookie(config, CAMINHO_RENOVACAO, null));
 }
 
 function ehExpirado(erro: unknown): boolean {
@@ -77,6 +91,7 @@ async function autenticarChaveApi(app: FastifyInstance, requisicao: FastifyReque
     sessaoId: null,
     viaCookie: false,
     escopos: chave.escopos,
+    doisFatoresPendente: false,
   };
 }
 
@@ -91,6 +106,7 @@ async function autenticarJwt(
   } catch (erro) {
     throw naoAutenticado(ehExpirado(erro) ? 'Sua sessão expirou.' : 'Sessão inválida. Entre novamente.');
   }
+  if (typeof carga.sid !== 'string' || typeof carga.sub !== 'string') throw naoAutenticado('Sessão inválida. Entre novamente.');
   const { linhas } = await app.banco.consultar<{
     id: string;
     nome: string;
@@ -100,8 +116,11 @@ async function autenticarJwt(
     revogada_em: Date | null;
     expira_em: Date;
     ultimo_uso: Date;
+    dois_fatores_pendente: boolean;
   }>(
-    `select u.id, u.nome, u.email, u.papel, u.status, s.revogada_em, s.expira_em, s.ultimo_uso
+    `select u.id, u.nome, u.email, u.papel, u.status, s.revogada_em, s.expira_em, s.ultimo_uso,
+            (u.totp_ativado_em is null and coalesce((select c.valor from configuracoes_sistema c where c.chave = 'doisFatoresPapeis'), '[]'::jsonb) ? u.papel)
+              as dois_fatores_pendente
        from sessoes s
        join usuarios u on u.id = s.usuario_id
       where s.id = $1 and u.id = $2`,
@@ -127,6 +146,7 @@ async function autenticarJwt(
     sessaoId: carga.sid,
     viaCookie,
     escopos: null,
+    doisFatoresPendente: Boolean(linha.dois_fatores_pendente),
   };
 }
 
@@ -137,7 +157,7 @@ export function registrarAutenticacao(app: FastifyInstance): void {
     if (METODOS_LEITURA.has(requisicao.method)) return;
     if (!requisicao.url.startsWith('/api/')) return;
     if (requisicao.headers.authorization) return;
-    const temCookie = Boolean(requisicao.cookies?.[COOKIE_SESSAO] || requisicao.cookies?.[COOKIE_RENOVACAO]);
+    const temCookie = Boolean(requisicao.cookies?.[COOKIE_SESSAO] || requisicao.cookies?.[COOKIE_RENOVACAO] || requisicao.cookies?.[COOKIE_DESAFIO]);
     if (temCookie && requisicao.headers['x-bento'] !== '1') {
       throw new ErroApi('CSRF', 'Cabeçalho X-Bento ausente. Recarregue a página e tente de novo.');
     }
@@ -149,14 +169,20 @@ export function registrarAutenticacao(app: FastifyInstance): void {
     if (cabecalho) {
       const [esquema, valor] = cabecalho.split(' ');
       if (esquema?.toLowerCase() !== 'bearer' || !valor) throw naoAutenticado('Cabeçalho Authorization inválido.');
-      requisicao.usuario = valor.startsWith('bnt_')
-        ? await autenticarChaveApi(app, requisicao, valor)
-        : await autenticarJwt(app, valor, false);
+      const usuario = valor.startsWith('bnt_') ? await autenticarChaveApi(app, requisicao, valor) : await autenticarJwt(app, valor, false);
+      if (usuario.doisFatoresPendente && !liberadaSemDoisFatores(requisicao.url)) {
+        throw new ErroApi('DOIS_FATORES', 'Ative a verificação em duas etapas para continuar. Ela é obrigatória para o seu papel.');
+      }
+      requisicao.usuario = usuario;
       return;
     }
     const token = requisicao.cookies?.[COOKIE_SESSAO];
     if (!token) throw naoAutenticado();
-    requisicao.usuario = await autenticarJwt(app, token, true);
+    const usuario = await autenticarJwt(app, token, true);
+    if (usuario.doisFatoresPendente && !liberadaSemDoisFatores(requisicao.url)) {
+      throw new ErroApi('DOIS_FATORES', 'Ative a verificação em duas etapas para continuar. Ela é obrigatória para o seu papel.');
+    }
+    requisicao.usuario = usuario;
   };
 
   app.decorate('autenticar', autenticar);

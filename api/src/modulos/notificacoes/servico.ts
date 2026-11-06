@@ -5,7 +5,7 @@ import { montarPagina, type Pagina } from '../../util/validacao.js';
 import { mapearNotificacao, type Notificacao } from '../comum/mapeadores.js';
 
 export type TipoNotificacao = 'info' | 'sucesso' | 'alerta' | 'erro';
-export type CategoriaNotificacao = 'transacao' | 'usuario' | 'sistema' | 'seguranca' | 'relatorio';
+export type CategoriaNotificacao = 'transacao' | 'usuario' | 'sistema' | 'seguranca' | 'relatorio' | 'metrica';
 
 export const CATEGORIAS: { categoria: CategoriaNotificacao; nome: string }[] = [
   { categoria: 'transacao', nome: 'Transações' },
@@ -13,6 +13,7 @@ export const CATEGORIAS: { categoria: CategoriaNotificacao; nome: string }[] = [
   { categoria: 'sistema', nome: 'Sistema' },
   { categoria: 'seguranca', nome: 'Segurança' },
   { categoria: 'relatorio', nome: 'Relatórios' },
+  { categoria: 'metrica', nome: 'Alertas de métricas' },
 ];
 
 export interface NovaNotificacao {

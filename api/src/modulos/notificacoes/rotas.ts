@@ -18,7 +18,7 @@ import {
   salvarPreferenciasNotificacao,
 } from './servico.js';
 
-const categoria = z.enum(['transacao', 'usuario', 'sistema', 'seguranca', 'relatorio']);
+const categoria = z.enum(['transacao', 'usuario', 'sistema', 'seguranca', 'relatorio', 'metrica']);
 
 const consultaLista = paginacaoSimples.extend({
   filtro: z.enum(['todas', 'nao-lidas']).default('todas'),
