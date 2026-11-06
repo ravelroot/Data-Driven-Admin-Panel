@@ -20,6 +20,7 @@ import { rotasAnalytics } from './modulos/analytics/rotas.js';
 import { rotasAtividades } from './modulos/atividades/rotas.js';
 import { rotasAuth } from './modulos/auth/rotas.js';
 import { rotasBusca } from './modulos/busca/rotas.js';
+import { rotasCiencia } from './modulos/ciencia/rotas.js';
 import { rotasSistema } from './modulos/sistema/rotas.js';
 import { rotasConfiguracoes } from './modulos/configuracoes/rotas.js';
 import { rotasInsights } from './modulos/insights/rotas.js';
@@ -196,6 +197,7 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
       await api.register(rotasAuth);
       await api.register(rotasVisaoGeral);
       await api.register(rotasInsights);
+      await api.register(rotasCiencia);
       await api.register(rotasAnalytics);
       await api.register(rotasTransacoes);
       await api.register(rotasUsuarios);

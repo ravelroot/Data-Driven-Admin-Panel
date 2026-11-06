@@ -52,3 +52,25 @@ updates:
       interval: monthly
     labels:
       - dependencias
+
+  - package-ecosystem: pip
+    directory: /analise
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    labels:
+      - dependencias
+    groups:
+      analise:
+        patterns:
+          - "*"
+
+  - package-ecosystem: docker
+    directory: /analise
+    schedule:
+      interval: monthly
+    labels:
+      - dependencias

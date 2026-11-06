@@ -11,49 +11,50 @@ export interface Novidade {
   permissao?: string;
 }
 
-export const VERSAO_NOVIDADES = "1.5.0";
+export const VERSAO_NOVIDADES = "1.6.0";
 
 export const NOVIDADES: Novidade[] = [
   {
-    icone: "escudo-ok",
-    titulo: "Verificação em duas etapas",
-    texto: "Depois da senha, o painel pede o código de um aplicativo autenticador. Dez códigos de recuperação garantem o acesso se o celular sumir.",
-    href: "/configuracoes?secao=seguranca",
-  },
-  {
-    icone: "sirene",
-    titulo: "Alertas de métricas",
-    texto: "Regras sobre receita, falhas de pagamento, reembolsos, cancelamentos e conversão avisam a equipe nas notificações e nas integrações.",
-    href: "/alertas",
-    permissao: "alertas.ver",
+    icone: "lampada",
+    titulo: "Inteligência com Python",
+    texto: "Uma página nova reúne previsões, risco de cancelamento, segmentos, coortes, LTV e qualidade dos dados, calculados por um motor analítico em Python.",
+    href: "/inteligencia",
+    permissao: "analytics.ver",
   },
   {
     icone: "previsao",
-    titulo: "Previsão do mês",
-    texto: "A visão geral projeta a receita até o fim do mês, com a faixa provável e a chance de bater a meta.",
-    href: "/",
-    permissao: "painel.ver",
+    titulo: "Previsões com faixa de confiança",
+    texto: "Receita, pagamentos, cadastros, conversões e visitantes projetados para 30 dias com Holt-Winters, e o MRR para 6 meses. Cada modelo mostra o quanto acertou no teste.",
+    href: "/inteligencia",
+    permissao: "analytics.ver",
   },
   {
-    icone: "lampada",
-    titulo: "Insights automáticos",
-    texto: "Dias fora do padrão em receita, pagamentos, cadastros e conversão aparecem sozinhos, com atalho para investigar e criar um alerta.",
-    href: "/",
-    permissao: "painel.ver",
+    icone: "escudo-alerta",
+    titulo: "Quem pode cancelar",
+    texto: "Um modelo de machine learning aponta os clientes com maior chance de cancelar em 30 dias, explica o motivo e sugere a ação.",
+    href: "/inteligencia?aba=risco",
+    permissao: "analytics.ver",
   },
   {
-    icone: "grade",
-    titulo: "Visão geral do seu jeito",
-    texto: "Em Personalizar, esconda, arraste e redimensione os cartões ou escolha um layout pronto. Fica salvo na sua conta.",
-    href: "/?personalizar=1",
-    permissao: "painel.ver",
+    icone: "usuarios",
+    titulo: "Segmentos RFM e k-means",
+    texto: "Clientes agrupados por recência, frequência e valor, com o perfil de cada grupo e o que fazer com ele.",
+    href: "/inteligencia?aba=segmentos",
+    permissao: "analytics.ver",
   },
   {
-    icone: "escudo",
-    titulo: "Regra de segurança da empresa",
-    texto: "Administradores podem exigir a verificação em duas etapas por papel em Configurações › Empresa.",
-    href: "/configuracoes?secao=sistema",
-    permissao: "configuracoes.sistema",
+    icone: "ajustes",
+    titulo: "Simulador “e se”",
+    texto: "Mexa no preço, no churn e na aquisição e veja o MRR, os clientes e o LTV dos próximos meses na hora.",
+    href: "/inteligencia?aba=simulador",
+    permissao: "analytics.ver",
+  },
+  {
+    icone: "arquivo-planilha",
+    titulo: "Excel de verdade",
+    texto: "Baixe o relatório de inteligência em .xlsx com gráficos nativos e importe usuários direto de planilhas do Excel, com análise das colunas e dos problemas.",
+    href: "/inteligencia?excel=1",
+    permissao: "relatorios.gerar",
   },
 ];
 
@@ -70,7 +71,7 @@ export const abrirNovidades = (): void => {
           <div class="modal-textos">
             <p class="versao-rotulo">Versão ${VERSAO_NOVIDADES}</p>
             <h2 class="modal-titulo" id="versao-titulo">O que há de novo no Bento</h2>
-            <p class="modal-texto">Segurança, alertas, previsão e uma visão geral sob medida. Esta janela aparece uma vez por versão.</p>
+            <p class="modal-texto">Um motor analítico em Python com previsões, risco de cancelamento, segmentos e Excel. Esta janela aparece uma vez por versão.</p>
           </div>
         </div>
         <ul class="versao-lista" role="list" tabindex="-1">

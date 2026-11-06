@@ -31,6 +31,7 @@ export const NAVEGACAO: GrupoNavegacao[] = [
     itens: [
       { id: "visao-geral", rotulo: "Visão geral", icone: "painel", href: "/", permissao: "painel.ver", descricao: "KPIs de receita, usuários e assinaturas" },
       { id: "analytics", rotulo: "Analytics", icone: "grafico-linha", href: "/analytics", permissao: "analytics.ver", descricao: "Gráficos com filtros por período" },
+      { id: "inteligencia", rotulo: "Inteligência", icone: "lampada", href: "/inteligencia", permissao: "analytics.ver", descricao: "Previsões, risco de cancelamento, segmentos e simulador em Python" },
       { id: "alertas", rotulo: "Alertas", icone: "sirene", href: "/alertas", permissao: "alertas.ver", descricao: "Regras sobre as métricas e histórico de disparos" },
     ],
   },
@@ -56,7 +57,10 @@ export const NAVEGACAO: GrupoNavegacao[] = [
 
 export const ACOES_RAPIDAS: AcaoRapida[] = [
   { id: "novo-usuario", rotulo: "Cadastrar usuário", icone: "usuario-novo", href: "/usuarios?novo=1", permissao: "usuarios.criar" },
-  { id: "importar-usuarios", rotulo: "Importar usuários de uma planilha CSV", icone: "importar", href: "/usuarios?importar=1", permissao: "usuarios.importar" },
+  { id: "importar-usuarios", rotulo: "Importar usuários de uma planilha CSV ou Excel", icone: "importar", href: "/usuarios?importar=1", permissao: "usuarios.importar" },
+  { id: "risco-cancelamento", rotulo: "Ver clientes com risco de cancelar", icone: "escudo-alerta", href: "/inteligencia?aba=risco", permissao: "analytics.ver" },
+  { id: "simular-cenario", rotulo: "Simular preço, churn e aquisição", icone: "ajustes", href: "/inteligencia?aba=simulador", permissao: "analytics.ver" },
+  { id: "excel-inteligencia", rotulo: "Baixar o relatório de inteligência em Excel", icone: "arquivo-planilha", href: "/inteligencia?excel=1", permissao: "relatorios.gerar" },
   { id: "novo-alerta", rotulo: "Criar alerta de métrica", icone: "sirene", href: "/alertas?novo=1", permissao: "alertas.gerenciar" },
   { id: "personalizar-visao", rotulo: "Personalizar a visão geral: esconder, mover e redimensionar cartões", icone: "grade", href: "/?personalizar=1", permissao: "painel.ver" },
   { id: "dois-fatores", rotulo: "Verificação em duas etapas", icone: "escudo-ok", href: "/configuracoes?secao=seguranca" },
@@ -83,6 +87,7 @@ export const IR_PARA: Record<string, string> = {
   r: "relatorios",
   d: "auditoria",
   l: "alertas",
+  i: "inteligencia",
   c: "configuracoes",
   k: "componentes",
 };

@@ -16,12 +16,33 @@ services:
       timeout: 3s
       retries: 20
 
+  analise:
+    build: ./analise
+    restart: unless-stopped
+    environment:
+      BENTO_ANALISE_TOKEN: ${BENTO_ANALISE_TOKEN:-}
+      BENTO_ANALISE_LIMITE_MB: ${BENTO_ANALISE_LIMITE_MB:-96}
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: ${BENTO_ANALISE_MEMORIA:-2g}
+    cpus: ${BENTO_ANALISE_CPUS:-2}
+    pids_limit: 128
+    expose:
+      - "8090"
+
   bento:
     build: .
     restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
+      analise:
+        condition: service_started
     environment:
       DATABASE_URL: postgres://${BENTO_DB_USUARIO:-bento}:${BENTO_DB_SENHA}@postgres:5432/${BENTO_DB_NOME:-bento}
       BENTO_SEGREDO_JWT: ${BENTO_SEGREDO_JWT:?Defina BENTO_SEGREDO_JWT no arquivo .env}
@@ -47,6 +68,10 @@ services:
       BENTO_RETENCAO_ENTREGAS: ${BENTO_RETENCAO_ENTREGAS:-30}
       BENTO_RETENCAO_ALERTAS: ${BENTO_RETENCAO_ALERTAS:-180}
       BENTO_METRICAS_TOKEN: ${BENTO_METRICAS_TOKEN:-}
+      BENTO_ANALISE_URL: ${BENTO_ANALISE_URL:-http://analise:8090}
+      BENTO_ANALISE_TOKEN: ${BENTO_ANALISE_TOKEN:-}
+      BENTO_ANALISE_TIMEOUT: ${BENTO_ANALISE_TIMEOUT:-60}
+      BENTO_ANALISE_CACHE: ${BENTO_ANALISE_CACHE:-10}
     volumes:
       - dados-bento:/app/dados
     ports:

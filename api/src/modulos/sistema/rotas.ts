@@ -103,6 +103,7 @@ export async function rotasSistema(app: FastifyInstance): Promise<void> {
           pasta: path.relative(process.cwd(), config.backup.pasta) || config.backup.pasta,
         },
         metricas: Boolean(config.metricasToken),
+        analise: { configurado: Boolean(config.analise.url && config.analise.token), cacheMinutos: config.analise.cacheMinutos },
         tabelas: TABELAS.map((nome) => ({ nome, registros: Number(linhaVolume[nome] ?? 0) })),
         migracoes: migracoes.linhas.map((linha) => ({
           nome: linha.nome,

@@ -11,5 +11,6 @@ function Aleatorio([int]$tamanho) {
 $conteudo = Get-Content (Join-Path $raiz '.env.example') -Raw
 $conteudo = $conteudo -replace '(?m)^BENTO_DB_SENHA=.*$', ('BENTO_DB_SENHA=' + (Aleatorio 32))
 $conteudo = $conteudo -replace '(?m)^BENTO_SEGREDO_JWT=.*$', ('BENTO_SEGREDO_JWT=' + (Aleatorio 64))
+$conteudo = $conteudo -replace '(?m)^BENTO_ANALISE_TOKEN=.*$', ('BENTO_ANALISE_TOKEN=' + (Aleatorio 48))
 [System.IO.File]::WriteAllText($destino, $conteudo, (New-Object System.Text.UTF8Encoding $false))
 Write-Host 'Arquivo .env criado com senha e chave aleatorias.'

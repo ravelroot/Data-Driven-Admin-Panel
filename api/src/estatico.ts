@@ -13,6 +13,7 @@ export const PAGINAS: Record<string, string> = {
   '/notificacoes': 'notificacoes.html',
   '/relatorios': 'relatorios.html',
   '/alertas': 'alertas.html',
+  '/inteligencia': 'inteligencia.html',
   '/configuracoes': 'configuracoes.html',
   '/componentes': 'componentes.html',
   '/entrar': 'entrar.html',

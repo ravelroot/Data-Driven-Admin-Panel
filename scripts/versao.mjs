@@ -5,6 +5,10 @@ import { fileURLToPath } from 'node:url';
 const raiz = fileURLToPath(new URL('..', import.meta.url));
 const SEMVER = /^\d+\.\d+\.\d+([-+][0-9A-Za-z.-]+)?$/;
 const PACOTES = ['package.json', 'web/package.json', 'api/package.json'];
+const PYTHON = [
+  ['analise/pyproject.toml', /^version = "([^"]+)"$/m, (versao) => `version = "${versao}"`],
+  ['analise/bento_analise/app.py', /^VERSAO = "([^"]+)"$/m, (versao) => `VERSAO = "${versao}"`],
+];
 
 const lerJson = (arquivo) => JSON.parse(readFileSync(path.join(raiz, arquivo), 'utf8'));
 const gravarJson = (arquivo, dados) => writeFileSync(path.join(raiz, arquivo), `${JSON.stringify(dados, null, 2)}\n`);
@@ -15,6 +19,7 @@ function versoesAtuais() {
   const trava = lerJson('package-lock.json');
   versoes['package-lock.json'] = trava.version;
   for (const pacote of ['web', 'api']) versoes[`package-lock.json (${pacote})`] = trava.packages?.[pacote]?.version;
+  for (const [arquivo, padrao] of PYTHON) versoes[arquivo] = readFileSync(path.join(raiz, arquivo), 'utf8').match(padrao)?.[1];
   return versoes;
 }
 
@@ -45,7 +50,11 @@ function definir(nova) {
   if (trava.packages?.['']) trava.packages[''].version = nova;
   for (const pacote of ['web', 'api']) if (trava.packages?.[pacote]) trava.packages[pacote].version = nova;
   gravarJson('package-lock.json', trava);
-  console.log(`Versão ${nova} gravada em VERSION, ${PACOTES.join(', ')} e package-lock.json.`);
+  for (const [arquivo, padrao, linha] of PYTHON) {
+    const caminho = path.join(raiz, arquivo);
+    writeFileSync(caminho, readFileSync(caminho, 'utf8').replace(padrao, linha(nova)));
+  }
+  console.log(`Versão ${nova} gravada em VERSION, ${PACOTES.join(', ')}, package-lock.json e no motor analítico.`);
 }
 
 const argumento = process.argv[2];

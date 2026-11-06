@@ -8,6 +8,17 @@ import { avisar, avisoSucesso } from "./aviso.ts";
 import type { Referencia } from "../nucleo/tipos.ts";
 
 export const LIMITE_BYTES_IMPORTACAO = 900_000;
+export const LIMITE_BYTES_EXCEL = 5_000_000;
+
+interface AnalisePlanilha {
+  linhas: number;
+  truncado: boolean;
+  colunas: { nome: string; tipo: string; preenchimento: number; campo: string | null }[];
+  mapa: Record<string, string>;
+  problemas: { tipo: string; mensagem: string; quantidade: number }[];
+  nota: number;
+  csv: string;
+}
 
 interface LinhaImportacao {
   linha: number;
@@ -46,8 +57,27 @@ export const decodificarPlanilha = (bytes: ArrayBuffer): string => {
   }
 };
 
+export const paraBase64 = async (arquivo: Blob): Promise<string> => {
+  const bytes = new Uint8Array(await arquivo.arrayBuffer());
+  let binario = "";
+  for (let inicio = 0; inicio < bytes.length; inicio += 0x8000) binario += String.fromCharCode(...bytes.subarray(inicio, inicio + 0x8000));
+  return btoa(binario);
+};
+
+const ehExcel = (arquivo: File): boolean => /\.xlsx$/i.test(arquivo.name);
+
+const resumoAnalise = (analise: AnalisePlanilha) => html`
+  <div class="alerta ${analise.problemas.length ? "alerta-aviso" : "alerta-sucesso"} alerta-compacto importacao-analise">
+    ${html([icone(analise.problemas.length ? "alerta" : "sucesso")])}
+    <div>
+      <p><strong>Análise da planilha: nota ${numero(analise.nota)}/100.</strong> ${Object.keys(analise.mapa).length ? `Colunas reconhecidas: ${Object.entries(analise.mapa).map(([coluna, campo]) => `${coluna} → ${campo}`).join(", ")}.` : "Nenhuma coluna reconhecida."}</p>
+      ${analise.problemas.length ? html`<ul>${analise.problemas.map((problema) => html`<li>${problema.mensagem}</li>`)}</ul>` : ""}
+      ${analise.truncado ? html`<p>A planilha tem mais linhas do que o limite; só o começo foi lido.</p>` : ""}
+    </div>
+  </div>`;
+
 export const abrirImportacaoUsuarios = ({ papeis, aoImportar }: OpcoesImportacao): void => {
-  const gaveta = new Gaveta({ titulo: "Importar usuários", subtitulo: "Envie uma planilha CSV, confira a prévia e confirme.", largura: "larga" }).abrir();
+  const gaveta = new Gaveta({ titulo: "Importar usuários", subtitulo: "Envie uma planilha Excel ou CSV, confira a prévia e confirme.", largura: "larga" }).abrir();
   let conteudo = "";
   let nomeArquivo = "";
   const papeisPermitidos = papeis.filter((papel) => pode("usuarios.permissoes") || !["admin", "gerente"].includes(papel.codigo));
@@ -56,15 +86,16 @@ export const abrirImportacaoUsuarios = ({ papeis, aoImportar }: OpcoesImportacao
     gaveta.definirCorpo(html`
       <form class="formulario" id="form-importacao" novalidate>
         <label class="importacao-zona" data-zona>
-          <input type="file" accept=".csv,text/csv,text/plain" class="sr-only" data-arquivo>
+          <input type="file" accept=".csv,.xlsx,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="sr-only" data-arquivo>
           <span class="importacao-zona-icone">${html([icone("importar")])}</span>
           <span class="importacao-zona-titulo" data-arquivo-nome>${nomeArquivo || "Escolha ou arraste a planilha"}</span>
-          <span class="importacao-zona-texto">CSV separado por vírgula, ponto e vírgula ou tabulação, com cabeçalho. Até 2.000 contas e 900 KB.</span>
+          <span class="importacao-zona-texto">Excel (.xlsx) ou CSV com cabeçalho. Até 2.000 contas; CSV até 900 KB e Excel até 5 MB.</span>
         </label>
         <details class="importacao-colar">
           <summary>Ou cole o conteúdo da planilha</summary>
           <textarea class="entrada" rows="6" data-colar placeholder="nome;email;papel&#10;Ana Souza;ana@empresa.com;analista"></textarea>
         </details>
+        <div data-analise-planilha></div>
         <div class="grade-campos">
           <label class="campo">
             <span class="campo-rotulo">Papel quando a coluna vier vazia</span>
@@ -93,13 +124,36 @@ export const abrirImportacaoUsuarios = ({ papeis, aoImportar }: OpcoesImportacao
     const colar = exigir<HTMLTextAreaElement>("[data-colar]", formulario);
     if (conteudo && !nomeArquivo) colar.value = conteudo;
 
+    const caixaAnalise = exigir("[data-analise-planilha]", formulario);
+    const analisar = async (arquivo: File): Promise<AnalisePlanilha | null> => {
+      try {
+        return await api.criar<AnalisePlanilha>("/ciencia/planilha", { nome: arquivo.name, conteudo: await paraBase64(arquivo) });
+      } catch (erro) {
+        if (ehExcel(arquivo)) avisar({ tipo: "erro", titulo: "Não foi possível ler o Excel", texto: `${mensagemDeErro(erro)} Se o motor analítico estiver desligado, salve a planilha como CSV.` });
+        return null;
+      }
+    };
+
     const lerArquivo = async (arquivo: File | undefined): Promise<void> => {
       if (!arquivo) return;
-      if (arquivo.size > LIMITE_BYTES_IMPORTACAO) {
-        avisar({ tipo: "erro", titulo: "Planilha grande demais", texto: "Divida o arquivo em partes de até 900 KB." });
+      const excel = ehExcel(arquivo);
+      if (arquivo.size > (excel ? LIMITE_BYTES_EXCEL : LIMITE_BYTES_IMPORTACAO)) {
+        avisar({ tipo: "erro", titulo: "Planilha grande demais", texto: excel ? "Use um arquivo Excel de até 5 MB." : "Divida o arquivo em partes de até 900 KB." });
         return;
       }
-      conteudo = decodificarPlanilha(await arquivo.arrayBuffer());
+      caixaAnalise.replaceChildren();
+      zona.dataset.analisando = "true";
+      const analise = await analisar(arquivo);
+      delete zona.dataset.analisando;
+      if (analise) {
+        caixaAnalise.innerHTML = String(resumoAnalise(analise));
+        hidratarIcones(caixaAnalise);
+      }
+      if (excel && !analise?.csv) {
+        if (analise) avisar({ tipo: "alerta", titulo: "Nenhuma coluna reconhecida", texto: "Use cabeçalhos como nome, e-mail, telefone, empresa e canal na primeira linha da planilha." });
+        return;
+      }
+      conteudo = excel && analise ? analise.csv : decodificarPlanilha(await arquivo.arrayBuffer());
       nomeArquivo = arquivo.name;
       colar.value = "";
       exigir("[data-arquivo-nome]", zona).textContent = `${arquivo.name} · ${plural(Math.max(0, conteudo.split(/\r?\n/).filter((linha) => linha.trim()).length - 1), "linha", "linhas")}`;
@@ -121,6 +175,7 @@ export const abrirImportacaoUsuarios = ({ papeis, aoImportar }: OpcoesImportacao
       if (colar.value.trim()) {
         conteudo = colar.value;
         nomeArquivo = "";
+        caixaAnalise.replaceChildren();
         exigir("[data-arquivo-nome]", zona).textContent = "Escolha ou arraste a planilha";
         delete zona.dataset.pronta;
       }

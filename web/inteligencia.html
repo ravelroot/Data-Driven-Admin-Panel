@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F4F4">
+    <meta name="description" content="Inteligência de dados: previsões, risco de cancelamento, segmentação RFM, coortes, LTV, simulador de cenários e qualidade dos dados calculados em Python.">
+    <title>Inteligência | Bento</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="/tema-inicial.js"></script>
+    <script type="module" src="/src/ts/paginas/inteligencia.ts"></script>
+  </head>
+  <body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <div class="casca" id="casca">
+      <aside class="casca-barra" data-casca="barra"></aside>
+      <div class="casca-veu" data-acao="fechar-menu" aria-hidden="true"></div>
+      <div class="casca-principal">
+        <header class="cabecalho" data-casca="cabecalho"></header>
+        <main class="casca-conteudo" id="conteudo" tabindex="-1">
+          <div class="pagina-cabecalho">
+            <div class="pagina-titulos">
+              <h1 class="pagina-titulo">Inteligência</h1>
+              <p class="pagina-descricao" data-situacao>Previsões, risco de cancelamento, segmentos e qualidade dos dados, calculados pelo motor analítico em Python.</p>
+            </div>
+            <div class="pagina-acoes">
+              <button type="button" class="botao botao-secundario" data-acao="atualizar" disabled><i data-icone="atualizar"></i>Recalcular</button>
+              <button type="button" class="botao botao-primario" data-acao="excel" data-permissao="relatorios.gerar" disabled><i data-icone="arquivo-planilha"></i>Baixar Excel</button>
+            </div>
+          </div>
+
+          <section class="cartao inteligencia-indisponivel" data-indisponivel hidden aria-live="polite"></section>
+
+          <div data-conteudo-inteligencia>
+            <div class="bento-kpis">
+              <article class="kpi" data-kpi="previsao">
+                <div class="kpi-topo"><h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="oliva"><i data-icone="previsao"></i></span>Receita prevista no mês</h2></div>
+                <p class="kpi-valor" data-kpi-valor>—</p>
+                <p class="kpi-rodape" data-kpi-rodape>&nbsp;</p>
+              </article>
+              <article class="kpi" data-kpi="mrr">
+                <div class="kpi-topo"><h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="salvia"><i data-icone="tendencia-alta"></i></span>MRR em 6 meses</h2></div>
+                <p class="kpi-valor" data-kpi-valor>—</p>
+                <p class="kpi-rodape" data-kpi-rodape>&nbsp;</p>
+              </article>
+              <article class="kpi" data-kpi="risco">
+                <div class="kpi-topo"><h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="brasa"><i data-icone="escudo-alerta"></i></span>Clientes em risco alto</h2></div>
+                <p class="kpi-valor" data-kpi-valor>—</p>
+                <p class="kpi-rodape" data-kpi-rodape>&nbsp;</p>
+              </article>
+              <article class="kpi" data-kpi="qualidade">
+                <div class="kpi-topo"><h2 class="kpi-rotulo"><span class="kpi-icone" data-cor="ouro"><i data-icone="verificacoes"></i></span>Qualidade dos dados</h2></div>
+                <p class="kpi-valor" data-kpi-valor>—</p>
+                <p class="kpi-rodape" data-kpi-rodape>&nbsp;</p>
+              </article>
+            </div>
+
+            <div class="abas abas-linha inteligencia-abas" role="tablist" aria-label="Análises" data-abas>
+              <button type="button" class="aba" role="tab" id="aba-previsoes" data-aba="previsoes" aria-controls="painel-previsoes"><i data-icone="previsao"></i>Previsões</button>
+              <button type="button" class="aba" role="tab" id="aba-risco" data-aba="risco" aria-controls="painel-risco"><i data-icone="escudo-alerta"></i>Risco de cancelamento</button>
+              <button type="button" class="aba" role="tab" id="aba-segmentos" data-aba="segmentos" aria-controls="painel-segmentos"><i data-icone="usuarios"></i>Segmentos</button>
+              <button type="button" class="aba" role="tab" id="aba-coortes" data-aba="coortes" aria-controls="painel-coortes"><i data-icone="grade"></i>Coortes e LTV</button>
+              <button type="button" class="aba" role="tab" id="aba-simulador" data-aba="simulador" aria-controls="painel-simulador"><i data-icone="ajustes"></i>Simulador</button>
+              <button type="button" class="aba" role="tab" id="aba-qualidade" data-aba="qualidade" aria-controls="painel-qualidade"><i data-icone="verificacoes"></i>Qualidade dos dados</button>
+            </div>
+
+            <section class="painel-aba" id="painel-previsoes" role="tabpanel" aria-labelledby="aba-previsoes">
+              <div class="bento">
+                <section class="cartao bento-dois-tercos" aria-labelledby="titulo-previsao">
+                  <div class="cartao-cabecalho">
+                    <div class="cartao-titulos">
+                      <h2 class="cartao-titulo" id="titulo-previsao">Próximos 30 dias</h2>
+                      <p class="cartao-subtitulo">Últimos 60 dias realizados e a projeção com faixa de 80% de confiança</p>
+                    </div>
+                    <div class="cartao-acoes"><div class="abas-pilula" role="tablist" aria-label="Série" data-series></div></div>
+                  </div>
+                  <div class="grafico inteligencia-grafico" data-grafico-previsao data-carregando="true"></div>
+                </section>
+                <section class="cartao bento-terco" aria-labelledby="titulo-modelo-previsao">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-modelo-previsao">Fechamento do mês</h2><p class="cartao-subtitulo" data-modelo-previsao-sub>Holt-Winters com sazonalidade semanal</p></div></div>
+                  <div class="inteligencia-modelo" data-modelo-previsao><div class="esqueleto-linhas"><span class="esqueleto-texto"></span><span class="esqueleto-texto-curto"></span></div></div>
+                </section>
+                <section class="cartao bento-dois-tercos" aria-labelledby="titulo-mrr">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-mrr">MRR: histórico e projeção</h2><p class="cartao-subtitulo">Receita recorrente mensal no fim de cada mês e os próximos 6 meses</p></div></div>
+                  <div class="grafico inteligencia-grafico" data-grafico-mrr data-carregando="true"></div>
+                </section>
+                <section class="cartao bento-terco" aria-labelledby="titulo-modelo-mrr">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-modelo-mrr">Como o modelo se saiu</h2><p class="cartao-subtitulo">Teste com os últimos dados escondidos do treino</p></div></div>
+                  <div class="inteligencia-modelo" data-modelo-mrr></div>
+                </section>
+              </div>
+            </section>
+
+            <section class="painel-aba" id="painel-risco" role="tabpanel" aria-labelledby="aba-risco" hidden>
+              <div class="bento">
+                <section class="cartao cartao-sem-espaco bento-dois-tercos bento-alto" aria-labelledby="titulo-risco">
+                  <div class="cartao-cabecalho">
+                    <div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-risco">Quem pode cancelar nos próximos 30 dias</h2><p class="cartao-subtitulo" data-risco-sub>Clientes pagantes ordenados pela probabilidade</p></div>
+                    <div class="cartao-acoes"><div class="abas-pilula" role="tablist" aria-label="Faixa de risco" data-faixas>
+                      <button type="button" class="aba" role="tab" data-aba="todas" aria-selected="true">Todos</button>
+                      <button type="button" class="aba" role="tab" data-aba="alta">Alto</button>
+                      <button type="button" class="aba" role="tab" data-aba="media">Médio</button>
+                    </div></div>
+                  </div>
+                  <div class="inteligencia-rolagem"><table class="tabela inteligencia-tabela" data-tabela-risco><caption class="sr-only">Clientes com maior risco de cancelamento</caption></table></div>
+                </section>
+                <div class="bento-pilha bento-terco">
+                  <section class="cartao" aria-labelledby="titulo-fatores">
+                    <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-fatores">O que pesa no risco</h2><p class="cartao-subtitulo" data-modelo-risco>Regressão logística</p></div></div>
+                    <ul class="inteligencia-fatores" data-fatores></ul>
+                  </section>
+                  <section class="cartao" aria-labelledby="titulo-distribuicao">
+                    <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-distribuicao">Distribuição do risco</h2><p class="cartao-subtitulo">Clientes por faixa de probabilidade</p></div></div>
+                    <div class="grafico" data-grafico-distribuicao data-carregando="true"></div>
+                  </section>
+                </div>
+              </div>
+            </section>
+
+            <section class="painel-aba" id="painel-segmentos" role="tabpanel" aria-labelledby="aba-segmentos" hidden>
+              <div class="bento">
+                <section class="cartao bento-inteiro" aria-labelledby="titulo-segmentos">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-segmentos">Segmentos RFM</h2><p class="cartao-subtitulo">Recência, frequência e valor de cada cliente, com a ação recomendada</p></div></div>
+                  <div class="inteligencia-segmentos" data-segmentos></div>
+                </section>
+                <section class="cartao bento-sete-doze" aria-labelledby="titulo-grupos">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-grupos">Grupos encontrados pelo k-means</h2><p class="cartao-subtitulo" data-grupos-sub>Recência × valor pago</p></div></div>
+                  <div class="grafico inteligencia-grafico" data-grafico-grupos data-carregando="true"></div>
+                </section>
+                <section class="cartao bento-cinco-doze" aria-labelledby="titulo-matriz">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-matriz">Matriz recência × frequência</h2><p class="cartao-subtitulo">Notas de 1 a 5; quanto mais escuro, mais clientes</p></div></div>
+                  <div class="inteligencia-matriz" data-matriz role="img" aria-label="Matriz de clientes por nota de recência e frequência"></div>
+                </section>
+              </div>
+            </section>
+
+            <section class="painel-aba" id="painel-coortes" role="tabpanel" aria-labelledby="aba-coortes" hidden>
+              <div class="bento">
+                <section class="cartao bento-inteiro" aria-labelledby="titulo-coortes">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-coortes">Retenção por mês de conversão</h2><p class="cartao-subtitulo">Clientes que continuam pagando ao fim de cada mês, a partir do mês em que assinaram</p></div></div>
+                  <div class="analytics-rolagem"><table class="tabela-coortes" data-coortes><caption class="sr-only">Retenção por coorte de conversão</caption></table></div>
+                </section>
+                <section class="cartao bento-metade" aria-labelledby="titulo-curva">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-curva">Curva média de retenção</h2><p class="cartao-subtitulo">Média ponderada pelo tamanho de cada coorte</p></div></div>
+                  <div class="grafico" data-grafico-curva data-carregando="true"></div>
+                </section>
+                <section class="cartao cartao-sem-espaco bento-metade" aria-labelledby="titulo-ltv">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-ltv">LTV por plano</h2><p class="cartao-subtitulo">Ticket mensal ÷ churn mensal dos últimos 6 meses</p></div></div>
+                  <div class="inteligencia-rolagem"><table class="tabela" data-tabela-ltv><caption class="sr-only">Valor do tempo de vida por plano</caption></table></div>
+                </section>
+              </div>
+            </section>
+
+            <section class="painel-aba" id="painel-simulador" role="tabpanel" aria-labelledby="aba-simulador" hidden>
+              <div class="bento">
+                <section class="cartao bento-terco" aria-labelledby="titulo-cenario">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-cenario">E se…</h2><p class="cartao-subtitulo" data-base-simulador>Parte da situação atual</p></div></div>
+                  <form class="formulario inteligencia-cenario" data-cenario novalidate>
+                    <div class="deslizante">
+                      <div class="deslizante-topo"><label class="deslizante-rotulo" for="cenario-preco">Reajuste de preço</label><output class="deslizante-valor" for="cenario-preco" data-saida="preco">0%</output></div>
+                      <input class="deslizante-entrada" id="cenario-preco" name="preco" type="range" min="-30" max="50" step="1" value="0" data-sufixo="%">
+                    </div>
+                    <div class="deslizante">
+                      <div class="deslizante-topo"><label class="deslizante-rotulo" for="cenario-churn">Churn mensal</label><output class="deslizante-valor" for="cenario-churn" data-saida="churnPp">0 p.p.</output></div>
+                      <input class="deslizante-entrada" id="cenario-churn" name="churnPp" type="range" min="-3" max="3" step="0.1" value="0" data-sufixo=" p.p.">
+                    </div>
+                    <div class="deslizante">
+                      <div class="deslizante-topo"><label class="deslizante-rotulo" for="cenario-aquisicao">Novos clientes por mês</label><output class="deslizante-valor" for="cenario-aquisicao" data-saida="aquisicao">0%</output></div>
+                      <input class="deslizante-entrada" id="cenario-aquisicao" name="aquisicao" type="range" min="-50" max="100" step="5" value="0" data-sufixo="%">
+                    </div>
+                    <div class="deslizante">
+                      <div class="deslizante-topo"><label class="deslizante-rotulo" for="cenario-elasticidade">Sensibilidade ao preço</label><output class="deslizante-valor" for="cenario-elasticidade" data-saida="elasticidade">0</output></div>
+                      <input class="deslizante-entrada" id="cenario-elasticidade" name="elasticidade" type="range" min="0" max="3" step="0.5" value="0" data-sufixo="">
+                      <p class="deslizante-ajuda">Quanto o churn sobe para cada 1% de aumento de preço (0 = não reage).</p>
+                    </div>
+                    <label class="campo">
+                      <span class="campo-rotulo">Horizonte</span>
+                      <select class="selecao" name="meses"><option value="6">6 meses</option><option value="12" selected>12 meses</option><option value="24">24 meses</option><option value="36">36 meses</option></select>
+                    </label>
+                    <button type="button" class="botao botao-fantasma botao-pequeno" data-acao="zerar-cenario"><i data-icone="desfazer"></i>Voltar ao cenário atual</button>
+                  </form>
+                </section>
+                <section class="cartao bento-dois-tercos" aria-labelledby="titulo-projecao">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-projecao">MRR projetado</h2><p class="cartao-subtitulo">Cenário atual comparado ao cenário simulado</p></div></div>
+                  <div class="inteligencia-resumo" data-resumo-simulador aria-live="polite"></div>
+                  <div class="grafico inteligencia-grafico" data-grafico-simulador data-carregando="true"></div>
+                </section>
+              </div>
+            </section>
+
+            <section class="painel-aba" id="painel-qualidade" role="tabpanel" aria-labelledby="aba-qualidade" hidden>
+              <div class="bento">
+                <section class="cartao bento-terco" aria-labelledby="titulo-nota">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-nota">Nota geral</h2><p class="cartao-subtitulo">Média ponderada pela gravidade de cada verificação</p></div></div>
+                  <div class="inteligencia-nota" data-nota></div>
+                  <ul class="inteligencia-campos" data-campos></ul>
+                </section>
+                <section class="cartao cartao-sem-espaco bento-dois-tercos" aria-labelledby="titulo-verificacoes">
+                  <div class="cartao-cabecalho"><div class="cartao-titulos"><h2 class="cartao-titulo" id="titulo-verificacoes">Verificações</h2><p class="cartao-subtitulo">Os pontos que mais precisam de atenção aparecem primeiro</p></div></div>
+                  <ul class="inteligencia-verificacoes" data-verificacoes></ul>
+                </section>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

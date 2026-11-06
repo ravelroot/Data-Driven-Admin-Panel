@@ -43,6 +43,13 @@ export interface ConfigBackup {
   pasta: string;
 }
 
+export interface ConfigAnalise {
+  url: string | null;
+  token: string | null;
+  timeoutMs: number;
+  cacheMinutos: number;
+}
+
 export interface Config {
   porta: number;
   host: string;
@@ -65,6 +72,7 @@ export interface Config {
   retencao: Retencao;
   backup: ConfigBackup;
   metricasToken: string | null;
+  analise: ConfigAnalise;
   avisos: string[];
 }
 
@@ -209,10 +217,24 @@ export function lerConfig(sobrescrever: Partial<Config> = {}): Config {
       pasta: resolverCaminho(ler.texto('BENTO_BACKUP_PASTA') ?? path.join('dados', 'backups')),
     },
     metricasToken: ler.texto('BENTO_METRICAS_TOKEN') ?? null,
+    analise: {
+      url: ler.texto('BENTO_ANALISE_URL')?.replace(/\/+$/, '') ?? null,
+      token: ler.texto('BENTO_ANALISE_TOKEN') ?? null,
+      timeoutMs: ler.inteiro('BENTO_ANALISE_TIMEOUT', 60, 5, 600) * 1000,
+      cacheMinutos: ler.inteiro('BENTO_ANALISE_CACHE', 10, 0, 1_440),
+    },
     avisos,
   };
   if (base.metricasToken && base.metricasToken.length < 16) {
     avisos.push('BENTO_METRICAS_TOKEN tem menos de 16 caracteres; use um valor longo e aleatório.');
+  }
+  if (base.analise.url && !/^https?:\/\/[^\s]+$/.test(base.analise.url)) {
+    avisos.push('BENTO_ANALISE_URL deve ser uma URL http(s) completa, como http://analise:8090.');
+    base.analise.url = null;
+  }
+  if (base.analise.url && (!base.analise.token || base.analise.token.length < 24)) {
+    avisos.push('BENTO_ANALISE_TOKEN precisa ter pelo menos 24 caracteres para usar o motor analítico.');
+    base.analise.url = null;
   }
   if (base.origens.some((origem) => !/^https?:\/\/[^/\s]+$/.test(origem))) {
     avisos.push('BENTO_ORIGENS deve listar origens completas separadas por vírgula, como https://painel.suaempresa.com (sem barra no fim).');

@@ -6,6 +6,7 @@ import type { Banco } from '../banco/conexao.js';
 import { listarMigracoes } from '../banco/migrar.js';
 import { DADOS_EM_MEMORIA, segredoFraco, VERSAO, type Config } from '../config.js';
 import { listarBackups } from './backup.js';
+import { saudeDoMotor } from '../modulos/ciencia/motor.js';
 
 export type StatusVerificacao = 'ok' | 'info' | 'aviso' | 'erro';
 
@@ -132,6 +133,24 @@ export async function executarDiagnostico(config: Config, banco: Banco | null): 
     titulo: 'Métricas Prometheus',
     status: 'info',
     detalhe: config.metricasToken ? 'Ativas em /api/v1/metricas com token.' : 'Desligadas (defina BENTO_METRICAS_TOKEN para ativar).',
+  });
+
+  const motor = config.analise.url && config.analise.token ? await saudeDoMotor(config.analise) : null;
+  adicionar({
+    id: 'motor-analitico',
+    grupo: 'Operação',
+    titulo: 'Motor analítico (Python)',
+    status: !config.analise.url ? 'info' : motor?.status === 'ok' ? 'ok' : 'aviso',
+    detalhe: !config.analise.url
+      ? 'Desligado: a página Inteligência fica indisponível.'
+      : motor?.status === 'ok'
+        ? `No ar em ${config.analise.url} (versão ${motor.versao}).`
+        : `Sem resposta em ${config.analise.url}.`,
+    dica: !config.analise.url
+      ? 'Suba o serviço "analise" do docker-compose e defina BENTO_ANALISE_URL e BENTO_ANALISE_TOKEN.'
+      : motor?.status === 'ok'
+        ? undefined
+        : 'Confira se o serviço está no ar e se BENTO_ANALISE_TOKEN é o mesmo nos dois lados.',
   });
 
   adicionar({

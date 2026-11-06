@@ -7,7 +7,8 @@ criar_env() {
     cp .env.example .env
     senha=$(head -c 48 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 32)
     chave=$(head -c 96 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 64)
-    sed -i.bak -e "s|^BENTO_DB_SENHA=.*|BENTO_DB_SENHA=${senha}|" -e "s|^BENTO_SEGREDO_JWT=.*|BENTO_SEGREDO_JWT=${chave}|" .env
+    token=$(head -c 96 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 48)
+    sed -i.bak -e "s|^BENTO_DB_SENHA=.*|BENTO_DB_SENHA=${senha}|" -e "s|^BENTO_SEGREDO_JWT=.*|BENTO_SEGREDO_JWT=${chave}|" -e "s|^BENTO_ANALISE_TOKEN=.*|BENTO_ANALISE_TOKEN=${token}|" .env
     rm -f .env.bak
     echo "Arquivo .env criado com senha e chave aleatórias."
   fi

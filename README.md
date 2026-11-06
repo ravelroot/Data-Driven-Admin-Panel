@@ -5,19 +5,19 @@
 <h1 align="center">Bento<br><sub><sup><sup><sub>Copyright (©) 2026 Erik Pimenta</sub></sup></sup></sub></h1>
 
 <p align="center">
-  Painel administrativo para SaaS montado em bento grid: cada bloco mostra uma parte do negócio, da receita e dos usuários às assinaturas e ao crescimento. Modo escuro nativo, visão geral personalizável, previsão da receita do mês, insights automáticos sobre o que saiu do padrão, alertas de métricas, verificação em duas etapas, gráficos interativos, tabelas com colunas configuráveis, gavetas laterais, transações com reembolso, trilha de auditoria, paleta de comandos com itens recentes, preferências por pessoa, importação de usuários por CSV, notificações em tempo real, relatórios em CSV e PDF, integrações com histórico de entregas e ferramentas de operação (diagnóstico, modo de manutenção, backups, retenção de dados, sondas de saúde e métricas), com uma API completa e testada por trás.<br>
+  Painel administrativo para SaaS montado em bento grid: cada bloco mostra uma parte do negócio, da receita e dos usuários às assinaturas e ao crescimento. Modo escuro nativo, motor analítico em Python (previsões com Holt-Winters, risco de cancelamento com machine learning, segmentação RFM e k-means, coortes, LTV, simulador de cenários e qualidade dos dados), relatórios em Excel, visão geral personalizável, previsão da receita do mês, insights automáticos sobre o que saiu do padrão, alertas de métricas, verificação em duas etapas, gráficos interativos, tabelas com colunas configuráveis, gavetas laterais, transações com reembolso, trilha de auditoria, paleta de comandos com itens recentes, preferências por pessoa, importação de usuários por CSV e Excel, notificações em tempo real, relatórios em CSV e PDF, integrações com histórico de entregas e ferramentas de operação (diagnóstico, modo de manutenção, backups, retenção de dados, sondas de saúde e métricas), com uma API completa e testada por trás.<br>
   Pronto para usar, estudar ou adaptar.
 </p>
 
 <p align="center">
-  TypeScript · Tailwind CSS 4 · HTML5 · ApexCharts · TOTP (RFC 6238) · Node.js 22 · Fastify 5 · Zod · PostgreSQL 18 · PGlite · PDFKit · Vite · Docker Compose · Prometheus · Node Test Runner · GitHub Actions
+  TypeScript · Tailwind CSS 4 · HTML5 · ApexCharts · TOTP (RFC 6238) · Node.js 22 · Fastify 5 · Zod · PostgreSQL 18 · PGlite · PDFKit · Python 3.13 · FastAPI · pandas · NumPy · scikit-learn · openpyxl · Vite · Docker Compose · Prometheus · Node Test Runner · pytest · GitHub Actions
 </p>
 
 ---
 
-> **Manual completo:** [`Manual-Bento.pdf`](Manual-Bento.pdf) explica a instalação, cada módulo do painel, a verificação em duas etapas, os alertas de métricas, a previsão e os insights, a personalização da visão geral, as preferências, a biblioteca de componentes em Tailwind CSS, os temas e paletas, a API rota por rota, as permissões, o tempo real, os relatórios, as integrações, a configuração, a operação e manutenção (diagnóstico, modo de manutenção, backups, retenção, saúde e métricas) e a solução de problemas, passo a passo (cópia em [`docs/`](docs/Manual-Bento.pdf)).
+> **Manual completo:** [`Manual-Bento.pdf`](Manual-Bento.pdf) explica a instalação, cada módulo do painel, a página Inteligência e o motor analítico em Python (modelos, métricas de acerto, simulador, qualidade dos dados e Excel), a verificação em duas etapas, os alertas de métricas, a previsão e os insights, a personalização da visão geral, as preferências, a biblioteca de componentes em Tailwind CSS, os temas e paletas, a API rota por rota, as permissões, o tempo real, os relatórios, as integrações, a configuração, a operação e manutenção (diagnóstico, modo de manutenção, backups, retenção, saúde e métricas) e a solução de problemas, passo a passo (cópia em [`docs/`](docs/Manual-Bento.pdf)).
 
-> **Banco de dados:** [`Banco-de-Dados-Bento.pdf`](Banco-de-Dados-Bento.pdf) traz o diagrama de relacionamentos, todas as tabelas com campos, tipos, chaves e restrições, os índices, as decisões de arquitetura (PostgreSQL ou PGlite, LISTEN/NOTIFY, sessões, segundo fator, fila de entregas, avaliação de alertas, backup lógico), os fluxos de dados, a operação e como escalar (cópia em [`docs/`](docs/Banco-de-Dados-Bento.pdf)).
+> **Banco de dados:** [`Banco-de-Dados-Bento.pdf`](Banco-de-Dados-Bento.pdf) traz o diagrama de relacionamentos, todas as tabelas com campos, tipos, chaves e restrições, os índices, as decisões de arquitetura (PostgreSQL ou PGlite, LISTEN/NOTIFY, sessões, segundo fator, fila de entregas, avaliação de alertas, backup lógico, motor analítico sem estado), os fluxos de dados (inclusive o conjunto enviado ao Python), a operação e como escalar (cópia em [`docs/`](docs/Banco-de-Dados-Bento.pdf)).
 
 <p align="center">
   <img src="docs/images/tela-visao-geral.png" alt="Visão geral: a receita do período na tampa escura e os indicadores nos compartimentos da caixa">
@@ -34,6 +34,7 @@
 - **Insights automáticos:** compara cada um dos últimos 7 dias com as 4 semanas anteriores (mediana e desvio absoluto, corrigidos pelo dia da semana) e aponta receita, pagamentos, falhas, reembolsos, cadastros, visitantes e conversão fora do padrão, com atalho para ver o dia e criar um alerta. Destaques como a receita da semana, o dia que mais vende, o canal que mais converte e o plano em alta completam o cartão.
 - **Alertas de métricas:** regras como "taxa de falha acima de 8% nas últimas 24 horas" ou "receita da semana cai mais de 15%" são medidas a cada 5 minutos. Ao disparar, avisam a equipe nas notificações (categoria própria) e, se marcado, no Slack, no Discord ou no webhook (`alerta.disparado`). Têm prévia com o valor de agora, cinco modelos prontos, gravidade, silêncio contra avisos repetidos, pausa, teste na hora e histórico de disparos.
 - **Verificação em duas etapas:** cada pessoa ativa o código de um aplicativo autenticador (TOTP) com QR code, recebe dez códigos de recuperação de uso único e pode gerar novos. O login pede o código depois da senha, com bloqueio após tentativas erradas. Administradores podem exigir a verificação por papel e redefinir a de quem perdeu o celular.
+- **Inteligência (Python):** um motor analítico em FastAPI, com pandas, NumPy e scikit-learn, alimenta a página **Inteligência**. **Previsões** de receita, pagamentos, cadastros, conversões e visitantes para 30 dias (Holt-Winters aditivo amortecido com sazonalidade semanal e faixa de 80%) e do MRR para 6 meses, cada uma com o acerto medido em dados escondidos do treino e comparado a uma previsão ingênua. **Risco de cancelamento:** regressão logística treinada em 12 fotografias mensais do histórico aponta quem pode cancelar em 30 dias, com a probabilidade, os motivos e a ação sugerida (AUC exibida). **Segmentos:** RFM com oito segmentos nomeados e ações, matriz recência × frequência e grupos do k-means escolhidos pela silhueta. **Coortes e LTV:** retenção por mês de conversão, curva média e LTV por plano. **Simulador "e se":** preço, churn, aquisição e sensibilidade ao preço projetam MRR, clientes e LTV na hora. **Qualidade dos dados:** nota de 0 a 100 com verificações de cobranças ausentes, pagamentos após cancelamento, cobranças duplicadas, datas fora de ordem, testes vencidos, valores fora da tabela e dias atípicos. O botão **Baixar Excel** gera um `.xlsx` com gráficos nativos.
 - **Primeiros passos:** para administradores, um guia no topo da visão geral mostra o que falta para o painel ficar pronto (dados da empresa, senhas de demonstração, verificação em duas etapas, equipe, integração, relatório agendado, alerta de métrica e backups), com a barra de progresso e um botão para cada passo.
 - **Analytics:** filtros por intervalo de datas, períodos prontos e agrupamento por dia, semana ou mês. Receita e reembolsos, funil de conversão, dispositivos, tráfego por canal, países, usuários novos e ativos, assinaturas e cancelamentos, receita por plano, mapa de calor de horários de compra e retenção por coorte.
 - **Transações:** busca por código, cliente ou e-mail, filtros por status, método, tipo e período (que ficam na URL para compartilhar), resumo do filtro, gaveta com a linha do tempo de cada cobrança, **reembolso com motivo** registrado na auditoria e exportação em CSV.
@@ -41,13 +42,28 @@
 - **Auditoria:** a trilha de tudo o que a equipe fez (contas, transações, sessões, relatórios, configurações, integrações e chaves de API), com filtros por pessoa, tipo de ação, período e texto, detalhes de cada registro e exportação em CSV.
 - **Paleta de comandos e atalhos:** `Ctrl` + `K` abre busca e comandos (ir para páginas, cadastrar ou importar usuários, exportar transações, enviar aviso, abrir a manutenção, ver as novidades, alternar tema, sair). Com o campo vazio, o grupo **Abertos recentemente** traz os últimos usuários e transações abertos. `?` mostra a folha de atalhos e `g` seguido de uma letra navega (`g` `t` abre Transações, `g` `d` abre Auditoria); os atalhos de uma tecla podem ser desligados.
 - **Usuários:** cadastro, edição, busca instantânea, filtros por status, papel e plano (também pela URL), colunas ordenáveis e configuráveis, paginação, ações em massa, bloqueio e desbloqueio com motivo, senha temporária, exportação em CSV e controle de permissões por papel com exceções por pessoa.
-- **Importação por CSV:** a gaveta **Importar CSV** lê planilhas de até 2.000 contas (vírgula, ponto e vírgula ou tabulação, UTF-8 ou ANSI do Excel), mostra a prévia linha a linha com o que será criado, ignorado ou tem erro, e grava tudo de uma vez. Tem modelo para baixar e permissão própria (`usuarios.importar`).
+- **Importação por CSV e Excel:** a gaveta **Importar** lê planilhas de até 2.000 contas (CSV com vírgula, ponto e vírgula ou tabulação, UTF-8 ou ANSI, ou `.xlsx`). O motor analítico reconhece as colunas pelo nome e pelo conteúdo (e-mail, telefone, datas, números), aponta linhas repetidas e e-mails inválidos ou repetidos e dá uma nota à planilha. Depois, a gaveta mostra a prévia linha a linha com o que será criado, ignorado ou tem erro, e grava tudo de uma vez. Tem modelo para baixar e permissão própria (`usuarios.importar`).
 - **Notas internas:** cada usuário tem a aba **Notas** na gaveta, com o contador no título. A equipe registra combinados e contexto de atendimento (até 2.000 caracteres, com quebras de linha), fixa as importantes no topo, edita e remove as próprias. `Ctrl` + `Enter` salva. Só o autor ou quem controla permissões altera uma nota, e cada nota criada ou removida entra na auditoria.
 - **Notificações:** alertas em tempo real via Server-Sent Events sobre transações, contas, segurança e relatórios, com filtros, marcar como lida, dispensar, preferências por categoria e envio de avisos para a equipe.
 - **Relatórios:** receita, transações, usuários, assinaturas e crescimento, com prévia antes de gerar, exportação em CSV (pronto para Excel) ou PDF paginado, histórico para baixar de novo e envios agendados diários, semanais ou mensais.
 - **Configurações:** perfil, aparência (tema claro, escuro ou do sistema, 16 paletas e densidade), **preferências** (página inicial, linhas por página, animações reduzidas, atalhos de uma tecla e primeiros passos), troca de senha, sessões ativas, chaves de API com escopo, integrações com webhook, Slack e Discord e o **histórico de entregas** (código HTTP, tempo, tentativas, novas tentativas automáticas e reenvio), dados da empresa (moeda, fuso e meta mensal), **status do sistema** e a aba **Manutenção**.
 - **Operação e manutenção:** verificações do ambiente, modo de manutenção somente leitura com mensagem para a equipe, backups manuais e automáticos com download, retenção de dados com prévia e limpeza, sondas `/saude/vivo` e `/saude/pronto`, métricas do Prometheus e `X-Request-Id` em toda resposta, com o código curto do erro nas mensagens da interface.
 - **Componentes:** uma página com toda a biblioteca em Tailwind CSS, de botões e formulários a kanban, calendário, fatura, preços, página de status, construtor de filtros, páginas de erro e os componentes de operação, para copiar e adaptar. Endereços inexistentes abrem uma página 404 própria, e a janela de novidades mostra o que mudou a cada versão.
+
+<p align="center">
+  <img src="docs/images/tela-inteligencia.png" width="49%" alt="Inteligência: previsões dos próximos 30 dias com faixa de 80% e o fechamento do mês">
+  <img src="docs/images/tela-inteligencia-risco.png" width="49%" alt="Risco de cancelamento com probabilidade, motivos, ação sugerida e fatores do modelo">
+</p>
+
+<p align="center">
+  <img src="docs/images/tela-inteligencia-segmentos.png" width="49%" alt="Segmentos RFM com receita, participação e ação recomendada">
+  <img src="docs/images/tela-inteligencia-simulador.png" width="49%" alt="Simulador de cenários com MRR projetado">
+</p>
+
+<p align="center">
+  <img src="docs/images/tela-inteligencia-qualidade.png" width="49%" alt="Qualidade dos dados com nota e verificações">
+  <img src="docs/images/tela-importar-excel.png" width="49%" alt="Importação de usuários a partir de um arquivo Excel com análise das colunas">
+</p>
 
 <p align="center">
   <img src="docs/images/tela-previsao.png" width="49%" alt="Previsão da receita do mês com faixa provável e insights automáticos">
@@ -76,6 +92,8 @@ flowchart LR
     UI["Navegador<br/>TypeScript + Tailwind CSS"] -- "HTTP / JSON<br/>cookie de sessão + X-Bento" --> API["api<br/>Node.js 22 + Fastify 5<br/>TypeScript"]
     API -- "Server-Sent Events" --> UI
     API --> BD[("PostgreSQL 18<br/>ou PGlite embutido")]
+    API -- "JSON sem dados pessoais<br/>X-Bento-Token" --> PY["analise<br/>Python 3.13 + FastAPI<br/>pandas · scikit-learn"]
+    PY -- "previsões, risco, segmentos,<br/>coortes, qualidade e .xlsx" --> API
     API -- "webhooks assinados<br/>com novas tentativas" --> EXT["Slack, Discord<br/>ou seu endpoint"]
     API -- "CSV / PDF" --> REL["Relatórios"]
     API -- "NDJSON.gz" --> BKP["Backups"]
@@ -88,8 +106,10 @@ flowchart LR
 |---|---|---|
 | `web/src/ts` | TypeScript | Tipos da API, cliente HTTP, sessão e preferências, tema com `localStorage`, tempo real, tabela de dados com colunas configuráveis, bento grid personalizável, gráficos, gavetas, diálogos, QR code e verificação em duas etapas, importação, busca global com recentes, faixa de manutenção, novidades e o controlador de cada página |
 | `web/src/css` | Tailwind CSS | Tokens de cor, tipografia e medidas, 16 paletas, modo escuro com a variante `dark:`, layout bento, componentes, kit de interface, páginas e impressão |
-| `web/*.html` | HTML | Estrutura de cada página: visão geral, analytics, alertas, usuários, transações, auditoria, notificações, relatórios, configurações, componentes, entrada e 404 |
+| `web/*.html` | HTML | Estrutura de cada página: visão geral, analytics, inteligência, alertas, usuários, transações, auditoria, notificações, relatórios, configurações, componentes, entrada e 404 |
 | `api/src` | TypeScript | API REST com Fastify: autenticação com segundo fator, permissões, métricas, previsão e insights, alertas, analytics, usuários, importação, notificações, relatórios, agendador, simulador e integrações com fila de entregas |
+| `api/src/modulos/ciencia` | TypeScript | Monta o conjunto de dados (sem nomes nem e-mails), chama o motor analítico com token e prazo, guarda o resultado em cache, junta os nomes dos clientes e responde em `/ciencia/*` |
+| `analise/bento_analise` | Python | Motor analítico sem estado em FastAPI: previsões (Holt-Winters), risco de cancelamento (scikit-learn), segmentos RFM e k-means, coortes, LTV, simulador, qualidade dos dados, leitura de planilhas e relatório em Excel (openpyxl) |
 | `api/src/operacao` | TypeScript | Backup e restauração, diagnóstico, modo de manutenção, métricas do Prometheus e retenção de dados |
 | `api/src/cli.ts` | TypeScript | Comandos `migrar`, `semear`, `admin`, `diagnostico`, `backup`, `restaurar` e `limpar` |
 | `api/migracoes` | SQL | Esquema, índices, dados de base (papéis, permissões e planos) e as migrações de cada versão (001 a 007) |
@@ -105,7 +125,7 @@ O navegador abre uma conexão em `GET /api/v1/notificacoes/fluxo` e recebe os ev
 |---|---|
 | Administrador | Tudo, inclusive a aba Manutenção (diagnóstico, modo de manutenção, backups e retenção) e a regra de verificação em duas etapas por papel |
 | Gerente | Tudo, menos dados da empresa, status do sistema, manutenção, excluir usuários e alterar permissões (importa, anota e cria alertas, mas só altera as próprias notas) |
-| Analista | Visão geral, analytics, alertas (ver e gerenciar), ver transações, ver usuários e relatórios |
+| Analista | Visão geral, analytics, inteligência (com o Excel), alertas (ver e gerenciar), ver transações, ver usuários e relatórios |
 | Suporte | Visão geral, ver, editar, bloquear e anotar em usuários, ver transações |
 | Cliente | Não acessa o painel |
 
@@ -135,7 +155,7 @@ Você só precisa do **Docker** com Docker Compose.
 ./iniciar.sh
 ```
 
-Na primeira vez o script cria o arquivo `.env` com uma senha aleatória para o banco e um segredo aleatório para as sessões, sobe o PostgreSQL e o Bento e abre **http://localhost:8080**. Sem Docker, os mesmos scripts usam o Node.js e o banco embutido.
+Na primeira vez o script cria o arquivo `.env` com uma senha aleatória para o banco, um segredo aleatório para as sessões e um token aleatório para o motor analítico, sobe o PostgreSQL, o motor analítico em Python (serviço `analise`, só na rede interna do Compose) e o Bento e abre **http://localhost:8080**. Sem Docker, os mesmos scripts usam o Node.js e o banco embutido.
 
 | Endereço | O que é |
 |---|---|
@@ -154,6 +174,15 @@ cd Data-Driven-Admin-Panel
 npm install
 npm run build
 npm start                         # http://localhost:8080
+```
+
+Para a página **Inteligência** sem Docker, suba o motor analítico em outro terminal (Python 3.12 ou mais novo) e aponte a API para ele no `.env` com `BENTO_ANALISE_URL=http://127.0.0.1:8090` e o mesmo `BENTO_ANALISE_TOKEN` (24 caracteres ou mais) nos dois lados:
+
+```bash
+cd analise
+python -m venv .venv && . .venv/bin/activate      # no Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+BENTO_ANALISE_TOKEN=seu-token-longo uvicorn bento_analise.app:app --port 8090
 ```
 
 Sem `DATABASE_URL`, a API usa o PGlite, que guarda o banco na pasta `dados/pglite`. O `.nvmrc` indica o Node.js 22 para o nvm e o fnm. Na primeira vez ela cria as tabelas e os dados de demonstração em poucos segundos. Para usar o seu PostgreSQL, defina `DATABASE_URL=postgres://usuario:senha@servidor:5432/banco`.
@@ -178,11 +207,11 @@ Na inicialização, a API cria essa conta de administrador se o e-mail ainda nã
 npm run backup                    # antes de tudo (com PGlite, com o servidor parado)
 git pull
 npm install && npm run build
-npm start                         # aplica a migração 007 sozinho, em uma transação
+npm start                         # aplica as migrações pendentes sozinho, em uma transação
 npm run diagnostico               # confere ambiente, banco e segurança
 ```
 
-Com Docker: `docker compose exec bento node api/dist/cli.js backup` e depois `docker compose up -d --build`.
+Com Docker: `docker compose exec bento node api/dist/cli.js backup` e depois `docker compose up -d --build`. Na 1.6.0, acrescente ao `.env` existente a linha `BENTO_ANALISE_TOKEN=` com 24 caracteres aleatórios ou mais para ligar a página **Inteligência** (sem ela, o resto do painel funciona normalmente).
 
 ### Desenvolvimento
 
@@ -240,6 +269,16 @@ curl -b sessao.txt -H "X-Bento: 1" -H "Content-Type: application/json" \
      -d '{"nome":"Pagamentos falhando","metrica":"taxa_falha","janela":"24h","modo":"valor","operador":"maior","limite":8,"severidade":"erro","notificarIntegracoes":true}' \
      http://localhost:8080/api/v1/alertas
 
+# inteligência: previsões, risco de cancelamento, segmentos, coortes, LTV e qualidade (atualizar=1 recalcula)
+curl -b sessao.txt "http://localhost:8080/api/v1/ciencia/analise"
+
+# simulador: preço +10%, churn -0,5 ponto percentual e 20% mais clientes novos em 12 meses
+curl -b sessao.txt -H "X-Bento: 1" -H "Content-Type: application/json" \
+     -d '{"preco":10,"churnPp":-0.5,"aquisicao":20,"meses":12}' http://localhost:8080/api/v1/ciencia/simulador
+
+# relatório de inteligência em Excel com gráficos nativos
+curl -b sessao.txt -o inteligencia.xlsx http://localhost:8080/api/v1/ciencia/relatorio
+
 # ligar o modo de manutenção (somente leitura) com uma mensagem para a equipe
 curl -b sessao.txt -X PUT -H "X-Bento: 1" -H "Content-Type: application/json" \
      -d '{"ativo":true,"mensagem":"Atualização até as 22h."}' http://localhost:8080/api/v1/sistema/manutencao
@@ -251,6 +290,9 @@ curl -b sessao.txt -X PUT -H "X-Bento: 1" -H "Content-Type: application/json" \
 | `POST /api/v1/auth/dois-fatores` | Segunda etapa do login com o código do aplicativo ou um código de recuperação |
 | `GET /api/v1/configuracoes/seguranca/dois-fatores` · `POST /iniciar` · `/ativar` · `/desativar` · `/codigos` | Estado, QR code, ativação, desligamento e novos códigos de recuperação |
 | `GET /api/v1/insights` | Previsão da receita do mês, tendência do MRR, anomalias dos últimos 7 dias e destaques |
+| `GET /api/v1/ciencia/analise` · `/estado` | Previsões, risco de cancelamento, segmentos, coortes, LTV, base do simulador e qualidade dos dados calculados pelo motor em Python (cache de 10 minutos; `?atualizar=1` recalcula) e a situação do motor |
+| `POST /api/v1/ciencia/simulador` · `GET /ciencia/relatorio` | Cenário "e se" para preço, churn, aquisição e sensibilidade ao preço e relatório `.xlsx` com gráficos (exige `relatorios.gerar` e entra na auditoria) |
+| `POST /api/v1/ciencia/planilha` | Lê um `.xlsx` ou `.csv` em base64 (até 5 MB), reconhece as colunas, aponta problemas e devolve o CSV pronto para a importação |
 | `GET/POST /api/v1/alertas` · `GET/PATCH/DELETE /{id}` · `POST /{id}/avaliar` | Regras de alerta: lista com resumo, criação, edição, pausa, exclusão e avaliação na hora |
 | `GET /api/v1/alertas/catalogo` · `POST /simular` · `GET /disparos` | Métricas e janelas, prévia de uma regra e histórico de disparos |
 | `GET /api/v1/visao-geral` | KPIs com tendência, receita mês a mês, planos, canais, meta, transações e atividades |
@@ -306,6 +348,10 @@ As principais variáveis do `.env` (a lista completa está no manual):
 | `BENTO_RETENCAO_NOTIFICACOES` / `_RELATORIOS` / `_AUDITORIA` | `180` / `90` / `0` | Dias que cada tipo de registro fica guardado (`0` guarda para sempre) |
 | `BENTO_RETENCAO_SESSOES` / `_ENTREGAS` | `30` / `30` | Dias para sessões encerradas e histórico de entregas das integrações |
 | `BENTO_RETENCAO_ALERTAS` | `180` | Dias que os disparos já resolvidos dos alertas ficam guardados |
+| `BENTO_ANALISE_URL` | vazio | Endereço do motor analítico (`http://analise:8090` no Docker Compose). Vazio desliga a página Inteligência |
+| `BENTO_ANALISE_TOKEN` | gerado | Token compartilhado entre a API e o motor (24 caracteres ou mais). Gerado pelos scripts |
+| `BENTO_ANALISE_TIMEOUT` / `BENTO_ANALISE_CACHE` | `60` / `10` | Segundos de espera pelo motor e minutos de cache do resultado |
+| `BENTO_ANALISE_LIMITE_MB` / `BENTO_ANALISE_MEMORIA` / `BENTO_ANALISE_CPUS` | `96` / `2g` / `2` | Corpo máximo aceito pelo motor e limites de memória e CPU do serviço no Docker Compose |
 | `BENTO_DB_NOME` / `BENTO_DB_USUARIO` / `BENTO_DB_SENHA` | `bento` / `bento` / — | PostgreSQL do Docker Compose |
 
 Cada variável é conferida na inicialização: valores inválidos viram avisos com o nome da variável (no log, no diagnóstico e na aba Manutenção) e o padrão é usado. Com `NODE_ENV=production`, padrão da imagem Docker, a API não sobe com o segredo de exemplo ou com menos de 32 caracteres. O `BENTO_SEGREDO_JWT` também cifra (AES-256-GCM) os segredos dos aplicativos autenticadores e das integrações: trocar o segredo obriga a redefinir a verificação em duas etapas da equipe e a reconfigurar as integrações.
@@ -318,7 +364,7 @@ Cada variável é conferida na inicialização: valores inválidos viram avisos 
 | `npm run backup` | Grava um backup completo em `.ndjson.gz` (`-- --pasta <pasta>` para outro lugar) |
 | `npm run restaurar -- <arquivo>` | Substitui todos os dados pelos do backup, em uma transação (`--sim` para não perguntar) |
 | `npm run limpar` | Aplica a retenção de dados agora (`-- --simular` só mostra o que sairia) |
-| `npm run versao -- 1.6.0` | Grava a versão em `VERSION`, nos `package.json` e no `package-lock.json` (`-- --conferir` só confere) |
+| `npm run versao -- 1.6.0` | Grava a versão em `VERSION`, nos `package.json`, no `package-lock.json` e no motor analítico (`-- --conferir` só confere) |
 
 No Docker, os mesmos comandos rodam com `docker compose exec bento node api/dist/cli.js <comando>`. A aba **Configurações › Manutenção** reúne as verificações, o modo de manutenção, os backups com download e a retenção de dados, sem precisar de terminal.
 
@@ -365,6 +411,11 @@ O projeto foi organizado para ser fácil de adaptar:
 | Nova coluna na tabela de usuários | `COLUNAS` em `web/src/ts/paginas/usuarios.ts` (com `fixa` ou `escondidaPorPadrao`, se quiser) e o campo de ordenação em `api/src/modulos/usuarios` |
 | Colunas configuráveis em outra tabela | A opção `idColunas` da `TabelaDados` (`web/src/ts/componentes/tabela.ts`) |
 | Rota liberada durante a manutenção | `ISENTAS` em `api/src/operacao/manutencao.ts` |
+| Nova análise em Python | Um módulo em `analise/bento_analise/`, a chamada em `analisar` (`app.py`), o teste em `analise/tests/` e o painel em `web/inteligencia.html` e `web/src/ts/paginas/inteligencia.ts` |
+| Nova verificação de qualidade dos dados | `qualidade` em `analise/bento_analise/qualidade.py` (e o código em `CODIGOS_COM_CLIENTES`, em `api/src/modulos/ciencia/servico.ts`, se os exemplos forem clientes) |
+| Novo fator no risco de cancelamento | `caracteristicas`, `BASICAS` e `ACOES` em `analise/bento_analise/churn.py` |
+| Novo segmento RFM | `SEGMENTOS` e `classificar` em `analise/bento_analise/segmentos.py` |
+| Nova aba no Excel | `relatorio` em `analise/bento_analise/excel.py` |
 | Nova verificação no diagnóstico | `api/src/operacao/diagnostico.ts` |
 | Novidades de uma versão nova | `VERSAO_NOVIDADES` e `NOVIDADES` em `web/src/ts/layout/novidades.ts` |
 | Novo tipo de relatório | `api/src/modulos/relatorios` (colunas, consulta e resumo) |
@@ -374,7 +425,8 @@ O projeto foi organizado para ser fácil de adaptar:
 ## Desenvolvimento e testes
 
 ```bash
-npm test                          # 107 testes da API e 28 da interface
+npm test                          # 116 testes da API e 28 da interface
+cd analise && python -m pytest    # 21 testes do motor analítico (pip install -r requirements-dev.txt)
 npm run cobertura                 # testes da API com relatório de cobertura
 npm run verificar                 # checagem de tipos (strict) da interface e da API
 npm run build                     # gera web/dist e api/dist
@@ -382,6 +434,17 @@ npm run versao -- --conferir      # confere a versão em todos os arquivos
 ```
 
 O código não tem comentários: nomes descritivos em português, funções curtas e tipos explícitos contam o que cada parte faz, e os manuais em PDF guardam o porquê.
+
+### Novidades da versão 1.6.0
+
+| Área | O que mudou |
+|---|---|
+| Motor analítico | Serviço `analise` em Python 3.13 com FastAPI, pandas, NumPy, scikit-learn e openpyxl, sem estado e sem acesso ao banco: recebe da API um conjunto de dados sem nomes nem e-mails, autenticado por token, e devolve as análises em cerca de 1 segundo para 2 anos de histórico |
+| Inteligência | Página nova (`g` `i`) com Previsões (Holt-Winters com faixa de 80% e acerto no teste), Risco de cancelamento (regressão logística com AUC, motivos e ação por cliente), Segmentos (RFM, matriz e k-means), Coortes e LTV, Simulador "e se" e Qualidade dos dados (nota de 0 a 100 com 9 verificações) |
+| Excel | Relatório `.xlsx` com resumo, previsões, MRR, risco, segmentos, coortes, LTV e qualidade, com gráficos nativos e células de texto neutralizadas contra fórmulas; importação de usuários direto de `.xlsx`, com análise das colunas e dos problemas da planilha |
+| API | Rotas `/ciencia/analise`, `/estado`, `/simulador`, `/relatorio` e `/planilha`, cache com cálculo único em andamento, resposta 503 `INDISPONIVEL` quando o motor está desligado, verificação **Motor analítico** no diagnóstico e no status do sistema |
+| Operação | Serviço `analise` no Docker Compose só na rede interna, com sistema de arquivos somente leitura, sem capacidades e sem novos privilégios; token gerado pelos scripts; job de Python na CI (testes, `pip-audit` e subida do serviço) e Dependabot para o `pip` |
+| Testes | 9 testes novos da API (motor simulado, minimização de dados, cache, permissões, nomes só para quem vê usuários e erros) e 21 do motor analítico (previsão, risco, segmentos, coortes, simulador, qualidade, Excel, planilhas, limites e arquivos maliciosos) |
 
 ### Novidades da versão 1.5.0
 
@@ -401,6 +464,7 @@ O código não tem comentários: nomes descritivos em português, funções curt
 
 | Versão | O que mudou |
 |---|---|
+| 1.5.0 | Verificação em duas etapas, alertas de métricas, previsão do mês e insights automáticos, visão geral personalizável e primeiros passos com 8 etapas |
 | 1.4.0 | Preferências de uso, colunas configuráveis, recentes na paleta de comandos, importação de usuários por CSV, histórico de entregas das integrações e operação (manutenção, backups, retenção, diagnóstico, sondas e métricas) |
 | 1.3.0 | Notas internas na gaveta de cada usuário (permissão `usuarios.anotar`) e visões salvas de filtros em Transações e Auditoria |
 | 1.2.0 | Identidade “caixa única”, tipografia fina e condensada, status como ponto de cor e variações com sinal |
@@ -408,6 +472,8 @@ O código não tem comentários: nomes descritivos em português, funções curt
 | 1.0.0 | Primeira versão: visão geral, analytics, usuários, notificações, relatórios, configurações, componentes e API |
 
 ### Segurança e qualidade
+
+O motor analítico da 1.6.0 só aceita pedidos com o `X-Bento-Token` (comparação em tempo constante), não tem porta publicada no Docker Compose, recusa corpos acima de 96 MB e campos desconhecidos, roda como usuário sem privilégios em um contêiner somente leitura com limites de memória, CPU e processos, e nunca recebe e-mails ou identificadores de usuário: a análise vai só com o identificador da assinatura, e a API junta os nomes depois, apenas para quem também tem `usuarios.ver` (o Excel recebe só esses nomes). Planilhas enviadas passam por validação de extensão, base64, assinatura e integridade do arquivo, limite de 200 colunas, de linhas e de tamanho descompactado (contra zip bombs), e o Excel gerado remove caracteres de controle e neutraliza textos que começam com `=`, `+`, `-` ou `@`, inclusive no nome da empresa. Falhas do motor ficam em cache por 1 minuto e recálculos forçados respeitam um intervalo mínimo de 1 minuto. A 1.6.0 também passou por uma revisão de segurança independente, cujos 9 achados (de leitura de planilhas gigantes a mensagens internas do pandas) foram corrigidos e cobertos por testes.
 
 A versão 1.1.0 passou por uma auditoria de segurança, com 20 testes automatizados em `api/test/seguranca.test.ts`, e a 1.5.0 acrescentou o segundo fator, coberto em `api/test/dois-fatores.test.ts` (o desafio do login não vale como sessão, códigos não podem ser reusados, tentativas erradas bloqueiam a conta e a regra por papel fecha as outras rotas). O que foi corrigido na auditoria:
 
@@ -422,7 +488,7 @@ A versão 1.1.0 passou por uma auditoria de segurança, com 20 testes automatiza
 
 Os testes também conferem sessão obrigatória, JWT forjado, permissões por papel, proteção CSRF (`X-Bento`), chaves de API só leitura, 11 tentativas de injeção SQL, cookies `httpOnly` e `SameSite`, cabeçalhos de segurança (CSP, `nosniff`, `X-Frame-Options`, `Referrer-Policy`), rate limit, mass assignment, IDOR e path traversal. A CI também roda `npm audit --omit=dev --audit-level=high` a cada envio.
 
-O GitHub Actions confere a versão, checa os tipos, roda os testes com cobertura, constrói a interface, roda `migrar`, `semear`, `backup`, `restaurar` e `diagnostico` contra um PostgreSQL 18 de verdade, sobe a API, espera a prontidão, consulta métricas e rotas reais e constrói a imagem Docker. O Dependabot propõe atualizações semanais das dependências (com o ApexCharts fixado de propósito) e mensais das Actions e da imagem.
+O GitHub Actions confere a versão, checa os tipos, roda os testes com cobertura, roda os testes do motor analítico com `pip-audit`, constrói a interface, roda `migrar`, `semear`, `backup`, `restaurar` e `diagnostico` contra um PostgreSQL 18 de verdade, sobe a API, espera a prontidão, consulta métricas e rotas reais e constrói as imagens Docker do painel e do motor analítico. O Dependabot propõe atualizações semanais das dependências do `npm` e do `pip` (com o ApexCharts fixado de propósito) e mensais das Actions e da imagem.
 
 ### Estrutura
 
@@ -437,13 +503,17 @@ web/                        interface
   public/                   favicon, logo e script de tema
   tests/                    testes do núcleo e da navegação
 api/                        API em TypeScript
-  src/modulos/              auth, segurança (duas etapas), visão geral, insights, alertas, analytics, usuários, transações, auditoria, notificações, relatórios, configurações, integrações, sistema
+  src/modulos/              auth, segurança (duas etapas), visão geral, insights, ciência (motor analítico), alertas, analytics, usuários, transações, auditoria, notificações, relatórios, configurações, integrações, sistema
   src/operacao/             backup, diagnóstico, manutenção, métricas e retenção
   src/banco/                conexão (PostgreSQL ou PGlite), migrações e dados de demonstração
   src/relatorios/           geração de CSV e PDF
   src/cli.ts                comandos de linha: migrar, semear, admin, diagnostico, backup, restaurar, limpar
   migracoes/                esquema do banco (001 a 007)
   test/                     testes da API, de segurança, de duas etapas, de alertas e insights, de operação, de backup, de importação e entregas
+analise/                    motor analítico em Python
+  bento_analise/            FastAPI, previsões, risco, segmentos, coortes e LTV, qualidade, Excel
+  tests/                    testes com pytest
+  Dockerfile                imagem python:3.13-slim com usuário sem privilégios
 scripts/                    servidor de desenvolvimento, versão e criação do .env no Windows
 docs/                       manuais em PDF e imagens do README
 .github/                    CI e Dependabot
@@ -467,6 +537,11 @@ O Bento depende de componentes com licenças próprias, que continuam valendo pa
 | [PGlite](https://pglite.dev/) | PostgreSQL embutido | Apache-2.0 |
 | [bcrypt.js](https://github.com/dcodeIO/bcrypt.js) | Hash de senhas | BSD-3-Clause |
 | [PDFKit](https://pdfkit.org/) | Relatórios em PDF | MIT |
+| [FastAPI](https://fastapi.tiangolo.com/) e [Uvicorn](https://www.uvicorn.org/) | Servidor do motor analítico | MIT e BSD-3-Clause |
+| [Pydantic](https://docs.pydantic.dev/) | Validação no motor analítico | MIT |
+| [NumPy](https://numpy.org/) e [pandas](https://pandas.pydata.org/) | Cálculo e manipulação de dados | BSD-3-Clause |
+| [scikit-learn](https://scikit-learn.org/) | Regressão logística, k-means e métricas | BSD-3-Clause |
+| [openpyxl](https://openpyxl.readthedocs.io/) | Leitura e escrita de planilhas `.xlsx` | MIT |
 | [QR Code Generator](https://github.com/kazuhikoarase/qrcode-generator) | QR code da verificação em duas etapas, gerado no navegador | MIT |
 
 O ApexCharts está fixado na versão 4.7.0, a última publicada sob a licença MIT. As versões a partir da 5.1 usam uma licença dupla que exige compra para empresas com receita anual acima de US$ 2 milhões; confira antes de atualizar. O PostgreSQL roda como serviço externo via Docker e não é redistribuído neste repositório. Os nomes Slack, Discord, Google Analytics e Stripe pertencem aos seus donos e aparecem só como destinos de integração.
