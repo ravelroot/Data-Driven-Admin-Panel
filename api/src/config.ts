@@ -28,6 +28,53 @@ export const FREQUENCIAS_BACKUP = ['desligado', 'diario', 'semanal'] as const;
 
 export type FrequenciaBackup = (typeof FREQUENCIAS_BACKUP)[number];
 
+export const VARIAVEIS_CONHECIDAS = [
+  'BENTO_PORTA', 'BENTO_HOST', 'BENTO_DADOS', 'BENTO_WEB', 'BENTO_POOL', 'BENTO_SEGREDO_JWT', 'BENTO_HTTPS', 'BENTO_ORIGENS',
+  'BENTO_PROXY', 'BENTO_SEMEAR', 'BENTO_SIMULADOR', 'BENTO_SIMULADOR_INTERVALO', 'BENTO_FUSO', 'BENTO_LOG', 'BENTO_ADMIN_EMAIL',
+  'BENTO_ADMIN_SENHA', 'BENTO_ADMIN_NOME', 'BENTO_INTEGRACOES_REDE_INTERNA', 'BENTO_BACKUP_AUTOMATICO', 'BENTO_BACKUP_MANTER',
+  'BENTO_BACKUP_PASTA', 'BENTO_RETENCAO_NOTIFICACOES', 'BENTO_RETENCAO_RELATORIOS', 'BENTO_RETENCAO_AUDITORIA',
+  'BENTO_RETENCAO_SESSOES', 'BENTO_RETENCAO_ENTREGAS', 'BENTO_RETENCAO_ALERTAS', 'BENTO_METRICAS_TOKEN', 'BENTO_ANALISE_URL',
+  'BENTO_ANALISE_TOKEN', 'BENTO_ANALISE_TIMEOUT', 'BENTO_ANALISE_CACHE', 'BENTO_ANALISE_LIMITE_MB', 'BENTO_ANALISE_MEMORIA',
+  'BENTO_ANALISE_CPUS', 'BENTO_DB_NOME', 'BENTO_DB_USUARIO', 'BENTO_DB_SENHA',
+] as const;
+
+function distancia(a: string, b: string): number {
+  const anterior = Array.from({ length: b.length + 1 }, (_, indice) => indice);
+  for (let i = 1; i <= a.length; i += 1) {
+    let diagonal = anterior[0];
+    anterior[0] = i;
+    for (let j = 1; j <= b.length; j += 1) {
+      const acima = anterior[j];
+      anterior[j] = Math.min(anterior[j] + 1, anterior[j - 1] + 1, diagonal + (a[i - 1] === b[j - 1] ? 0 : 1));
+      diagonal = acima;
+    }
+  }
+  return anterior[b.length];
+}
+
+export function sugerirVariavel(nome: string): string | null {
+  const alvo = nome.toUpperCase();
+  let melhor: { nome: string; distancia: number } | null = null;
+  for (const conhecida of VARIAVEIS_CONHECIDAS) {
+    const valor = distancia(alvo, conhecida);
+    if (!melhor || valor < melhor.distancia) melhor = { nome: conhecida, distancia: valor };
+  }
+  return melhor && melhor.distancia <= Math.max(2, Math.floor(alvo.length / 6)) ? melhor.nome : null;
+}
+
+export function variaveisDesconhecidas(env: NodeJS.ProcessEnv): string[] {
+  const conhecidas = new Set<string>(VARIAVEIS_CONHECIDAS);
+  return Object.keys(env)
+    .filter((nome) => /^BENTO_/i.test(nome) && !conhecidas.has(nome))
+    .sort()
+    .map((nome) => {
+      const sugestao = sugerirVariavel(nome);
+      return sugestao
+        ? `${nome} não é uma variável do Bento; você quis dizer ${sugestao}? O valor foi ignorado.`
+        : `${nome} não é uma variável do Bento e foi ignorada. Confira a lista no .env.example.`;
+    });
+}
+
 export interface Retencao {
   notificacoesDias: number;
   relatoriosDias: number;
@@ -167,7 +214,7 @@ function obterSegredo(dirDados: string): { segredo: string; gerado: boolean } {
 export function lerConfig(sobrescrever: Partial<Config> = {}): Config {
   carregarArquivoEnv();
   const env = process.env;
-  const avisos: string[] = [];
+  const avisos: string[] = variaveisDesconhecidas(env);
   const ler = criarLeitor(env, avisos);
   const producao = sobrescrever.producao ?? env.NODE_ENV === 'production';
   const dirDados = sobrescrever.dirDados ?? resolverCaminho(ler.texto('BENTO_DADOS') ?? path.join('dados', 'pglite'));

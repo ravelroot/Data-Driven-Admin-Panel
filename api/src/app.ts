@@ -34,6 +34,7 @@ import { rotasVisaoGeral } from './modulos/visao-geral/rotas.js';
 import { registrarAutenticacao } from './plugins/autenticacao.js';
 import { registrarErros } from './plugins/erros.js';
 import { registrarValidacaoZod, transformarParaSwagger } from './plugins/esquemas.js';
+import { aplicarNoApp, carregarAjustes, combinarAjustes, lerDemonstracao, padroesDoAmbiente, type AjustesOperacao } from './operacao/ajustes.js';
 import { MANUTENCAO_DESLIGADA, registrarModoManutencao, sincronizarManutencao, type EstadoManutencao } from './operacao/manutencao.js';
 import { criarMetricas, metricasDoProcesso, registrarColetaMetricas, tokenConfere } from './operacao/metricas.js';
 import { iniciarSimulador } from './simulador.js';
@@ -47,6 +48,15 @@ export interface OpcoesApp {
   banco?: Banco;
   registrarLogs?: boolean;
   iniciarTarefas?: boolean;
+}
+
+export async function sincronizarOperacao(app: FastifyInstance): Promise<void> {
+  try {
+    const [ajustes, demonstracao] = await Promise.all([carregarAjustes(app.banco, app.estado.padroes), lerDemonstracao(app.banco)]);
+    aplicarNoApp(app, ajustes, demonstracao);
+  } catch (erro) {
+    app.log.debug({ erro }, 'Ajustes de operação ainda indisponíveis; usando o .env');
+  }
 }
 
 export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> {
@@ -78,7 +88,15 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
   app.decorate('config', config);
   app.decorate('banco', banco);
   app.decorate('barramento', barramento);
-  app.decorate('estado', { iniciadoEm: new Date(), encerrando: false, manutencao: { ...MANUTENCAO_DESLIGADA } });
+  const padroes = padroesDoAmbiente(config);
+  app.decorate('estado', {
+    iniciadoEm: new Date(),
+    encerrando: false,
+    manutencao: { ...MANUTENCAO_DESLIGADA },
+    operacao: combinarAjustes(padroes, {}),
+    padroes,
+    demonstracao: false,
+  });
   app.decorate('metricas', criarMetricas());
   app.addHook('onSend', async (requisicao, resposta) => {
     resposta.header('x-request-id', requisicao.id);
@@ -155,6 +173,7 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
           versao: VERSAO,
           uptime: Math.round(process.uptime()),
           manutencao: app.estado.manutencao.ativo,
+          demonstracao: app.estado.demonstracao,
         };
       });
       api.get('/saude/vivo', { schema: { tags: ['Sistema'], summary: 'Sonda de vida: o processo responde' }, config: semLimite }, async () => ({
@@ -228,13 +247,16 @@ export async function construirApp(opcoes: OpcoesApp): Promise<FastifyInstance> 
   const paradas: (() => void)[] = [];
   barramento.assinarInterno((evento) => {
     if (evento.tipo !== 'sistema') return;
-    const dados = evento.dados as { manutencao?: EstadoManutencao } | null;
+    const dados = evento.dados as { manutencao?: EstadoManutencao; operacao?: AjustesOperacao; demonstracao?: boolean } | null;
     if (dados?.manutencao) app.estado.manutencao = dados.manutencao;
+    if (dados?.operacao) aplicarNoApp(app, dados.operacao);
+    if (typeof dados?.demonstracao === 'boolean') app.estado.demonstracao = dados.demonstracao;
   });
 
   app.addHook('onReady', async () => {
     await barramento.iniciar();
     await sincronizarManutencao(app);
+    await sincronizarOperacao(app);
     if (opcoes.iniciarTarefas) {
       paradas.push(iniciarAgendador(app));
       if (config.simulador) paradas.push(iniciarSimulador(app));

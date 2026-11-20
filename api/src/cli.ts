@@ -5,12 +5,15 @@ import { garantirAdministrador } from './banco/administrador.js';
 import { criarBanco, type Banco } from './banco/conexao.js';
 import { aplicarMigracoes, bancoVazio } from './banco/migrar.js';
 import { semear } from './banco/semente.js';
+import { aplicarAjustes, carregarAjustes, padroesDoAmbiente } from './operacao/ajustes.js';
 import { abrirArquivoBackup, lerLinhasBackup, podarBackups, restaurarBackup, salvarBackup } from './operacao/backup.js';
 import { executarDiagnostico, formatarDiagnostico } from './operacao/diagnostico.js';
 import { executarLimpeza, previaLimpeza, totalRemovido } from './operacao/retencao.js';
 
 const AJUDA = `Uso: npm run <comando> [-- opções]
+No Docker: docker compose exec bento node api/dist/cli.js <comando> [opções]
 
+  ajuda                      mostra esta lista
   migrar                     aplica as migrações pendentes
   semear                     cria os dados de demonstração em um banco vazio
   admin                      cria o administrador de BENTO_ADMIN_EMAIL e BENTO_ADMIN_SENHA
@@ -18,7 +21,9 @@ const AJUDA = `Uso: npm run <comando> [-- opções]
   backup [--pasta <pasta>]   grava um backup completo em .ndjson.gz
   restaurar <arquivo> [--sim]
                              substitui TODOS os dados pelos do backup
-  limpar [--simular]         aplica a política de retenção (BENTO_RETENCAO_*)`;
+  limpar [--simular]         aplica a política de retenção (painel ou BENTO_RETENCAO_*)
+
+Pelo navegador, Configurações › Manutenção faz o mesmo sem terminal.`;
 
 const argumentos = process.argv.slice(2);
 const comando = argumentos[0];
@@ -51,6 +56,11 @@ async function confirmar(pergunta: string): Promise<boolean> {
   const resposta = await leitor.question(`${pergunta} Digite "restaurar" para continuar: `);
   leitor.close();
   return resposta.trim().toLowerCase() === 'restaurar';
+}
+
+async function usarAjustesDoPainel(config: Config, banco: Banco): Promise<void> {
+  await aplicarMigracoes(banco);
+  aplicarAjustes(config, await carregarAjustes(banco, padroesDoAmbiente(config)));
 }
 
 async function executar(config: Config, banco: Banco): Promise<number> {
@@ -95,6 +105,7 @@ async function executar(config: Config, banco: Banco): Promise<number> {
   }
 
   if (comando === 'backup') {
+    await usarAjustesDoPainel(config, banco);
     const pasta = valorOpcao('pasta') ? path.resolve(valorOpcao('pasta') as string) : config.backup.pasta;
     const resumo = await salvarBackup(banco, pasta, 'manual');
     console.log(`Backup gravado em ${resumo.arquivo} (${resumo.registros} registros de ${resumo.tabelas} tabelas, ${formatarBytes(resumo.bytes)}).`);
@@ -122,7 +133,7 @@ async function executar(config: Config, banco: Banco): Promise<number> {
   }
 
   if (comando === 'limpar') {
-    await aplicarMigracoes(banco);
+    await usarAjustesDoPainel(config, banco);
     const itens = opcao('simular') ? await previaLimpeza(banco, config.retencao) : await executarLimpeza(banco, config.retencao);
     for (const item of itens) {
       const regra = item.dias > 0 ? `mais de ${item.dias} dias` : 'sem limite';
@@ -133,11 +144,12 @@ async function executar(config: Config, banco: Banco): Promise<number> {
   }
 
   console.log(AJUDA);
-  return comando ? 1 : 0;
+  return comando && comando !== 'ajuda' ? 1 : 0;
 }
 
 const config = lerConfig();
-if (comando && config.urlBanco === null && config.dirDados !== DADOS_EM_MEMORIA && (await servidorNoAr(config))) {
+const semBanco = !comando || comando === 'ajuda';
+if (!semBanco && config.urlBanco === null && config.dirDados !== DADOS_EM_MEMORIA && (await servidorNoAr(config))) {
   console.log(
     'O Bento está rodando com o banco embutido (PGlite), que não aceita dois processos ao mesmo tempo. Pare o servidor antes de usar este comando ou, para backups, use Configurações › Status do sistema.',
   );
@@ -146,7 +158,7 @@ if (comando && config.urlBanco === null && config.dirDados !== DADOS_EM_MEMORIA 
 
 let banco: Banco | null = null;
 try {
-  banco = comando ? await criarBanco(config) : null;
+  banco = semBanco ? null : await criarBanco(config);
   process.exitCode = banco ? await executar(config, banco) : await executar(config, null as unknown as Banco);
 } catch (erro) {
   console.error(erro instanceof Error ? erro.message : erro);

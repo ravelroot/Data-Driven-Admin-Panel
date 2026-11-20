@@ -122,11 +122,21 @@ const iniciar = async (): Promise<void> => {
     document.body.dataset.pronto = "true";
   }
 
-  if (["localhost", "127.0.0.1", "[::1]"].includes(location.hostname) || parametrosUrl().demo !== undefined) {
+  const formulario = exigir<FormularioEntrar>("[data-entrar]");
+  const { email, pronto, demo } = parametrosUrl();
+  if (email) {
+    formulario.elements.email.value = email;
+    formulario.elements.senha.focus();
+  }
+  if (pronto) {
+    exigir("[data-aviso-pronto-texto]").textContent = `Os exemplos foram apagados e o backup ${pronto} ficou guardado. Entre com o seu e-mail e a senha nova.`;
+    exigir("[data-aviso-pronto]").hidden = false;
+  }
+  const saude = await api.obter<{ demonstracao?: boolean }>("/saude").catch(() => null);
+  if (saude?.demonstracao !== false && (["localhost", "127.0.0.1", "[::1]"].includes(location.hostname) || demo !== undefined)) {
     exigir("[data-contas-demo]").hidden = false;
   }
 
-  const formulario = exigir<FormularioEntrar>("[data-entrar]");
   exigir("[data-alternar-tema]").addEventListener("click", () => alternarTema());
 
   exigir("[data-contas-demo]").addEventListener("click", (evento) => {

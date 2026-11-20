@@ -3,15 +3,18 @@ import path from 'node:path';
 import type { FastifyInstance } from 'fastify';
 import { performance } from 'node:perf_hooks';
 import { z } from 'zod';
-import { VERSAO } from '../../config.js';
+import { FREQUENCIAS_BACKUP, VERSAO } from '../../config.js';
+import { descreverAjustes, LIMITES_RETENCAO, MODOS_SIMULADOR, restaurarPadroes, salvarAjustes, simuladorAtivo } from '../../operacao/ajustes.js';
 import { arquivoBackupValido, listarBackups, podarBackups, salvarBackup } from '../../operacao/backup.js';
 import { executarDiagnostico } from '../../operacao/diagnostico.js';
 import { definirManutencao } from '../../operacao/manutencao.js';
 import { executarLimpeza, previaLimpeza, totalRemovido } from '../../operacao/retencao.js';
-import { exigir } from '../../plugins/autenticacao.js';
+import { exigir, limparCookies } from '../../plugins/autenticacao.js';
 import { usuarioAtual } from '../../tipos.js';
 import { naoEncontrado } from '../../util/erros.js';
+import { opcional } from '../../util/validacao.js';
 import { registrarAtividade } from '../comum/auditoria.js';
+import { comecarComDadosReais, resumoDemonstracao } from './demonstracao.js';
 import { primeirosPassos } from './primeiros-passos.js';
 
 const TABELAS = [
@@ -37,6 +40,43 @@ const corpoManutencao = z
   .object({
     ativo: z.boolean(),
     mensagem: z.string().trim().max(300).optional(),
+  })
+  .strict();
+
+const dias = (chave: keyof typeof LIMITES_RETENCAO) =>
+  z
+    .number({ error: 'Informe um número de dias.' })
+    .int('Use um número inteiro de dias.')
+    .min(LIMITES_RETENCAO[chave].minimo, `Use pelo menos ${LIMITES_RETENCAO[chave].minimo} dia${LIMITES_RETENCAO[chave].minimo === 1 ? '' : 's'}.`)
+    .max(LIMITES_RETENCAO[chave].maximo, `Use no máximo ${LIMITES_RETENCAO[chave].maximo} dias.`)
+    .optional();
+
+const corpoOperacao = z
+  .object({
+    simulador: z.enum(MODOS_SIMULADOR).optional(),
+    backupAutomatico: z.enum(FREQUENCIAS_BACKUP).optional(),
+    backupManter: z.number().int().min(1, 'Guarde pelo menos 1 backup.').max(365, 'Guarde no máximo 365 backups.').optional(),
+    retencao: z
+      .object({
+        notificacoesDias: dias('notificacoesDias'),
+        relatoriosDias: dias('relatoriosDias'),
+        auditoriaDias: dias('auditoriaDias'),
+        sessoesDias: dias('sessoesDias'),
+        entregasDias: dias('entregasDias'),
+        alertasDias: dias('alertasDias'),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
+const corpoDadosReais = z
+  .object({
+    nome: z.string().trim().min(2, 'Informe o seu nome.').max(120),
+    email: z.email('Informe um e-mail válido.').max(254),
+    senha: z.string().min(8, 'A senha nova precisa de pelo menos 8 caracteres.').max(200),
+    senhaAtual: z.string().min(1, 'Confirme a senha atual.').max(200),
+    nomeEmpresa: opcional(z.string().trim().min(2, 'O nome da empresa precisa de 2 caracteres ou mais.').max(120)),
   })
   .strict();
 
@@ -74,7 +114,8 @@ export async function rotasSistema(app: FastifyInstance): Promise<void> {
         versao: VERSAO,
         agora: new Date().toISOString(),
         fuso: config.fuso,
-        simulador: config.simulador,
+        simulador: simuladorAtivo(app),
+        demonstracao: app.estado.demonstracao,
         producao: config.producao,
         node: process.version,
         plataforma: `${process.platform} ${process.arch}`,
@@ -223,6 +264,52 @@ export async function rotasSistema(app: FastifyInstance): Promise<void> {
         .header('content-disposition', `attachment; filename="${nome}"`)
         .header('cache-control', 'no-store')
         .send(createReadStream(path.join(app.config.backup.pasta, nome)));
+    },
+  );
+
+  app.get(
+    '/sistema/operacao',
+    { schema: { tags, summary: 'Simulador, backup automático e retenção em vigor, com os padrões do .env' }, preHandler: administrar },
+    async () => descreverAjustes(app),
+  );
+
+  app.put(
+    '/sistema/operacao',
+    {
+      schema: { tags, summary: 'Ajusta simulador, backup automático e retenção sem reiniciar (vale para todas as instâncias)', body: corpoOperacao },
+      preHandler: administrar,
+      config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
+    },
+    async (requisicao) => salvarAjustes(app, requisicao.body as z.infer<typeof corpoOperacao>, usuarioAtual(requisicao), requisicao.ip),
+  );
+
+  app.delete(
+    '/sistema/operacao',
+    { schema: { tags, summary: 'Volta simulador, backups e retenção para os valores do .env' }, preHandler: administrar },
+    async (requisicao) => restaurarPadroes(app, usuarioAtual(requisicao), requisicao.ip),
+  );
+
+  app.get(
+    '/sistema/demonstracao',
+    { schema: { tags, summary: 'Se o painel ainda usa os dados de demonstração e quanto seria apagado' }, preHandler: administrar },
+    async () => resumoDemonstracao(app),
+  );
+
+  app.post(
+    '/sistema/demonstracao/encerrar',
+    {
+      schema: {
+        tags,
+        summary: 'Apaga os dados de demonstração (depois de um backup), troca a sua conta pela conta real e encerra as sessões',
+        body: corpoDadosReais,
+      },
+      preHandler: administrar,
+      config: { rateLimit: { max: 5, timeWindow: '1 minute' } },
+    },
+    async (requisicao, resposta) => {
+      const resultado = await comecarComDadosReais(app, usuarioAtual(requisicao), requisicao.body as z.infer<typeof corpoDadosReais>, requisicao.ip);
+      limparCookies(app.config, resposta);
+      return resultado;
     },
   );
 

@@ -1,6 +1,6 @@
 {
   "name": "@bento/api",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "type": "module",
   "main": "dist/servidor.js",
@@ -8,6 +8,7 @@
     "dev": "tsx watch src/servidor.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/servidor.js",
+    "ajuda": "tsx src/cli.ts ajuda",
     "migrar": "tsx src/cli.ts migrar",
     "semear": "tsx src/cli.ts semear",
     "admin": "tsx src/cli.ts admin",

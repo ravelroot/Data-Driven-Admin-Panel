@@ -17,7 +17,7 @@ from .dados import quadro_assinaturas, quadro_diario, quadro_eventos
 from .esquemas import Cenario, Conjunto, Modelo, Planilha
 from .qualidade import ErroDados
 
-VERSAO = "1.6.0"
+VERSAO = "1.7.0"
 LIMITE_CORPO = int(os.environ.get("BENTO_ANALISE_LIMITE_MB", "96")) * 1024 * 1024
 registro = logging.getLogger("bento.analise")
 

@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Banco } from './banco/conexao.js';
 import type { Config } from './config.js';
+import type { AjustesOperacao, PadroesAmbiente } from './operacao/ajustes.js';
 import type { Metricas } from './operacao/metricas.js';
 import type { EstadoManutencao } from './operacao/manutencao.js';
 import type { Barramento } from './tempo-real/barramento.js';
@@ -21,6 +22,9 @@ export interface EstadoApp {
   iniciadoEm: Date;
   encerrando: boolean;
   manutencao: EstadoManutencao;
+  operacao: AjustesOperacao;
+  padroes: PadroesAmbiente;
+  demonstracao: boolean;
 }
 
 export type Gancho = (requisicao: FastifyRequest, resposta: FastifyReply) => Promise<void>;

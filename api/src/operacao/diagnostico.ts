@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import type { Banco } from '../banco/conexao.js';
 import { listarMigracoes } from '../banco/migrar.js';
 import { DADOS_EM_MEMORIA, segredoFraco, VERSAO, type Config } from '../config.js';
+import { lerAlteracoes, lerDemonstracao, simuladorDeveRodar } from './ajustes.js';
 import { listarBackups } from './backup.js';
 import { saudeDoMotor } from '../modulos/ciencia/motor.js';
 
@@ -153,14 +154,35 @@ export async function executarDiagnostico(config: Config, banco: Banco | null): 
         : 'Confira se o serviço está no ar e se BENTO_ANALISE_TOKEN é o mesmo nos dois lados.',
   });
 
+  const operacao = banco ? await Promise.all([lerAlteracoes(banco), lerDemonstracao(banco)]).catch(() => null) : null;
+  const modoSimulador = operacao?.[0].simulador ?? 'auto';
+  const usaDemonstracao = operacao?.[1] ?? false;
+  const simuladorLigado = simuladorDeveRodar(config, modoSimulador, usaDemonstracao);
   adicionar({
     id: 'simulador',
     grupo: 'Operação',
     titulo: 'Simulador de atividade',
-    status: config.simulador && config.producao ? 'aviso' : 'info',
-    detalhe: config.simulador ? `Ligado: cria transações de exemplo a cada ~${config.intervaloSimulador} s.` : 'Desligado.',
-    dica: config.simulador && config.producao ? 'Em produção, defina BENTO_SIMULADOR=false.' : undefined,
+    status: simuladorLigado && !usaDemonstracao ? 'aviso' : 'info',
+    detalhe: !config.simulador
+      ? 'Desligado pelo .env (BENTO_SIMULADOR=false).'
+      : simuladorLigado
+        ? `Ligado${modoSimulador === 'auto' ? ' (automático, porque o painel usa os dados de demonstração)' : ''}: cria transações de exemplo a cada ~${config.intervaloSimulador} s.`
+        : modoSimulador === 'auto'
+          ? 'Automático: parado, porque o painel usa dados reais.'
+          : 'Desligado em Configurações › Manutenção.',
+    dica: simuladorLigado && !usaDemonstracao ? 'O painel tem dados reais: volte o simulador para Automático ou Desligado em Configurações › Manutenção.' : undefined,
   });
+
+  if (banco) {
+    adicionar({
+      id: 'demonstracao',
+      grupo: 'Operação',
+      titulo: 'Dados do painel',
+      status: usaDemonstracao && config.producao ? 'aviso' : 'info',
+      detalhe: usaDemonstracao ? 'Ainda são os dados de demonstração.' : 'Dados reais da sua empresa.',
+      dica: usaDemonstracao ? 'Quando quiser usar de verdade, abra Configurações › Empresa › Começar com os meus dados.' : undefined,
+    });
+  }
 
   const { retencao } = config;
   adicionar({

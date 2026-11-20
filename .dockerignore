@@ -14,3 +14,7 @@ docs
 iniciar.cmd
 iniciar.sh
 analise
+atualizar.cmd
+atualizar.sh
+scripts/*.ps1
+scripts/*.sh

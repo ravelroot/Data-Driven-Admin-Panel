@@ -1,6 +1,6 @@
 {
   "name": "bento",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "type": "module",
   "description": "Painel administrativo SaaS em bento grid com interface e API em TypeScript e Tailwind CSS",
@@ -16,6 +16,7 @@
     "dev": "node scripts/dev.mjs",
     "build": "npm run build -w web && npm run build -w api",
     "start": "npm run start -w api",
+    "ajuda": "npm run ajuda -w api",
     "test": "npm test -w api && npm test -w web",
     "migrar": "npm run migrar -w api",
     "semear": "npm run semear -w api",

@@ -15,7 +15,21 @@ import { confirmar, mostrarSegredo } from "../componentes/modal.ts";
 import { avisar, avisoSucesso } from "../componentes/aviso.ts";
 import { lerFormulario, mostrarErros, limparErros, ligarForcaSenha, ligarMostrarSenha } from "../componentes/formulario.ts";
 import { iniciarDoisFatores } from "../componentes/dois-fatores.ts";
-import type { EntregaIntegracao, EstadoDoisFatores, EstadoManutencao, Integracao, Pagina, Preferencias, Sistema, StatusEntrega, Usuario } from "../nucleo/tipos.ts";
+import type {
+  EntregaIntegracao,
+  EstadoAjustes,
+  EstadoDoisFatores,
+  EstadoManutencao,
+  Integracao,
+  ModoSimulador,
+  Pagina,
+  Preferencias,
+  ResumoDemonstracao,
+  RetencaoDias,
+  Sistema,
+  StatusEntrega,
+  Usuario,
+} from "../nucleo/tipos.ts";
 import { ouvir } from "../nucleo/eventos.ts";
 
 interface SessaoAtiva {
@@ -55,7 +69,16 @@ const campo = <T extends Element = HTMLInputElement>(formulario: HTMLFormElement
 
 const alvoDoEvento = (evento: Event): Element => evento.target as Element;
 
-const ICONES_PROVEDOR: Record<string, string> = { webhook: "webhook", slack: "hash", discord: "mensagens", "google-analytics": "grafico-combinado", stripe: "cartao" };
+const ICONES_PROVEDOR: Record<string, string> = {
+  webhook: "webhook",
+  slack: "hash",
+  discord: "mensagens",
+  teams: "usuarios",
+  "google-chat": "globo",
+  telegram: "enviar",
+  "google-analytics": "grafico-combinado",
+  stripe: "cartao",
+};
 
 const carregados = new Set<string>();
 
@@ -378,15 +401,13 @@ const cartaoIntegracao = (integracao: Integracao) => html`
     <div class="integracao-rodape">
       <span class="integracao-evento">${integracao.ultimoEvento ? `Último evento ${relativo(integracao.ultimoEvento)}` : integracao.configurada ? "Configurada" : "Não configurada"}</span>
       <div class="integracao-botoes">
-        ${ENVIAM_EVENTOS.has(integracao.provedor) ? html`<button type="button" class="botao botao-fantasma botao-icone botao-pequeno" data-entregas="${integracao.id}" aria-label="Histórico de entregas de ${integracao.nome}" data-dica-flutuante="Entregas">${html([icone("historico")])}</button>` : ""}
+        ${integracao.enviaEventos ? html`<button type="button" class="botao botao-fantasma botao-icone botao-pequeno" data-entregas="${integracao.id}" aria-label="Histórico de entregas de ${integracao.nome}" data-dica-flutuante="Entregas">${html([icone("historico")])}</button>` : ""}
         <button type="button" class="botao botao-secundario botao-pequeno" data-configurar="${integracao.id}">${html([icone("ajustes")])}Configurar</button>
       </div>
     </div>
     ${integracao.status === "erro" && integracao.ultimoErro ? html`<p class="integracao-erro">${integracao.ultimoErro}</p>` : ""}
   </article>
 `;
-
-const ENVIAM_EVENTOS = new Set(["webhook", "slack", "discord"]);
 
 const ROTULOS_ENTREGA: Record<StatusEntrega, string> = { pendente: "Nova tentativa", entregue: "Entregue", falhou: "Falhou" };
 const STATUS_EMBLEMA_ENTREGA: Record<StatusEntrega, string> = { pendente: "pendente", entregue: "sucesso", falhou: "erro" };
@@ -398,6 +419,58 @@ const ROTULOS_EVENTO: Record<string, string> = {
   "alerta.disparado": "Alerta de métrica disparado",
   "integracao.teste": "Teste",
 };
+
+const EVENTOS_INTEGRACAO = ["transacao.paga", "usuario.criado", "usuario.bloqueado", "relatorio.gerado", "alerta.disparado"] as const;
+
+const exemploVerificacao = (): string =>
+  [
+    'import { createHmac, timingSafeEqual } from "node:crypto";',
+    "",
+    "export function assinaturaValida(corpoBruto, cabecalho, segredo) {",
+    '  const esperado = "sha256=" + createHmac("sha256", segredo).update(corpoBruto).digest("hex");',
+    "  return cabecalho?.length === esperado.length && timingSafeEqual(Buffer.from(cabecalho), Buffer.from(esperado));",
+    "}",
+  ].join("\n");
+
+const blocoCopiavel = (rotulo: string, conteudo: string) => html`
+  <div class="integracao-codigo">
+    <div class="integracao-codigo-topo">
+      <span>${rotulo}</span>
+      <button type="button" class="botao botao-fantasma botao-pequeno" data-copiar-codigo>${html([icone("copiar")])}Copiar</button>
+    </div>
+    <pre><code>${conteudo}</code></pre>
+  </div>
+`;
+
+const guiaIntegracao = (integracao: Integracao) => html`
+  <details class="integracao-guia" ${integracao.configurada ? "" : "open"}>
+    <summary>${html([icone("bussola")])}Como conectar ${integracao.nome}</summary>
+    <ol class="integracao-passos">${integracao.guia.passos.map((passo) => html`<li>${passo}</li>`)}</ol>
+    <a class="link-externo" href="${integracao.guia.documentacao}" target="_blank" rel="noopener noreferrer">${html([icone("externo")])}Documentação oficial</a>
+  </details>
+`;
+
+const eventosIntegracao = (integracao: Integracao) => html`
+  <fieldset class="campo integracao-eventos" data-eventos>
+    <legend class="campo-rotulo campo-obrigatorio">Eventos enviados</legend>
+    <div class="opcoes-papeis">
+      ${EVENTOS_INTEGRACAO.map(
+        (evento) => html`<label class="opcao"><input type="checkbox" class="caixa-marcacao" name="eventos" value="${evento}" ${integracao.eventos.includes(evento) ? "checked" : ""}><span class="opcao-texto"><span class="opcao-titulo">${ROTULOS_EVENTO[evento]}</span></span></label>`,
+      )}
+    </div>
+    <span class="campo-ajuda">Escolha o que esta integração recebe. Os alertas só chegam quando a regra estiver marcada para avisar as integrações.</span>
+  </fieldset>
+`;
+
+const exemploWebhook = (integracao: Integracao) =>
+  integracao.exemplo
+    ? html`<details class="integracao-guia">
+        <summary>${html([icone("arquivo")])}O que chega no seu sistema</summary>
+        <p class="campo-ajuda">Um POST em JSON com os cabeçalhos <code>X-Bento-Evento</code>, <code>X-Bento-Entrega</code>, <code>X-Bento-Tentativa</code> e <code>X-Bento-Assinatura</code>.</p>
+        ${blocoCopiavel("Corpo", JSON.stringify(integracao.exemplo, null, 2))}
+        ${blocoCopiavel("Conferir a assinatura (Node.js)", exemploVerificacao())}
+      </details>`
+    : "";
 
 type RespostaEntregas = Pagina<EntregaIntegracao> & { resumo: Record<StatusEntrega, number> };
 
@@ -494,44 +567,63 @@ const abrirEntregas = (integracao: Integracao, recarregarCartoes: () => Promise<
 };
 
 const abrirIntegracao = (integracao: Integracao, recarregar: () => Promise<void>): void => {
-  const gaveta = new Gaveta({ titulo: integracao.nome, subtitulo: integracao.descricao }).abrir();
+  const gaveta = new Gaveta({ titulo: integracao.nome, subtitulo: integracao.descricao, largura: "larga" }).abrir();
   gaveta.definirCorpo(html`
     <form class="formulario" id="form-integracao" novalidate>
+      ${guiaIntegracao(integracao)}
       <div class="linha-interruptor">
         <div class="opcao-texto"><span class="opcao-titulo">Integração ligada</span><span class="opcao-descricao">Desligada, nenhum evento é enviado.</span></div>
         <label class="interruptor"><input type="checkbox" name="ativo" ${integracao.ativo ? "checked" : ""}><span class="interruptor-trilho"></span></label>
       </div>
       ${integracao.campos.map(
         (item) => html`<label class="campo">
-          <span class="campo-rotulo">${item.rotulo}</span>
-          <input class="entrada ${item.tipo === "segredo" ? "entrada-mono" : ""}" name="${item.nome}" type="${item.tipo === "url" ? "url" : item.tipo === "segredo" ? "password" : "text"}" value="${item.tipo === "segredo" ? "" : item.valor ?? ""}" placeholder="${item.tipo === "segredo" && item.valor ? `${item.valor} (deixe em branco para manter)` : ""}" autocomplete="off" data-campo-config>
+          <span class="campo-rotulo ${item.obrigatorio ? "campo-obrigatorio" : ""}">${item.rotulo}</span>
+          <input class="entrada ${item.tipo === "segredo" ? "entrada-mono" : ""}" name="${item.nome}" type="${item.tipo === "url" ? "url" : item.tipo === "segredo" ? "password" : "text"}" value="${item.tipo === "segredo" ? "" : item.valor ?? ""}" placeholder="${item.tipo === "segredo" && item.valor ? `${item.valor} (deixe em branco para manter)` : ""}" autocomplete="off" spellcheck="false" data-campo-config>
+          ${item.dica ? html`<span class="campo-ajuda">${item.dica}</span>` : ""}
         </label>`,
       )}
-      <div class="alerta alerta-info alerta-compacto">${html([icone("info")])}<span>Eventos enviados: transação paga, usuário criado, usuário bloqueado e relatório gerado.</span></div>
+      ${integracao.enviaEventos ? eventosIntegracao(integracao) : ""}
+      ${exemploWebhook(integracao)}
     </form>
   `);
   gaveta.definirRodape(html`
-    <div class="gaveta-rodape-esquerda"><button type="button" class="botao botao-fantasma" data-testar>${html([icone("enviar")])}Testar</button></div>
+    <div class="gaveta-rodape-esquerda">${integracao.enviaEventos ? html`<button type="button" class="botao botao-fantasma" data-testar>${html([icone("enviar")])}Salvar e testar</button>` : html`<button type="button" class="botao botao-fantasma" data-testar>${html([icone("verificado")])}Conferir campos</button>`}</div>
     <button type="button" class="botao botao-secundario" data-cancelar>Cancelar</button>
     <button type="submit" form="form-integracao" class="botao botao-primario" data-salvar><i data-icone="salvar"></i>Salvar</button>
   `);
   const formulario = exigir<HTMLFormElement>("#form-integracao");
   exigir("[data-cancelar]", gaveta.rodape).addEventListener("click", () => gaveta.fechar());
+  formulario.addEventListener("click", async (evento) => {
+    const botao = alvoDoEvento(evento).closest<HTMLButtonElement>("[data-copiar-codigo]");
+    if (!botao) return;
+    const codigo = botao.closest(".integracao-codigo")?.querySelector("code")?.textContent ?? "";
+    try {
+      await navigator.clipboard.writeText(codigo);
+      avisoSucesso("Copiado");
+    } catch {
+      avisar({ tipo: "erro", titulo: "Não foi possível copiar", texto: "Selecione o texto e copie com Ctrl + C." });
+    }
+  });
   const salvar = async (): Promise<Integracao> => {
     const config: Record<string, string> = {};
     for (const entrada of formulario.querySelectorAll<HTMLInputElement>("[data-campo-config]")) config[entrada.name] = entrada.value.trim();
-    return api.atualizar<Integracao>(`/integracoes/${integracao.id}`, { ativo: campo(formulario, "ativo").checked, config });
+    const corpo: Record<string, unknown> = { ativo: campo(formulario, "ativo").checked, config };
+    if (integracao.enviaEventos) {
+      corpo.eventos = [...formulario.querySelectorAll<HTMLInputElement>('input[name="eventos"]:checked')].map((entrada) => entrada.value);
+    }
+    return api.atualizar<Integracao>(`/integracoes/${integracao.id}`, corpo);
   };
   exigir("[data-testar]", gaveta.rodape).addEventListener("click", async (evento) => {
     const botao = evento.currentTarget as HTMLButtonElement;
     carregando(botao, true);
+    limparErros(formulario);
     try {
       await salvar();
       const resultado = await api.criar<{ ok: boolean; mensagem: string }>(`/integracoes/${integracao.id}/testar`);
-      avisar({ tipo: resultado.ok ? "sucesso" : "erro", titulo: resultado.ok ? "Teste enviado" : "O teste falhou", texto: resultado.mensagem });
-      recarregar();
+      avisar({ tipo: resultado.ok ? "sucesso" : "erro", titulo: resultado.ok ? "Tudo certo" : "O teste falhou", texto: resultado.mensagem });
+      void recarregar();
     } catch (erro) {
-      avisar({ tipo: "erro", titulo: "Não foi possível testar", texto: mensagemDeErro(erro) });
+      tratarErroFormulario(formulario, erro, "Não foi possível testar");
     } finally {
       carregando(botao, false);
     }
@@ -540,11 +632,12 @@ const abrirIntegracao = (integracao: Integracao, recarregar: () => Promise<void>
     evento.preventDefault();
     const botao = gaveta.rodape.querySelector<HTMLButtonElement>("[data-salvar]");
     carregando(botao, true);
+    limparErros(formulario);
     try {
       await salvar();
       gaveta.fechar();
       avisoSucesso("Integração salva", integracao.nome);
-      recarregar();
+      void recarregar();
     } catch (erro) {
       tratarErroFormulario(formulario, erro, "Não foi possível salvar a integração");
     } finally {
@@ -575,6 +668,95 @@ const secaoIntegracoes = async (): Promise<void> => {
   await recarregar();
 };
 
+const abrirDadosReais = (sistema: Sistema, resumo: ResumoDemonstracao): void => {
+  const gaveta = new Gaveta({ titulo: "Começar com os meus dados", subtitulo: "Um passo só: backup, limpeza dos exemplos e a sua conta no lugar da conta de demonstração.", largura: "larga" }).abrir();
+  gaveta.definirCorpo(html`
+    <form class="formulario" id="form-dados-reais" novalidate>
+      <div class="alerta alerta-info alerta-compacto">${html([icone("backup")])}<span>Antes de apagar, o Bento grava um backup completo em <code>dados/backups</code>. Dá para voltar com <code>npm run restaurar</code>.</span></div>
+      <dl class="comecar-resumo">
+        <div><dt>Contas da equipe</dt><dd>${numero(resumo.equipe)}</dd></div>
+        <div><dt>Clientes</dt><dd>${numero(resumo.clientes)}</dd></div>
+        <div><dt>Transações</dt><dd>${numero(resumo.transacoes)}</dd></div>
+        <div><dt>Relatórios</dt><dd>${numero(resumo.relatorios)}</dd></div>
+      </dl>
+      <p class="campo-ajuda">Saem também assinaturas, tráfego, notificações, alertas, notas e a auditoria de exemplo. Ficam as integrações, a moeda, o fuso, a meta, as chaves de API e as suas preferências.</p>
+      <div class="grade-campos">
+        <label class="campo">
+          <span class="campo-rotulo campo-obrigatorio">Seu nome</span>
+          <input class="entrada" name="nome" required minlength="2" maxlength="120" autocomplete="name">
+        </label>
+        <label class="campo">
+          <span class="campo-rotulo campo-obrigatorio">Seu e-mail</span>
+          <input class="entrada" name="email" type="email" required maxlength="254" autocomplete="email">
+        </label>
+        <label class="campo">
+          <span class="campo-rotulo campo-obrigatorio">Senha nova</span>
+          <span class="entrada-caixa"><input class="entrada" type="password" name="senha" required minlength="8" maxlength="128" autocomplete="new-password" data-senha-real><button type="button" class="entrada-caixa-acao" data-mostrar-senha aria-label="Mostrar senha">${html([icone("olho")])}</button></span>
+          <span class="forca-senha" data-forca-real aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        </label>
+        <label class="campo">
+          <span class="campo-rotulo">Nome da empresa</span>
+          <input class="entrada" name="nomeEmpresa" maxlength="120" value="${sistema.nomeEmpresa.trim().toLowerCase() === "bento" ? "" : sistema.nomeEmpresa}">
+        </label>
+        <label class="campo campo-inteiro">
+          <span class="campo-rotulo campo-obrigatorio">Senha atual, para confirmar</span>
+          <span class="entrada-caixa"><input class="entrada" type="password" name="senhaAtual" required autocomplete="current-password" placeholder="bento123 na demonstração"><button type="button" class="entrada-caixa-acao" data-mostrar-senha aria-label="Mostrar senha">${html([icone("olho")])}</button></span>
+        </label>
+        <label class="opcao campo-inteiro"><input type="checkbox" class="caixa-marcacao" name="entendi" required><span class="opcao-texto"><span class="opcao-titulo">Entendi que os dados de exemplo serão apagados</span><span class="opcao-descricao">As outras contas de demonstração deixam de existir e todas as sessões são encerradas.</span></span></label>
+      </div>
+    </form>
+  `);
+  gaveta.definirRodape(html`
+    <button type="button" class="botao botao-secundario" data-cancelar>Cancelar</button>
+    <button type="submit" form="form-dados-reais" class="botao botao-primario" data-salvar>${html([icone("foguete")])}Apagar exemplos e começar</button>
+  `);
+  const formulario = exigir<HTMLFormElement>("#form-dados-reais");
+  ligarMostrarSenha(formulario);
+  ligarForcaSenha(formulario.querySelector("[data-senha-real]"), formulario.querySelector<HTMLElement>("[data-forca-real]"));
+  exigir("[data-cancelar]", gaveta.rodape).addEventListener("click", () => gaveta.fechar());
+  formulario.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    limparErros(formulario);
+    if (!formulario.reportValidity()) return;
+    const botao = gaveta.rodape.querySelector<HTMLButtonElement>("[data-salvar]");
+    carregando(botao, true);
+    const dados = lerFormulario(formulario) as Record<string, unknown>;
+    delete dados.entendi;
+    try {
+      const resultado = await api.criar<{ backup: string; email: string }>("/sistema/demonstracao/encerrar", dados);
+      location.assign(`/entrar?email=${encodeURIComponent(resultado.email)}&pronto=${encodeURIComponent(resultado.backup)}`);
+    } catch (erro) {
+      carregando(botao, false);
+      tratarErroFormulario(formulario, erro, "Não foi possível concluir");
+    }
+  });
+};
+
+const cartaoDemonstracao = async (sistema: Sistema): Promise<void> => {
+  const alvo = $("[data-demonstracao]");
+  if (!alvo) return;
+  const resumo = await api.obter<ResumoDemonstracao>("/sistema/demonstracao").catch(() => null);
+  if (!resumo?.ativa) {
+    alvo.hidden = true;
+    return;
+  }
+  renderizar(
+    alvo,
+    html`<span class="comecar-icone">${html([icone("foguete")])}</span>
+      <div class="comecar-texto">
+        <h3 class="comecar-titulo">O painel ainda mostra a demonstração</h3>
+        <p class="comecar-descricao">${numero(resumo.clientes)} clientes, ${numero(resumo.transacoes)} transações e ${numero(resumo.equipe)} contas da equipe são de exemplo. Quando quiser usar de verdade, o Bento faz um backup, apaga tudo isso e coloca a sua conta no lugar.</p>
+      </div>
+      <button type="button" class="botao botao-primario" data-comecar>${html([icone("foguete")])}Começar com os meus dados</button>`,
+  );
+  alvo.hidden = false;
+  exigir("[data-comecar]", alvo).addEventListener("click", () => abrirDadosReais(sistema, resumo));
+  if (parametrosUrl().comecar !== undefined) {
+    atualizarUrl({ comecar: null });
+    abrirDadosReais(sistema, resumo);
+  }
+};
+
 const secaoSistema = async (): Promise<void> => {
   const formulario = exigir<HTMLFormElement>("[data-form-sistema]");
   const sistema = await api.obter<Sistema>("/configuracoes/sistema");
@@ -591,6 +773,7 @@ const secaoSistema = async (): Promise<void> => {
     exigir("[data-aviso-sistema]").hidden = false;
     return;
   }
+  void cartaoDemonstracao(sistema);
   formulario.addEventListener("submit", async (evento) => {
     evento.preventDefault();
     limparErros(formulario);
@@ -747,6 +930,15 @@ interface ItemLimpeza {
   bytes: number;
 }
 
+const CHAVES_RETENCAO: Record<string, keyof RetencaoDias> = {
+  notificacoes: "notificacoesDias",
+  relatorios: "relatoriosDias",
+  auditoria: "auditoriaDias",
+  sessoes: "sessoesDias",
+  entregas: "entregasDias",
+  alertas: "alertasDias",
+};
+
 const ROTULOS_VERIFICACAO: Record<StatusVerificacao, string> = { ok: "Tudo certo", info: "Informação", aviso: "Atenção", erro: "Precisa de ajuste" };
 const STATUS_EMBLEMA_VERIFICACAO: Record<StatusVerificacao, string> = { ok: "sucesso", info: "info", aviso: "alerta", erro: "erro" };
 const ORDEM_VERIFICACAO: Record<StatusVerificacao, number> = { erro: 0, aviso: 1, info: 2, ok: 3 };
@@ -834,7 +1026,7 @@ const secaoManutencao = async (): Promise<void> => {
     try {
       const resposta = await api.obter<{ automatico: string; manter: number; itens: ArquivoBackup[] }>("/sistema/backups");
       politica.innerHTML = String(
-        html`${resposta.automatico === "desligado" ? "Backup automático desligado (defina BENTO_BACKUP_AUTOMATICO=diario)." : `Backup automático ${resposta.automatico === "diario" ? "diário" : "semanal"}, guardando os ${resposta.manter} mais recentes.`} Restaure com <code>npm run restaurar</code>.`,
+        html`${resposta.automatico === "desligado" ? "Backup automático desligado." : `Backup automático ${resposta.automatico === "diario" ? "diário" : "semanal"}, guardando os ${resposta.manter} mais recentes.`} Restaure com <code>npm run restaurar</code>.`,
       );
       renderizar(
         alvoBackups,
@@ -883,22 +1075,31 @@ const secaoManutencao = async (): Promise<void> => {
     }
   });
 
-  const alvoRetencao = exigir("[data-retencao]");
+  const alvoRetencao = exigir<HTMLFormElement>("[data-retencao]");
+  let estadoAjustes = await api.obter<EstadoAjustes>("/sistema/operacao");
+  const alterado = (chave: string): boolean => estadoAjustes.alterados.includes(chave);
+  const origem = (chaves: string[], padrao: string) =>
+    chaves.some(alterado) ? html`Ajustado no painel · no <code>.env</code>: ${padrao}` : html`Valor do <code>.env</code>`;
   const desenharRetencao = (itens: ItemLimpeza[], removidos = false): void => {
+    const minimos: Record<string, number> = { notificacoes: 0, relatorios: 0, auditoria: 0, sessoes: 1, entregas: 1, alertas: 1 };
     renderizar(
       alvoRetencao,
       html`<table class="sistema-tabela retencao-tabela">
-        <thead><tr><th>Dado</th><th>Prazo</th><th>${removidos ? "Removidos" : "A remover"}</th></tr></thead>
+        <thead><tr><th>Dado</th><th>Guardar por (dias)</th><th>${removidos ? "Removidos" : "A remover"}</th></tr></thead>
         <tbody>
           ${itens.map(
             (item) => html`<tr>
-              <td>${item.nome}</td>
-              <td>${item.dias > 0 ? `${numero(item.dias)} dias` : "sem limite"}</td>
+              <td>${item.nome}${alterado(`retencao.${CHAVES_RETENCAO[item.categoria]}`) ? html` <span class="emblema emblema-pequeno" data-status="info">painel</span>` : ""}</td>
+              <td><input class="entrada entrada-pequena retencao-dias" type="number" inputmode="numeric" step="1" min="${minimos[item.categoria] ?? 0}" max="3650" name="${CHAVES_RETENCAO[item.categoria] ?? item.categoria}" value="${item.dias}" aria-label="Dias para ${item.nome}" required>${item.dias === 0 ? html`<span class="texto-suave text-xs"> sem limite</span>` : ""}</td>
               <td>${numero(item.registros)}${item.bytes ? html` <span class="texto-suave">(${bytes(item.bytes)})</span>` : ""}</td>
             </tr>`,
           )}
         </tbody>
-      </table>`,
+      </table>
+      <div class="formulario-acoes justify-start">
+        <button type="submit" class="botao botao-secundario botao-pequeno" data-salvar>${html([icone("salvar")])}Salvar prazos</button>
+        ${estadoAjustes.alterados.length ? html`<button type="button" class="botao botao-fantasma botao-pequeno" data-restaurar-padroes>${html([icone("desfazer")])}Voltar aos valores do .env</button>` : ""}
+      </div>`,
     );
   };
   const carregarRetencao = async (): Promise<void> => {
@@ -908,6 +1109,85 @@ const secaoManutencao = async (): Promise<void> => {
       renderizar(alvoRetencao, html`<div class="alerta alerta-erro alerta-compacto">${html([icone("alerta")])}<span>${mensagemDeErro(erro)}</span></div>`);
     }
   };
+
+  const formularioBackup = exigir<HTMLFormElement>("[data-form-backup]");
+  const formularioSimulador = exigir<HTMLFormElement>("[data-form-simulador]");
+  const DESCRICOES_SIMULADOR: Record<ModoSimulador, string> = {
+    auto: "Roda só enquanto o painel usa os dados de demonstração.",
+    ligado: "Roda sempre, mesmo com dados reais. Use só para testes.",
+    desligado: "Nunca cria dados de exemplo.",
+  };
+  const preencherAjustes = (): void => {
+    const { ajustes, padroes, simulador } = estadoAjustes;
+    campo<HTMLSelectElement>(formularioBackup, "backupAutomatico").value = ajustes.backupAutomatico;
+    campo(formularioBackup, "backupManter").value = String(ajustes.backupManter);
+    const nomesFrequencia: Record<string, string> = { diario: "todo dia", semanal: "toda semana", desligado: "desligado" };
+    exigir("[data-origem-backup]", formularioBackup).innerHTML = String(
+      origem(["backupAutomatico", "backupManter"], `${nomesFrequencia[padroes.backupAutomatico]}, ${padroes.backupManter} cópias`),
+    );
+    renderizar(
+      formularioSimulador,
+      html`<div class="opcoes-simulador" role="radiogroup" aria-label="Modo do simulador">
+          ${(["auto", "ligado", "desligado"] as const).map(
+            (modo) => html`<label class="opcao"><input type="radio" class="radio" name="simulador" value="${modo}" ${simulador.modo === modo ? "checked" : ""} ${simulador.permitido ? "" : "disabled"}><span class="opcao-texto"><span class="opcao-titulo">${modo === "auto" ? "Automático" : modo === "ligado" ? "Ligado" : "Desligado"}</span><span class="opcao-descricao">${DESCRICOES_SIMULADOR[modo]}</span></span></label>`,
+          )}
+        </div>
+        <p class="campo-ajuda simulador-estado">${simulador.permitido ? html`<span class="emblema emblema-pequeno" data-status="${simulador.ativo ? "sucesso" : "inativo"}">${simulador.ativo ? `Rodando a cada ~${simulador.intervaloSegundos} s` : "Parado"}</span><span>${estadoAjustes.demonstracao ? "O painel usa os dados de demonstração." : "O painel usa dados reais."}</span>` : html`<span>Desligado pelo <code>.env</code> (<code>BENTO_SIMULADOR=false</code>).</span>`}</p>`,
+    );
+  };
+  preencherAjustes();
+  const salvarAjustes = async (corpo: Record<string, unknown>, botao: HTMLButtonElement | null, titulo: string): Promise<boolean> => {
+    carregando(botao, true);
+    try {
+      estadoAjustes = await api.substituir<EstadoAjustes>("/sistema/operacao", corpo);
+      preencherAjustes();
+      avisoSucesso(titulo, "Vale na hora para todas as instâncias.");
+      return true;
+    } catch (erro) {
+      avisar({ tipo: "erro", titulo: "Não foi possível salvar", texto: mensagemDeErro(erro) });
+      return false;
+    } finally {
+      carregando(botao, false);
+    }
+  };
+  formularioSimulador.addEventListener("change", async (evento) => {
+    const entrada = evento.target as HTMLInputElement;
+    if (entrada.name !== "simulador") return;
+    await salvarAjustes({ simulador: entrada.value }, null, "Simulador ajustado");
+  });
+  formularioBackup.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    if (!formularioBackup.reportValidity()) return;
+    const ok = await salvarAjustes(
+      { backupAutomatico: campo<HTMLSelectElement>(formularioBackup, "backupAutomatico").value, backupManter: Number(campo(formularioBackup, "backupManter").value) },
+      formularioBackup.querySelector<HTMLButtonElement>("[data-salvar]"),
+      "Backups ajustados",
+    );
+    if (ok) await carregarBackups();
+  });
+  alvoRetencao.addEventListener("submit", async (evento) => {
+    evento.preventDefault();
+    if (!alvoRetencao.reportValidity()) return;
+    const retencao: Partial<RetencaoDias> = {};
+    for (const entrada of alvoRetencao.querySelectorAll<HTMLInputElement>(".retencao-dias")) retencao[entrada.name as keyof RetencaoDias] = Number(entrada.value);
+    if (await salvarAjustes({ retencao }, alvoRetencao.querySelector<HTMLButtonElement>("[data-salvar]"), "Prazos de retenção salvos")) await carregarRetencao();
+  });
+  alvoRetencao.addEventListener("click", async (evento) => {
+    const botao = alvoDoEvento(evento).closest<HTMLButtonElement>("[data-restaurar-padroes]");
+    if (!botao) return;
+    const ok = await confirmar({ titulo: "Voltar aos valores do .env?", texto: "Simulador, backups e prazos de retenção voltam para o que está no .env.", confirmar: "Voltar" });
+    if (!ok) return;
+    carregando(botao, true);
+    try {
+      estadoAjustes = await api.excluir<EstadoAjustes>("/sistema/operacao");
+      preencherAjustes();
+      avisoSucesso("Valores do .env restaurados");
+      await Promise.all([carregarRetencao(), carregarBackups()]);
+    } catch (erro) {
+      carregando(botao, false);
+      avisar({ tipo: "erro", titulo: "Não foi possível restaurar", texto: mensagemDeErro(erro) });
+    }
+  });
   exigir("[data-limpar]").addEventListener("click", async (evento) => {
     const botao = evento.currentTarget as HTMLButtonElement;
     const ok = await confirmar({

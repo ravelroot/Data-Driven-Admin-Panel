@@ -297,4 +297,61 @@
   .dois-fatores .sessao-detalhe {
     @apply whitespace-normal;
   }
+
+  .comecar {
+    @apply mt-6 grid items-center gap-4 rounded-controle border border-dashed border-primaria-400 bg-primaria-50/60 p-5 sm:grid-cols-[auto_minmax(0,1fr)_auto] dark:border-destaque-400/50 dark:bg-destaque-400/10;
+  }
+
+  .comecar-icone {
+    @apply grid size-11 place-items-center rounded-controle bg-tinta text-creme dark:bg-creme dark:text-tinta;
+  }
+
+  .comecar-icone svg {
+    @apply size-5;
+  }
+
+  .comecar-titulo {
+    @apply font-titulo text-base font-semibold text-(--texto);
+  }
+
+  .comecar-descricao {
+    @apply mt-1 text-sm leading-relaxed text-(--texto-2);
+  }
+
+  .comecar-resumo {
+    @apply grid grid-cols-2 gap-px overflow-hidden rounded-controle border border-(--parede) bg-(--parede) sm:grid-cols-4;
+  }
+
+  .comecar-resumo > div {
+    @apply flex flex-col gap-1 bg-(--caixa) px-4 py-3;
+  }
+
+  .comecar-resumo dt {
+    @apply text-xs text-(--texto-3);
+  }
+
+  .comecar-resumo dd {
+    @apply font-titulo text-2xl leading-none tabular-nums text-(--texto);
+    font-variation-settings: "opsz" 96, "wdth" 88;
+  }
+
+  .opcoes-simulador {
+    @apply grid gap-3 xl:grid-cols-3;
+  }
+
+  .ajustes-backup {
+    @apply grid items-end gap-3 sm:grid-cols-[minmax(0,1fr)_8rem_auto];
+  }
+
+  .ajustes-origem {
+    @apply sm:col-span-3;
+  }
+
+  .retencao-dias {
+    @apply w-24 tabular-nums;
+  }
+
+  .simulador-estado {
+    @apply mt-3 flex flex-wrap items-center gap-2;
+  }
 }

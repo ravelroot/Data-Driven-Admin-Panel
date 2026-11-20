@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { Banco } from './conexao.js';
+import { definirDemonstracao } from '../operacao/ajustes.js';
 import { gerarHashSenha } from '../modulos/auth/servico.js';
 import { gerarArquivo, nomePadrao, proximaExecucao } from '../modulos/relatorios/servico.js';
 import {
@@ -797,6 +798,7 @@ export async function semear(banco: Banco, fuso: string, opcoes: { escala?: numb
     await tx.consultar(`update configuracoes_sistema set valor = $1::jsonb, atualizado_em = now() where chave = 'metaMensal'`, [
       JSON.stringify(metaAtual),
     ]);
+    await definirDemonstracao(tx, true);
     eventos.sort((a, b) => a.quando - b.quando);
     await inserirEmLote(
       tx,

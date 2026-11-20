@@ -189,6 +189,20 @@ export interface CampoIntegracao {
   tipo: "texto" | "url" | "segredo";
   valor: string;
   obrigatorio?: boolean;
+  dica?: string | null;
+}
+
+export interface GuiaIntegracao {
+  passos: string[];
+  documentacao: string;
+}
+
+export interface ExemploWebhook {
+  evento: string;
+  resumo: string;
+  criadoEm: string;
+  entrega: string;
+  dados: Record<string, unknown>;
 }
 
 export interface Integracao {
@@ -203,6 +217,48 @@ export interface Integracao {
   ultimoEvento: string | null;
   ultimoErro?: string | null;
   campos: CampoIntegracao[];
+  enviaEventos: boolean;
+  eventos: string[];
+  guia: GuiaIntegracao;
+  exemplo: ExemploWebhook | null;
+}
+
+export type ModoSimulador = "auto" | "ligado" | "desligado";
+export type FrequenciaBackup = "desligado" | "diario" | "semanal";
+
+export interface RetencaoDias {
+  notificacoesDias: number;
+  relatoriosDias: number;
+  auditoriaDias: number;
+  sessoesDias: number;
+  entregasDias: number;
+  alertasDias: number;
+}
+
+export interface AjustesOperacao {
+  simulador: ModoSimulador;
+  backupAutomatico: FrequenciaBackup;
+  backupManter: number;
+  retencao: RetencaoDias;
+}
+
+export interface EstadoAjustes {
+  ajustes: AjustesOperacao;
+  padroes: Omit<AjustesOperacao, "simulador">;
+  alterados: string[];
+  simulador: { modo: ModoSimulador; ativo: boolean; permitido: boolean; intervaloSegundos: number };
+  demonstracao: boolean;
+}
+
+export interface ResumoDemonstracao {
+  ativa: boolean;
+  equipe: number;
+  clientes: number;
+  assinaturas: number;
+  transacoes: number;
+  relatorios: number;
+  notificacoes: number;
+  alertas: number;
 }
 
 export type StatusEntrega = "pendente" | "entregue" | "falhou";

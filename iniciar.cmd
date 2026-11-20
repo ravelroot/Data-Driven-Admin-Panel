@@ -1,7 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-if not exist .env powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\criar-env.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\preparar-env.ps1" || (pause & exit /b 1)
 set "PORTA=8080"
 for /f "tokens=2 delims==" %%p in ('findstr /b "BENTO_PORTA=" .env') do set "PORTA=%%p"
 
@@ -13,8 +13,11 @@ if errorlevel 1 goto semdocker
 docker compose up -d --build || (pause & exit /b 1)
 echo.
 echo Aguardando o Bento subir...
-powershell -NoProfile -Command "for($i=0;$i -lt 90;$i++){ try { Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 ('http://localhost:%PORTA%/api/v1/saude') | Out-Null; Start-Process ('http://localhost:%PORTA%'); exit 0 } catch { Start-Sleep 2 } }; exit 1"
-if errorlevel 1 (echo O Bento ainda esta subindo. Acompanhe com: docker compose logs -f bento) else (echo Pronto! Entre com admin@bento.local e a senha bento123.)
+powershell -NoProfile -Command "for($i=0;$i -lt 90;$i++){ try { Invoke-WebRequest -UseBasicParsing -TimeoutSec 2 ('http://localhost:%PORTA%/api/v1/saude/pronto') | Out-Null; Start-Process ('http://localhost:%PORTA%'); exit 0 } catch { Start-Sleep 2 } }; exit 1"
+if errorlevel 1 (echo O Bento ainda esta subindo. Acompanhe com: docker compose logs -f bento) else (
+  echo Pronto! Entre com admin@bento.local e a senha bento123.
+  echo Para usar com os seus dados: Configuracoes ^> Empresa ^> Comecar com os meus dados.
+)
 pause
 exit /b 0
 

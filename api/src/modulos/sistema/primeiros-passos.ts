@@ -36,6 +36,18 @@ export async function primeirosPassos(app: FastifyInstance): Promise<PrimeirosPa
   const totais = contagens.linhas[0] ?? { equipe: 0, integracoes: 0, agendamentos: 0, chaves: 0, doisFatores: 0, alertas: 0 };
   const temBackup = config.backup.automatico !== 'desligado' || listarBackups(config.backup.pasta).length > 0;
   const passos: PassoInicial[] = [
+    ...(app.estado.demonstracao
+      ? [
+          {
+            id: 'dados-reais',
+            titulo: 'Comece com os seus dados',
+            texto: 'O painel ainda mostra os dados de demonstração. Em um passo, o Bento faz um backup, apaga os exemplos e troca esta conta pela sua.',
+            feito: false,
+            href: '/configuracoes?secao=sistema&comecar=1',
+            acao: 'Começar',
+          },
+        ]
+      : []),
     {
       id: 'empresa',
       titulo: 'Dados da empresa',

@@ -3,6 +3,7 @@ import { dispararEmSegundoPlano } from './integracoes.js';
 import { registrarAtividade } from './modulos/comum/auditoria.js';
 import { buscarTransacao, buscarUsuario } from './modulos/comum/consultas.js';
 import { hojeLocal } from './modulos/metricas/base.js';
+import { simuladorAtivo } from './operacao/ajustes.js';
 import { criarNotificacao } from './modulos/notificacoes/servico.js';
 import { CANAIS, CIDADES, criarSorteio, escolherPonderado, gerarNomeFicticio, PAISES } from './banco/ficticios.js';
 import { formatarMoeda } from './util/formato.js';
@@ -134,7 +135,7 @@ export function iniciarSimulador(app: FastifyInstance): () => void {
     const espera = Math.round(mediaMs * (0.6 + sorteio() * 0.8));
     temporizador = setTimeout(async () => {
       try {
-        if (app.estado.manutencao.ativo) return;
+        if (app.estado.manutencao.ativo || !simuladorAtivo(app)) return;
         ciclos += 1;
         await novaTransacao();
         if (ciclos % 5 === 0) await novoCadastro();

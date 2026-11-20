@@ -1,6 +1,6 @@
 [project]
 name = "bento-analise"
-version = "1.6.0"
+version = "1.7.0"
 description = "Motor analítico do Bento: previsões, risco de cancelamento, segmentação, coortes, simulador, qualidade de dados e relatórios em Excel"
 requires-python = ">=3.12"
 license = "MIT"

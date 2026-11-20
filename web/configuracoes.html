@@ -382,6 +382,7 @@
                     <button type="submit" class="botao botao-primario" data-salvar data-permissao="configuracoes.sistema"><i data-icone="salvar"></i>Salvar dados da empresa</button>
                   </div>
                 </form>
+                <div class="comecar" data-demonstracao data-permissao="configuracoes.sistema" hidden></div>
               </section>
 
               <section class="config-secao painel-aba" id="secao-status" role="tabpanel" aria-labelledby="aba-status" data-permissao="configuracoes.sistema" hidden>
@@ -433,19 +434,44 @@
                 </div>
                 <div class="config-linha">
                   <div class="config-linha-rotulo">
+                    <p class="config-linha-titulo">Simulador de atividade</p>
+                    <p class="config-linha-texto">Cria transações e cadastros de exemplo para ver o tempo real funcionando. No automático, só roda enquanto o painel usa os dados de demonstração.</p>
+                  </div>
+                  <form class="formulario" data-form-simulador novalidate><div class="esqueleto-linhas"><span class="esqueleto-texto"></span></div></form>
+                </div>
+                <div class="config-linha">
+                  <div class="config-linha-rotulo">
                     <p class="config-linha-titulo">Backups</p>
                     <p class="config-linha-texto" data-backup-politica>Cópias completas do banco em <code>.ndjson.gz</code>. Restaure com <code>npm run restaurar</code>.</p>
                     <button type="button" class="botao botao-primario botao-pequeno mt-3 self-start" data-fazer-backup><i data-icone="backup"></i>Fazer backup agora</button>
                   </div>
-                  <div data-backups><div class="esqueleto-linhas"><span class="esqueleto-texto"></span></div></div>
+                  <div class="flex flex-col gap-4">
+                    <form class="formulario ajustes-backup" data-form-backup novalidate>
+                      <label class="campo">
+                        <span class="campo-rotulo">Backup automático</span>
+                        <select class="selecao" name="backupAutomatico">
+                          <option value="diario">Todo dia</option>
+                          <option value="semanal">Toda semana</option>
+                          <option value="desligado">Desligado</option>
+                        </select>
+                      </label>
+                      <label class="campo">
+                        <span class="campo-rotulo">Quantos guardar</span>
+                        <input class="entrada" name="backupManter" type="number" min="1" max="365" step="1" inputmode="numeric" required>
+                      </label>
+                      <button type="submit" class="botao botao-secundario" data-salvar><i data-icone="salvar"></i>Salvar</button>
+                      <p class="campo-ajuda ajustes-origem" data-origem-backup></p>
+                    </form>
+                    <div data-backups><div class="esqueleto-linhas"><span class="esqueleto-texto"></span></div></div>
+                  </div>
                 </div>
                 <div class="config-linha">
                   <div class="config-linha-rotulo">
                     <p class="config-linha-titulo">Retenção de dados</p>
-                    <p class="config-linha-texto">O que fica velho demais é removido todo dia. Os prazos vêm das variáveis <code>BENTO_RETENCAO_*</code>.</p>
+                    <p class="config-linha-texto">O que fica velho demais é removido todo dia. Ajuste os prazos aqui (0 guarda para sempre); o <code>.env</code> só define os valores iniciais.</p>
                     <button type="button" class="botao botao-perigo-suave botao-pequeno mt-3 self-start" data-limpar><i data-icone="lixeira"></i>Limpar agora</button>
                   </div>
-                  <div data-retencao><div class="esqueleto-linhas"><span class="esqueleto-texto"></span></div></div>
+                  <form class="formulario" data-retencao novalidate><div class="esqueleto-linhas"><span class="esqueleto-texto"></span></div></form>
                 </div>
                 <div class="config-linha">
                   <div class="config-linha-rotulo">

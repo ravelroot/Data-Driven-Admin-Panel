@@ -35,6 +35,18 @@
     @apply bg-neutra-200 text-neutra-800 dark:bg-neutra-800 dark:text-neutra-200;
   }
 
+  .integracao-logo[data-provedor="teams"] {
+    @apply bg-primaria-100 text-primaria-800 dark:bg-primaria-500/20 dark:text-primaria-200;
+  }
+
+  .integracao-logo[data-provedor="google-chat"] {
+    @apply bg-casca-100 text-casca-800 dark:bg-casca-500/20 dark:text-casca-200;
+  }
+
+  .integracao-logo[data-provedor="telegram"] {
+    @apply bg-destaque-100 text-destaque-800 dark:bg-destaque-500/20 dark:text-destaque-200;
+  }
+
   .integracao-logo[data-provedor="google-analytics"] {
     @apply bg-destaque-100 text-destaque-800 dark:bg-destaque-500/20 dark:text-destaque-200;
   }
@@ -65,5 +77,53 @@
 
   .integracao-evento {
     @apply text-xs text-neutra-500;
+  }
+
+  .integracao-guia {
+    @apply rounded-controle border border-(--parede) px-4 py-3;
+  }
+
+  .integracao-guia > summary {
+    @apply flex cursor-pointer items-center gap-2 text-sm font-semibold text-(--texto);
+  }
+
+  .integracao-guia > summary svg {
+    @apply size-4 text-(--texto-3);
+  }
+
+  .integracao-guia[open] > summary {
+    @apply mb-3;
+  }
+
+  .integracao-passos {
+    @apply mb-3 flex list-decimal flex-col gap-1.5 pl-5 text-sm leading-relaxed text-(--texto-2);
+  }
+
+  .link-externo {
+    @apply inline-flex items-center gap-1.5 text-sm font-semibold text-primaria-700 underline decoration-primaria-300 decoration-2 underline-offset-[3px] transition-colors hover:text-primaria-900 dark:text-destaque-300 dark:decoration-destaque-700 dark:hover:text-destaque-200;
+  }
+
+  .link-externo svg {
+    @apply size-3.5;
+  }
+
+  .integracao-codigo {
+    @apply mt-3 overflow-hidden rounded-controle border border-(--parede);
+  }
+
+  .integracao-codigo-topo {
+    @apply flex items-center justify-between gap-2 border-b border-(--parede) px-3 py-1.5 text-xs font-semibold text-(--texto-3);
+  }
+
+  .integracao-codigo pre {
+    @apply max-h-64 overflow-auto bg-neutra-100/70 p-3 font-mono text-xs leading-relaxed text-(--texto) dark:bg-neutra-950/40;
+  }
+
+  .integracao-codigo code {
+    @apply bg-transparent p-0;
+  }
+
+  .integracao-eventos .opcoes-papeis {
+    @apply sm:grid-cols-2 xl:grid-cols-3;
   }
 }

@@ -4,6 +4,11 @@ import {
   CAMPOS_POR_PROVEDOR,
   destinoClaramenteInterno,
   ENVIA_EVENTOS,
+  EVENTOS_NEGOCIO,
+  EXEMPLO_WEBHOOK,
+  GUIAS,
+  type EventoNegocio,
+  type GuiaIntegracao,
   lerConfigIntegracao,
   registrarEntrega,
   tentarEntrega,
@@ -26,7 +31,11 @@ export interface Integracao {
   status: 'conectada' | 'desconectada' | 'erro';
   ultimoEvento: string | null;
   ultimoErro: string | null;
-  campos: { nome: string; rotulo: string; tipo: 'texto' | 'url' | 'segredo'; valor: string }[];
+  campos: { nome: string; rotulo: string; tipo: 'texto' | 'url' | 'segredo'; obrigatorio: boolean; dica: string | null; valor: string }[];
+  enviaEventos: boolean;
+  eventos: EventoNegocio[];
+  guia: GuiaIntegracao;
+  exemplo: typeof EXEMPLO_WEBHOOK | null;
 }
 
 interface LinhaIntegracao {
@@ -37,10 +46,14 @@ interface LinhaIntegracao {
   categoria: string;
   ativo: boolean;
   config: unknown;
+  eventos: string[] | null;
   status: Integracao['status'];
   ultimo_evento: Date | null;
   ultimo_erro: string | null;
 }
+
+const eventosValidos = (lista: string[] | null | undefined): EventoNegocio[] =>
+  EVENTOS_NEGOCIO.filter((evento) => (lista ?? []).includes(evento));
 
 function estaConfigurada(provedor: Provedor, valores: Record<string, string>): boolean {
   return CAMPOS_POR_PROVEDOR[provedor].every((campo) => !campo.obrigatorio || Boolean(valores[campo.nome]));
@@ -63,8 +76,14 @@ function mapear(linha: LinhaIntegracao, segredo: string): Integracao {
       nome: campo.nome,
       rotulo: campo.rotulo,
       tipo: campo.tipo,
+      obrigatorio: campo.obrigatorio,
+      dica: campo.dica ?? null,
       valor: campo.tipo === 'segredo' ? mascarar(valores[campo.nome] ?? '') : (valores[campo.nome] ?? ''),
     })),
+    enviaEventos: ENVIA_EVENTOS.includes(linha.provedor),
+    eventos: linha.eventos?.length ? eventosValidos(linha.eventos) : [...EVENTOS_NEGOCIO],
+    guia: GUIAS[linha.provedor],
+    exemplo: linha.provedor === 'webhook' ? EXEMPLO_WEBHOOK : null,
   };
 }
 
@@ -83,7 +102,7 @@ export async function atualizarIntegracao(
   banco: Banco,
   segredo: string,
   id: string,
-  dados: { ativo?: boolean; config?: Record<string, string> },
+  dados: { ativo?: boolean; config?: Record<string, string>; eventos?: EventoNegocio[] },
   autor: { id: string },
   ip: string,
 ): Promise<Integracao> {
@@ -117,9 +136,14 @@ export async function atualizarIntegracao(
     armazenados[campo.nome] = campo.tipo === 'segredo' ? cifrar(valor, segredo) : valor;
   }
   const status = ativo ? (atual.status === 'erro' ? 'erro' : 'conectada') : 'desconectada';
+  const eventos = dados.eventos === undefined ? eventosValidos(atual.eventos) : eventosValidos(dados.eventos);
+  const todosOsEventos = eventos.length === EVENTOS_NEGOCIO.length ? [] : eventos;
+  if (dados.eventos !== undefined && dados.eventos.length === 0) {
+    throw validacao('Escolha pelo menos um evento para enviar.', [{ campo: 'eventos', mensagem: 'Escolha pelo menos um evento.' }]);
+  }
   await banco.consultar(
-    `update integracoes set ativo = $2, config = $3::jsonb, status = $4, atualizado_em = now() where id = $1`,
-    [id, ativo, JSON.stringify(armazenados), status],
+    `update integracoes set ativo = $2, config = $3::jsonb, status = $4, eventos = $5::text[], atualizado_em = now() where id = $1`,
+    [id, ativo, JSON.stringify(armazenados), status, todosOsEventos],
   );
   await registrarAtividade(banco, {
     usuarioId: autor.id,

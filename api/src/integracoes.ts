@@ -90,9 +90,13 @@ export async function garantirDestinoExterno(bruto: string): Promise<URL> {
   return url;
 }
 
-export type EventoNegocio = 'transacao.paga' | 'usuario.criado' | 'usuario.bloqueado' | 'relatorio.gerado' | 'alerta.disparado';
+export const EVENTOS_NEGOCIO = ['transacao.paga', 'usuario.criado', 'usuario.bloqueado', 'relatorio.gerado', 'alerta.disparado'] as const;
 
-export type Provedor = 'webhook' | 'slack' | 'discord' | 'google-analytics' | 'stripe';
+export type EventoNegocio = (typeof EVENTOS_NEGOCIO)[number];
+
+export const PROVEDORES = ['webhook', 'slack', 'discord', 'teams', 'google-chat', 'telegram', 'google-analytics', 'stripe'] as const;
+
+export type Provedor = (typeof PROVEDORES)[number];
 
 export interface CampoIntegracao {
   nome: string;
@@ -126,6 +130,44 @@ export const CAMPOS_POR_PROVEDOR: Record<Provedor, CampoIntegracao[]> = {
       padrao: /^https:\/\/(discord|discordapp)\.com\/api\/webhooks\/\S+$/,
     },
   ],
+  teams: [
+    {
+      nome: 'webhookUrl',
+      rotulo: 'URL do webhook do canal',
+      tipo: 'url',
+      obrigatorio: true,
+      padrao: /^https:\/\/\S+$/,
+      dica: 'Endereço gerado pelo fluxo "Postar em um canal quando uma solicitação de webhook for recebida" do Teams.',
+    },
+  ],
+  'google-chat': [
+    {
+      nome: 'webhookUrl',
+      rotulo: 'URL do webhook do espaço',
+      tipo: 'url',
+      obrigatorio: true,
+      padrao: /^https:\/\/chat\.googleapis\.com\/v1\/spaces\/\S+$/,
+      dica: 'Começa com https://chat.googleapis.com/v1/spaces/ e já traz a chave e o token.',
+    },
+  ],
+  telegram: [
+    {
+      nome: 'tokenBot',
+      rotulo: 'Token do bot',
+      tipo: 'segredo',
+      obrigatorio: true,
+      padrao: /^\d{5,12}:[A-Za-z0-9_-]{30,60}$/,
+      dica: 'Entregue pelo @BotFather, no formato 123456789:AA…',
+    },
+    {
+      nome: 'chatId',
+      rotulo: 'ID da conversa ou @canal',
+      tipo: 'texto',
+      obrigatorio: true,
+      padrao: /^(-?\d{1,20}|@[A-Za-z][A-Za-z0-9_]{4,31})$/,
+      dica: 'Número da conversa (grupos começam com -100) ou o @nome de um canal público.',
+    },
+  ],
   'google-analytics': [
     { nome: 'idMedicao', rotulo: 'ID de medição', tipo: 'texto', obrigatorio: true, padrao: /^G-[A-Z0-9]{6,12}$/ },
     { nome: 'segredoApi', rotulo: 'Segredo da API de medição', tipo: 'segredo', obrigatorio: false },
@@ -137,7 +179,157 @@ export const CAMPOS_POR_PROVEDOR: Record<Provedor, CampoIntegracao[]> = {
   ],
 };
 
-export const ENVIA_EVENTOS: Provedor[] = ['webhook', 'slack', 'discord'];
+export const ENVIA_EVENTOS: Provedor[] = ['webhook', 'slack', 'discord', 'teams', 'google-chat', 'telegram'];
+
+export interface GuiaIntegracao {
+  passos: string[];
+  documentacao: string;
+}
+
+export const GUIAS: Record<Provedor, GuiaIntegracao> = {
+  webhook: {
+    passos: [
+      'Crie no seu sistema (n8n, Make, Zapier, Pipedream ou a sua API) um endereço que aceite POST com JSON.',
+      'Cole o endereço aqui e invente um segredo longo: o Bento assina cada envio com ele.',
+      'No destino, confira o cabeçalho X-Bento-Assinatura (HMAC-SHA256 do corpo) e ignore entregas repetidas pelo X-Bento-Entrega.',
+      'Clique em Testar para mandar um evento de exemplo.',
+    ],
+    documentacao: '/api/v1/docs',
+  },
+  slack: {
+    passos: [
+      'No Slack, crie um app em api.slack.com/apps e ative Incoming Webhooks.',
+      'Clique em "Add New Webhook to Workspace" e escolha o canal.',
+      'Copie a URL https://hooks.slack.com/… e cole aqui.',
+      'Clique em Testar: a mensagem chega no canal na hora.',
+    ],
+    documentacao: 'https://api.slack.com/messaging/webhooks',
+  },
+  discord: {
+    passos: [
+      'No Discord, abra Configurações do canal › Integrações › Webhooks.',
+      'Clique em "Novo webhook", dê um nome e escolha o canal.',
+      'Clique em "Copiar URL do webhook" e cole aqui.',
+      'Clique em Testar para conferir.',
+    ],
+    documentacao: 'https://support.discord.com/hc/pt-br/articles/228383668',
+  },
+  teams: {
+    passos: [
+      'No Teams, clique em ⋯ ao lado do canal (ou da conversa) › Fluxos de trabalho.',
+      'Escolha o modelo "Postar em um canal quando uma solicitação de webhook for recebida", escolha a equipe e o canal e salve.',
+      'Copie a URL do HTTP POST que o Teams mostra no fim e cole aqui.',
+      'Clique em Testar: o Bento manda um cartão adaptável para o canal.',
+    ],
+    documentacao: 'https://learn.microsoft.com/microsoftteams/platform/webhooks-and-connectors/how-to/add-incoming-webhook',
+  },
+  'google-chat': {
+    passos: [
+      'No Google Chat pelo navegador, abra o espaço e clique na seta ao lado do nome › Apps e integrações.',
+      'Clique em "Adicionar webhooks", dê um nome e salve.',
+      'No webhook criado, clique em Mais › Copiar link e cole aqui a URL https://chat.googleapis.com/v1/spaces/….',
+      'Clique em Testar para conferir.',
+    ],
+    documentacao: 'https://developers.google.com/workspace/chat/quickstart/webhooks',
+  },
+  telegram: {
+    passos: [
+      'No Telegram, converse com o @BotFather, envie /newbot e copie o token que ele devolve.',
+      'Adicione o bot ao grupo (ou mande uma mensagem para ele, se for uma conversa direta).',
+      'Descubra o ID da conversa: abra api.telegram.org/bot<token>/getUpdates depois de mandar uma mensagem no grupo e copie o "chat":{"id"}.',
+      'Cole o token e o ID aqui e clique em Testar.',
+    ],
+    documentacao: 'https://core.telegram.org/bots/features#botfather',
+  },
+  'google-analytics': {
+    passos: [
+      'No Google Analytics, abra Administrador › Fluxos de dados e escolha o fluxo da web.',
+      'Copie o ID de medição (G-XXXXXXX) e cole aqui.',
+      'Se for usar o Measurement Protocol, crie também um segredo da API no mesmo fluxo.',
+    ],
+    documentacao: 'https://developers.google.com/analytics/devguides/collection/protocol/ga4',
+  },
+  stripe: {
+    passos: [
+      'No Stripe, abra Desenvolvedores › Chaves de API.',
+      'Copie a chave publicável (pk_…) e crie uma chave restrita (rk_…) só com leitura.',
+      'Se for receber eventos do Stripe, copie também o segredo do endpoint de webhook (whsec_…).',
+    ],
+    documentacao: 'https://docs.stripe.com/keys',
+  },
+};
+
+export const EXEMPLO_WEBHOOK = {
+  evento: 'transacao.paga',
+  resumo: 'Ana Souza pagou R$ 129,00 (Profissional)',
+  criadoEm: '2026-11-20T12:00:00.000Z',
+  entrega: '3f1c2a9e-1b7d-4e0a-9c55-1f2e3d4c5b6a',
+  dados: { id: '9b2d…', codigo: 'TX-1042', valor: 12900, status: 'paga', plano: 'profissional' },
+};
+
+export interface Envio {
+  url: string;
+  corpo: string;
+  cabecalhos: Record<string, string>;
+}
+
+const ROTULOS_EVENTO: Record<string, string> = {
+  'transacao.paga': 'Transação paga',
+  'usuario.criado': 'Novo cadastro',
+  'usuario.bloqueado': 'Usuário bloqueado',
+  'relatorio.gerado': 'Relatório gerado',
+  'alerta.disparado': 'Alerta de métrica',
+  'integracao.teste': 'Teste',
+};
+
+export function montarEnvio(
+  provedor: Provedor,
+  valores: Record<string, string>,
+  evento: string,
+  resumo: string,
+  dados: unknown,
+  opcoes: OpcoesEnvio = {},
+): Envio | null {
+  const cabecalhos: Record<string, string> = { 'content-type': 'application/json', 'user-agent': `Bento/${VERSAO}` };
+  const titulo = ROTULOS_EVENTO[evento] ?? evento;
+  if (provedor === 'webhook') {
+    const corpo = JSON.stringify({ evento, resumo, criadoEm: opcoes.criadoEm ?? new Date().toISOString(), entrega: opcoes.entregaId ?? null, dados });
+    cabecalhos['x-bento-evento'] = evento;
+    cabecalhos['x-bento-assinatura'] = `sha256=${assinarHmac(valores.segredo ?? '', corpo)}`;
+    if (opcoes.entregaId) cabecalhos['x-bento-entrega'] = opcoes.entregaId;
+    if (opcoes.tentativa) cabecalhos['x-bento-tentativa'] = String(opcoes.tentativa);
+    return { url: valores.url, corpo, cabecalhos };
+  }
+  if (provedor === 'slack') return { url: valores.webhookUrl, corpo: JSON.stringify({ text: `*Bento* · ${resumo}` }), cabecalhos };
+  if (provedor === 'discord') return { url: valores.webhookUrl, corpo: JSON.stringify({ content: `**Bento** · ${resumo}` }), cabecalhos };
+  if (provedor === 'google-chat') return { url: valores.webhookUrl, corpo: JSON.stringify({ text: `*Bento · ${titulo}*\n${resumo}` }), cabecalhos };
+  if (provedor === 'teams') {
+    const cartao = {
+      type: 'message',
+      attachments: [
+        {
+          contentType: 'application/vnd.microsoft.card.adaptive',
+          contentUrl: null,
+          content: {
+            $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+            type: 'AdaptiveCard',
+            version: '1.4',
+            body: [
+              { type: 'TextBlock', text: `Bento · ${titulo}`, weight: 'Bolder', size: 'Medium', wrap: true },
+              { type: 'TextBlock', text: resumo, wrap: true },
+            ],
+          },
+        },
+      ],
+    };
+    return { url: valores.webhookUrl, corpo: JSON.stringify(cartao), cabecalhos };
+  }
+  if (provedor === 'telegram') {
+    const corpo = JSON.stringify({ chat_id: valores.chatId, text: `Bento · ${titulo}\n${resumo}`, disable_web_page_preview: true });
+    return { url: `https://api.telegram.org/bot${valores.tokenBot ?? ''}/sendMessage`, corpo, cabecalhos };
+  }
+  return null;
+}
 
 export function lerConfigIntegracao(config: unknown, segredo: string): Record<string, string> {
   const bruto = (config && typeof config === 'object' ? config : {}) as Record<string, unknown>;
@@ -181,25 +373,9 @@ export async function enviarParaProvedor(
 ): Promise<ResultadoEnvio> {
   const inicio = performance.now();
   const duracao = () => Math.round(performance.now() - inicio);
-  let url = '';
-  let corpo = '';
-  const cabecalhos: Record<string, string> = { 'content-type': 'application/json', 'user-agent': `Bento/${VERSAO}` };
-  if (provedor === 'webhook') {
-    url = valores.url;
-    corpo = JSON.stringify({ evento, resumo, criadoEm: opcoes.criadoEm ?? new Date().toISOString(), entrega: opcoes.entregaId ?? null, dados });
-    cabecalhos['x-bento-evento'] = evento;
-    cabecalhos['x-bento-assinatura'] = `sha256=${assinarHmac(valores.segredo ?? '', corpo)}`;
-    if (opcoes.entregaId) cabecalhos['x-bento-entrega'] = opcoes.entregaId;
-    if (opcoes.tentativa) cabecalhos['x-bento-tentativa'] = String(opcoes.tentativa);
-  } else if (provedor === 'slack') {
-    url = valores.webhookUrl;
-    corpo = JSON.stringify({ text: `*Bento* · ${resumo}` });
-  } else if (provedor === 'discord') {
-    url = valores.webhookUrl;
-    corpo = JSON.stringify({ content: `**Bento** · ${resumo}` });
-  } else {
-    return { codigoHttp: null, duracaoMs: 0 };
-  }
+  const envio = montarEnvio(provedor, valores, evento, resumo, dados, opcoes);
+  if (!envio) return { codigoHttp: null, duracaoMs: 0 };
+  const { url, corpo, cabecalhos } = envio;
   let destino: URL;
   try {
     destino = await garantirDestinoExterno(url);
@@ -348,7 +524,10 @@ export async function dispararIntegracoes(
   resumo: string,
   dados: unknown,
 ): Promise<void> {
-  const { linhas } = await banco.consultar<{ id: string }>(`select id from integracoes where ativo and provedor = any($1::text[])`, [ENVIA_EVENTOS]);
+  const { linhas } = await banco.consultar<{ id: string }>(
+    `select id from integracoes where ativo and provedor = any($1::text[]) and (cardinality(eventos) = 0 or $2 = any(eventos))`,
+    [ENVIA_EVENTOS, evento],
+  );
   await Promise.all(
     linhas.map(async (integracao) => {
       const entregaId = await registrarEntrega(banco, integracao.id, evento, resumo, dados);

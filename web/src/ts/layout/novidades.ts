@@ -11,50 +11,48 @@ export interface Novidade {
   permissao?: string;
 }
 
-export const VERSAO_NOVIDADES = "1.6.0";
+export const VERSAO_NOVIDADES = "1.7.0";
 
 export const NOVIDADES: Novidade[] = [
   {
-    icone: "lampada",
-    titulo: "Inteligência com Python",
-    texto: "Uma página nova reúne previsões, risco de cancelamento, segmentos, coortes, LTV e qualidade dos dados, calculados por um motor analítico em Python.",
-    href: "/inteligencia",
-    permissao: "analytics.ver",
-  },
-  {
-    icone: "previsao",
-    titulo: "Previsões com faixa de confiança",
-    texto: "Receita, pagamentos, cadastros, conversões e visitantes projetados para 30 dias com Holt-Winters, e o MRR para 6 meses. Cada modelo mostra o quanto acertou no teste.",
-    href: "/inteligencia",
-    permissao: "analytics.ver",
-  },
-  {
-    icone: "escudo-alerta",
-    titulo: "Quem pode cancelar",
-    texto: "Um modelo de machine learning aponta os clientes com maior chance de cancelar em 30 dias, explica o motivo e sugere a ação.",
-    href: "/inteligencia?aba=risco",
-    permissao: "analytics.ver",
-  },
-  {
-    icone: "usuarios",
-    titulo: "Segmentos RFM e k-means",
-    texto: "Clientes agrupados por recência, frequência e valor, com o perfil de cada grupo e o que fazer com ele.",
-    href: "/inteligencia?aba=segmentos",
-    permissao: "analytics.ver",
+    icone: "foguete",
+    titulo: "Comece com os seus dados em um passo",
+    texto: "Quando quiser sair da demonstração, o Bento grava um backup, apaga os exemplos e coloca a sua conta no lugar. Sem mexer no .env.",
+    href: "/configuracoes?secao=sistema&comecar=1",
+    permissao: "configuracoes.sistema",
   },
   {
     icone: "ajustes",
-    titulo: "Simulador “e se”",
-    texto: "Mexa no preço, no churn e na aquisição e veja o MRR, os clientes e o LTV dos próximos meses na hora.",
-    href: "/inteligencia?aba=simulador",
-    permissao: "analytics.ver",
+    titulo: "Operação ajustada pelo painel",
+    texto: "Backup automático, quantas cópias guardar, prazos de retenção e o simulador agora mudam em Configurações › Manutenção e valem na hora, para todas as instâncias.",
+    href: "/configuracoes?secao=manutencao",
+    permissao: "configuracoes.sistema",
   },
   {
-    icone: "arquivo-planilha",
-    titulo: "Excel de verdade",
-    texto: "Baixe o relatório de inteligência em .xlsx com gráficos nativos e importe usuários direto de planilhas do Excel, com análise das colunas e dos problemas.",
-    href: "/inteligencia?excel=1",
-    permissao: "relatorios.gerar",
+    icone: "integracao",
+    titulo: "Teams, Google Chat e Telegram",
+    texto: "Três integrações novas, cada uma com o passo a passo dentro da tela, e a escolha de quais eventos cada integração recebe.",
+    href: "/configuracoes?secao=integracoes",
+    permissao: "configuracoes.integracoes",
+  },
+  {
+    icone: "webhook",
+    titulo: "Webhook explicado",
+    texto: "A tela do webhook mostra o JSON que chega no seu sistema e o código para conferir a assinatura, prontos para copiar.",
+    href: "/configuracoes?secao=integracoes",
+    permissao: "configuracoes.integracoes",
+  },
+  {
+    icone: "ferramenta",
+    titulo: "Atualizar com dois cliques",
+    texto: "Os scripts atualizar.cmd e atualizar.sh fazem o backup, completam o .env com as variáveis novas, reconstroem e conferem a instalação.",
+  },
+  {
+    icone: "verificacoes",
+    titulo: "Erros de digitação no .env",
+    texto: "Uma variável BENTO_ com nome errado vira aviso com a sugestão do nome certo, no log, no diagnóstico e na aba Manutenção.",
+    href: "/configuracoes?secao=manutencao",
+    permissao: "configuracoes.sistema",
   },
 ];
 
@@ -71,7 +69,7 @@ export const abrirNovidades = (): void => {
           <div class="modal-textos">
             <p class="versao-rotulo">Versão ${VERSAO_NOVIDADES}</p>
             <h2 class="modal-titulo" id="versao-titulo">O que há de novo no Bento</h2>
-            <p class="modal-texto">Um motor analítico em Python com previsões, risco de cancelamento, segmentos e Excel. Esta janela aparece uma vez por versão.</p>
+            <p class="modal-texto">Mais fácil de começar, configurar, manter e integrar. Esta janela aparece uma vez por versão.</p>
           </div>
         </div>
         <ul class="versao-lista" role="list" tabindex="-1">

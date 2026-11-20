@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { exigir } from '../../plugins/autenticacao.js';
 import { usuarioAtual } from '../../tipos.js';
 import { esquemaUuid, opcional, paginacaoSimples, paramId } from '../../util/validacao.js';
+import { EVENTOS_NEGOCIO } from '../../integracoes.js';
 import { atualizarIntegracao, listarEntregas, listarIntegracoes, reenviarEntrega, testarIntegracao } from './servico.js';
 
 const consultaEntregas = paginacaoSimples.extend({ status: opcional(z.enum(['pendente', 'entregue', 'falhou'])) });
@@ -12,6 +13,7 @@ const corpoAtualizar = z
   .object({
     ativo: z.boolean().optional(),
     config: z.record(z.string().regex(/^[a-zA-Z]{2,40}$/), z.string().max(500)).optional(),
+    eventos: z.array(z.enum(EVENTOS_NEGOCIO)).max(EVENTOS_NEGOCIO.length).optional(),
   })
   .strict();
 
